@@ -1,23 +1,23 @@
 {
-  "name": "gokibitz",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "DEBUG=gokibitz PORT=3001 node ./server/bin/www"
-  },
-  "dependencies": {
-    "body-parser": "~1.0.0",
-    "cookie-parser": "~1.0.1",
-    "debug": "~0.7.4",
-    "express": "~4.2.0",
-    "jade": "~1.3.0",
-    "morgan": "~1.0.0",
-    "static-favicon": "~1.0.0"
-  },
-  "devDependencies": {
-    "gulp": "^3.6.2",
-    "gulp-debug": "^0.3.0",
-    "gulp-jshint": "^1.6.1",
-    "jshint-stylish": "^0.2.0"
-  }
+	"name": "gokibitz",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "export $(cat .env | xargs) && node ./server/bin/www"
+	},
+	"dependencies": {
+		"body-parser": "~1.0.0",
+		"cookie-parser": "~1.0.1",
+		"debug": "~0.7.4",
+		"express": "~4.2.0",
+		"jade": "~1.3.0",
+		"morgan": "~1.0.0",
+		"static-favicon": "~1.0.0"
+	},
+	"devDependencies": {
+		"gulp": "^3.6.2",
+		"gulp-debug": "^0.3.0",
+		"gulp-jshint": "^1.6.1",
+		"jshint-stylish": "^0.2.0"
+	}
 }
