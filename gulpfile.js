@@ -37,6 +37,14 @@ gulp.task('browserify', function () {
 		entries: ['./client/src/js/app.js']
 	})
 	.bundle({ debug: true })
+	.on('error', notify.onError({
+		title: 'Browserify Error',
+		message: '<%= error.message %>'
+	}))
+	.on('error', function (e) {
+		gutil.log(e);
+		this.emit('end');
+	})
 	.pipe(source('app.js'))
 	.pipe(gulp.dest('./client/public/js/'));
 });
@@ -52,6 +60,12 @@ gulp.task('default', ['lint-server-js', 'sass', 'browserify', 'fonts', 'bootstra
 	// Nothing!
 });
 
+gulp.task('test', function () {
+	console.log('testing notify');
+	return gulp.src("./src/test.ext")
+	  .pipe(notify({ message: 'Hello Gulp!' }));
+});
+
 gulp.task('watch', ['default'], function () {
 	nodemon({
 		script: './server/bin/www',
@@ -62,9 +76,9 @@ gulp.task('watch', ['default'], function () {
 		}
 	}).on('change', ['lint-server-js']);
 
-	gulp.watch('./client/src/scss/**', ['sass']);
-	gulp.watch('./client/src/js/**', ['browserify']);
-	gulp.watch('./client/src/assets/fonts/**', ['fonts']);
+	gulp.watch('./client/src/scss/**/*.scss', ['sass']);
+	gulp.watch('./client/src/js/**/*.js', ['browserify']);
+	gulp.watch('./client/src/assets/fonts/**/*', ['fonts']);
 
 	var server = livereload();
 	gulp.watch('./client/public/**').on('change', function (file) {

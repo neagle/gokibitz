@@ -1,29 +1,37 @@
-console.log('Hello, World!');
-
+var bulk = require('bulk-require');
 var angular = require('angular');
 
-var myApp = angular.module('myApp', ['ui.bootstrap']);
+var gokibitz = angular.module('gokibitz', [
+	'gokibitz.controllers',
+	'ui.bootstrap',
+	'ngRoute'
+]);
 
-// UI Bootstrap
-require('./lib/ui-bootstrap-tpls-0.9.0.js');
+console.log('initialize the module', gokibitz);
 
-myApp.controller('MyCtrl', ['$scope', function ($scope) {
-	console.log('my ctrl');
-	$scope.name = 'Superhero';
-}]);
+require('./lib/ui-bootstrap-tpls-0.9.0.js'); // UI Bootstrap
+require('angular-route');
 
+angular.module('gokibitz.controllers', []);
+bulk(__dirname, ['./controllers/**/*.js']);
 
-myApp.controller('AlertDemoCtrl', ['$scope', function ($scope) {
-	$scope.alerts = [
-		{ type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
-		{ type: 'success', msg: 'Well done! You successfully read this important alert message.' }
-	];
+gokibitz.config([
+	'$routeProvider',
+	'$locationProvider',
+	function ($routeProvider, $locationProvider) {
+		$routeProvider
+			.when('/profile', {
+				templateUrl: 'partials/profile',
+				controller: 'ProfileController'
+			})
+			.when('/upload', {
+				templateUrl: 'partials/upload',
+				controller: 'UploadController'
+			})
+			.otherwise({
+				redirectTo: '/'
+			});
 
-	$scope.addAlert = function() {
-		$scope.alerts.push({msg: 'Another alert!'});
-	};
-
-	$scope.closeAlert = function(index) {
-		$scope.alerts.splice(index, 1);
-	};
-}]);
+		$locationProvider.html5Mode(true);
+	}
+]);

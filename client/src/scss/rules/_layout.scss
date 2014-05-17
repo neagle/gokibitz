@@ -15,3 +15,14 @@
 // appropriate.
 //
 // http://smacss.com/book/type-layout
+
+.site-name {
+	a {
+		color: hsla(40, 100%, 50%, 1);
+		text-decoration: none;
+
+		b {
+			color: hsla(20, 100%, 50%, 1);
+		}
+	}
+}

@@ -17,6 +17,7 @@
   "devDependencies": {
     "browserify": "^4.1.4",
     "browserify-shim": "^3.5.0",
+    "bulkify": "^1.0.1",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "^2.2.0",
@@ -30,13 +31,22 @@
     "jshint-stylish": "^0.2.0",
     "vinyl-source-stream": "^0.1.1"
   },
-	"browserify": {
-		"transform": [ "browserify-shim" ]
-	},
-	"browser": {
-		"angular": "./client/src/bower_components/angular/angular.js"
-	},
-	"browserify-shim": {
-		"angular": "angular"
-	}
+  "browserify": {
+    "transform": [
+      "browserify-shim",
+			"bulkify"
+    ]
+  },
+  "browser": {
+    "angular": "./client/src/bower_components/angular/angular.js",
+    "angular-route": "./client/src/bower_components/angular-route/angular-route.js"
+  },
+  "browserify-shim": {
+    "angular": "angular",
+    "angular-route": {
+      "depends": [
+        "angular"
+      ]
+    }
+  }
 }

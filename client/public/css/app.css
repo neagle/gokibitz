@@ -19,6 +19,7 @@
   font-weight: normal;
   font-style: normal; }
 
+@import url(http://fonts.googleapis.com/css?family=Righteous);
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -918,7 +919,7 @@ hr {
   clip: auto; }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: inherit;
+  font-family: Righteous, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   color: inherit; }
@@ -4873,6 +4874,14 @@ button.close {
 /*// http://www.paulirish.com/2012/box-sizing-border-box-ftw/*/
 /*box-sizing: border-box;*/
 /*}*/
+body {
+  padding: 50px; }
+
+.site-name a {
+  color: #ffaa00;
+  text-decoration: none; }
+  .site-name a b {
+    color: #ff5500; }
 
 .mymodule {
   color: blue; }

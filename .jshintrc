@@ -49,5 +49,8 @@
 	"onevar": false,
 	"passfail": false,
 	"white": true,
-	"node": true
+	"node": true,
+	"predef": [
+		"angular"
+	]
 }

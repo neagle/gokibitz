@@ -1,15 +1,8 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
-	div(ng-controller='MyCtrl')
-		| Hello, {{ name }}!
-	p {{ 1 + 2 }}
-	button.btn.btn-primary Hello, world!
-
-	div(ng-controller='AlertDemoCtrl')
-		alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)')
-			| {{alert.msg}}
-		button.btn.btn-default(ng-click='addAlert()')
-			| Add Alert
+	header
+		h1.site-name
+			a(href='/') go<b>kibitz</b>
+	.container
+		div(ng-view)

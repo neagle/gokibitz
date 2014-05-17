@@ -25,6 +25,9 @@ app.use(express.static(path.join(__dirname, 'client/public')));
 app.use('/', routes);
 app.use('/users', users);
 
+// Redirect all others to the index (HTML5 History)
+app.use('*', routes);
+
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
