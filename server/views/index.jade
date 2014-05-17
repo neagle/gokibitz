@@ -3,3 +3,6 @@ extends layout
 block content
 	h1= title
 	p Welcome to #{title}
+	div(ng-controller='MyCtrl')
+		| Hello, {{ name }}!
+	p {{ 1 + 2 }}

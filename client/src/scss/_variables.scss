@@ -1,0 +1,12 @@
+@charset 'utf-8';
+
+// Turn debugging on and off. Use a conditional switch for any
+// debugging-oriented // oriented settings in your stylesheets.
+//
+// Example: @if $debug == true { } @else { }
+// $debug: true;
+$debug: false;
+
+@import "_foundation-settings.scss";
+@import "../bower_components/foundation/scss/normalize";
+@import "../bower_components/foundation/scss/foundation";

@@ -2,6 +2,7 @@ doctype html
 html
 	head
 		title= title
-		link(rel='stylesheet', href='/stylesheets/style.css')
-	body
+		link(rel='stylesheet', href='/css/app.css')
+	body(ng-app='myApp')
 		block content
+		script(src='/js/app.js')
