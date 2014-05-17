@@ -6,3 +6,10 @@ block content
 	div(ng-controller='MyCtrl')
 		| Hello, {{ name }}!
 	p {{ 1 + 2 }}
+	button.btn.btn-primary Hello, world!
+
+	div(ng-controller='AlertDemoCtrl')
+		alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)')
+			| {{alert.msg}}
+		button.btn.btn-default(ng-click='addAlert()')
+			| Add Alert

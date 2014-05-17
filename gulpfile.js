@@ -14,6 +14,16 @@ var notify = require('gulp-notify');
 
 var bower = './client/src/bower_components';
 
+gulp.task('bootstrap-assets', function () {
+	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
+	.pipe(gulp.dest('./client/public/fonts'));
+});
+
+gulp.task('fonts', function () {
+	return gulp.src('./client/src/assets/fonts/**')
+	.pipe(gulp.dest('./client/public/fonts'));
+});
+
 gulp.task('sass', function () {
 	return gulp.src('./client/src/scss/**/*.scss')
 	.pipe(concat('app.css'))
@@ -38,7 +48,7 @@ gulp.task('lint-server-js', function () {
 	.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('default', ['lint-server-js', 'sass', 'browserify'], function () {
+gulp.task('default', ['lint-server-js', 'sass', 'browserify', 'fonts', 'bootstrap-assets'], function () {
 	// Nothing!
 });
 
@@ -54,6 +64,7 @@ gulp.task('watch', ['default'], function () {
 
 	gulp.watch('./client/src/scss/**', ['sass']);
 	gulp.watch('./client/src/js/**', ['browserify']);
+	gulp.watch('./client/src/assets/fonts/**', ['fonts']);
 
 	var server = livereload();
 	gulp.watch('./client/public/**').on('change', function (file) {

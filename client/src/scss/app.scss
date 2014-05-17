@@ -1,0 +1,28 @@
+@charset 'utf-8';
+
+// Turn debugging on and off. Use a conditional switch for any
+// debugging-oriented // oriented settings in your stylesheets.
+//
+// Example: @if $debug == true { } @else { }
+// $debug: true;
+$debug: false;
+
+// Fonts
+$font-directory: '/fonts/junction';
+@import "../assets/fonts/junction/junction";
+
+// http://getbootstrap.com/customize/#less-variables
+$font-family-sans-serif: "Junction", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/theme";
+
+/**
+ * Original Bootstrap's CSS depends on empty href attributes to style cursors
+ * for several components (pagination, tabs etc.). But in AngularJS adding
+ * empty href attributes to link tags will cause unwanted route changes. This
+ * is why we need to remove empty href attributes from directive templates and
+ * as a result styling is not applied correctly. The remedy is simple, just add
+ * the following styling to your application:
+ */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
