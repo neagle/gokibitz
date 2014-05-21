@@ -4,12 +4,14 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var nconf = require('nconf');
+var mongoose = require('mongoose');
+var configDB = require('./server/config/database.js');
 
 var routes = require('./server/routes/index');
 var users = require('./server/routes/users');
 
 var app = express();
+mongoose.connect(configDB.url);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'server/views'));

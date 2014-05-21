@@ -8,13 +8,13 @@
 $debug: false;
 
 // Fonts
-$font-directory: '/fonts/junction';
-@import "../assets/fonts/junction/junction";
-@import url(http://fonts.googleapis.com/css?family=Righteous);
+/*$font-directory: '/fonts/junction';*/
+/*@import "../assets/fonts/junction/junction";*/
+@import url(http://fonts.googleapis.com/css?family=Righteous|Oxygen:400,700,300);
 
 // http://getbootstrap.com/customize/#less-variables
-$font-family-sans-serif: "Junction", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$headings-font-family: Righteous, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-sans-serif: Oxygen, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$headings-font-family: "Righteous", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/theme";

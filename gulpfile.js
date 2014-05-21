@@ -60,15 +60,12 @@ gulp.task('default', ['lint-server-js', 'sass', 'browserify', 'fonts', 'bootstra
 	// Nothing!
 });
 
-gulp.task('test', function () {
-	console.log('testing notify');
-	return gulp.src("./src/test.ext")
-	  .pipe(notify({ message: 'Hello Gulp!' }));
-});
-
 gulp.task('watch', ['default'], function () {
+	var server = livereload();
+
 	nodemon({
 		script: './server/bin/www',
+		ext: 'js jade',
 		watch: ['server', 'server.js'],
 		env: {
 			DEBUG: 'gokibitz',
@@ -80,7 +77,6 @@ gulp.task('watch', ['default'], function () {
 	gulp.watch('./client/src/js/**/*.js', ['browserify']);
 	gulp.watch('./client/src/assets/fonts/**/*', ['fonts']);
 
-	var server = livereload();
 	gulp.watch('./client/public/**').on('change', function (file) {
 		server.changed(file.path);
 	});

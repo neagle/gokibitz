@@ -1,0 +1,27 @@
+h2 Login
+
+form.form-inline(
+	name='loginForm'
+	ng-submit='login(credentials)'
+	novalidate
+	role='form'
+)
+	.form-group
+		label.sr-only(for='email') Email address:
+		input.form-control(
+			type='text'
+			id='email'
+			placeholder='Email address'
+			ng-model='credenatials.email'
+		)
+	= ' '
+	.form-group
+		label.sr-only(for='password') Password:
+		input.form-control(
+			type='password'
+			id='password'
+			placeholder='Password'
+			ng-model='credentials.password'
+		)
+	= ' '
+	button.btn.btn-default(type='submit') Login
