@@ -1,9 +1,10 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var debug = require('gulp-debug');
-var concat = require('gulp-concat');
+//var watch = require('gulp-watch');
+//var concat = require('gulp-concat');
 var sass = require('gulp-sass');
-var prefix = require('gulp-autoprefixer');
+var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var browserify = require('browserify');
@@ -11,24 +12,57 @@ var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
 var livereload = require('gulp-livereload');
 var notify = require('gulp-notify');
-
-var bower = './client/src/bower_components';
+var glob = require('glob');
+var fs = require('fs');
+var path = require('path');
 
 gulp.task('bootstrap-assets', function () {
 	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
-	.pipe(gulp.dest('./client/public/fonts'));
+		.pipe(gulp.dest('./client/public/fonts'));
 });
 
 gulp.task('fonts', function () {
 	return gulp.src('./client/src/assets/fonts/**')
-	.pipe(gulp.dest('./client/public/fonts'));
+		.pipe(gulp.dest('./client/public/fonts'));
 });
 
-gulp.task('sass', function () {
-	return gulp.src('./client/src/scss/**/*.scss')
-	.pipe(concat('app.css'))
+// Hack the ability to import directories in Sass
+// Find any _all.scss files and write @import statements
+// for all other *.scss files in the same directory
+//
+// Import the whole directory with @import "somedir/all";
+gulp.task('sass-includes', function (callback) {
+	var all = '_all.scss';
+	glob('./client/src/scss/**/' + all, function (error, files) {
+		files.forEach(function (allFile) {
+			// Add a banner to warn users
+			fs.writeFileSync(allFile, '/** This is a dynamically generated file **/\n\n');
+
+			var directory = path.dirname(allFile);
+			var partials = fs.readdirSync(directory).filter(function (file) {
+				return (
+					// Exclude the dynamically generated file
+					file !== all &&
+					// Only include _*.scss files
+					path.basename(file).substring(0, 1) === '_' &&
+					path.extname(file) === '.scss'
+				);
+			});
+
+			// Append import statements for each partial
+			partials.forEach(function (partial) {
+				fs.appendFileSync(allFile, '@import "' + partial + '";\n');
+			});
+		});
+	});
+
+	callback();
+});
+
+gulp.task('sass', ['sass-includes'], function () {
+	return gulp.src('./client/src/scss/app.scss')
 	.pipe(sass({ errLogToConsole: true }))
-	.pipe(prefix())
+	.pipe(autoprefix())
 	.pipe(gulp.dest('./client/public/css'));
 });
 
@@ -73,11 +107,11 @@ gulp.task('watch', ['default'], function () {
 		}
 	}).on('change', ['lint-server-js']);
 
-	gulp.watch('./client/src/scss/**/*.scss', ['sass']);
-	gulp.watch('./client/src/js/**/*.js', ['browserify']);
-	gulp.watch('./client/src/assets/fonts/**/*', ['fonts']);
+	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
+	gulp.watch('client/src/js/**/*.js', ['browserify']);
+	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 
-	gulp.watch('./client/public/**').on('change', function (file) {
+	gulp.watch('client/public/**').on('change', function (file) {
 		server.changed(file.path);
 	});
 });

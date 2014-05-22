@@ -19,6 +19,7 @@
     "browserify": "^4.1.4",
     "browserify-shim": "^3.5.0",
     "bulkify": "^1.0.1",
+    "glob": "^4.0.0",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "^2.2.0",

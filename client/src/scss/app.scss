@@ -7,6 +7,12 @@
 // $debug: true;
 $debug: false;
 
+// Sass Features
+// =============
+@import "variables";
+@import "functions/all";
+@import "mixins/all";
+
 // Fonts
 /*$font-directory: '/fonts/junction';*/
 /*@import "../assets/fonts/junction/junction";*/
@@ -28,3 +34,27 @@ $headings-font-family: "Righteous", "Helvetica Neue", Helvetica, Arial, sans-ser
  * the following styling to your application:
  */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+// Styles
+// ======
+// Styles are defined as part of four groups according to the principles of
+// Scalable and Modular CSS (SMACSS): Base, Layout, Module, State
+//
+// http://smacss.com/
+
+// Base styles
+// ===========
+// A Base rule is applied to an element using an element selector, a descendent
+// selector, or a child selector, along with any pseudo-classes. It doesn’t
+// include any class or ID selectors. It is defining the default styling for
+// how that element should look in all occurrences on the page.
+@import "rules/base";
+
+// - Layout = major components, e.g., header, footer etc.
+// - Modules = minor components, e.g., navigation bar, callout, widgets etc.
+// - State  = a state is something that augments + overrides all other styles,
+//            e.g., success or error state
+//
+@import "rules/layout";
+@import "rules/modules/all";
+@import "rules/state";
