@@ -197,8 +197,8 @@ td, th {
 
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('bootstrap/glyphicons-halflings-regular.eot');
-  src: url('bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('bootstrap/glyphicons-halflings-regular.woff') format('woff'), url('bootstrap/glyphicons-halflings-regular.ttf') format('truetype'), url('bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg'); }
+  src: url('/fonts/bootstrap/glyphicons-halflings-regular.eot');
+  src: url('/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/bootstrap/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/bootstrap/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg'); }
 
 .glyphicon {
   position: relative;
@@ -4858,12 +4858,13 @@ button.close {
 /*box-sizing: border-box;*/
 /*}*/
 body {
-  padding: 50px; }
+  padding-top: 70px; }
 
-.site-name a {
+.navbar-default .navbar-brand {
   color: #ffaa00;
+  font-family: "Righteous", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-decoration: none; }
-  .site-name a b {
+  .navbar-default .navbar-brand b {
     color: #ff5500; }
 
 /** This is a dynamically generated file **/

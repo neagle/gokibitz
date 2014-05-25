@@ -1,0 +1,6 @@
+h2 Kifu
+
+ul
+	li(ng-repeat='k in kifu')
+		a(href='/kifu/{{ k.shortid }}')
+			| {{ k.game.info.black }} vs. {{ k.game.info.white }} ({{ k.game.info.result }})

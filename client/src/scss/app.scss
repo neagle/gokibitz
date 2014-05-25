@@ -21,6 +21,7 @@ $debug: false;
 // http://getbootstrap.com/customize/#less-variables
 $font-family-sans-serif: Oxygen, "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-family: "Righteous", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$icon-font-path: '/fonts/bootstrap/';
 
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/theme";

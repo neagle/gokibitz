@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var debug = require('gulp-debug');
-//var watch = require('gulp-watch');
 //var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var autoprefix = require('gulp-autoprefixer');
@@ -105,13 +104,15 @@ gulp.task('watch', ['default'], function () {
 			DEBUG: 'gokibitz',
 			PORT: 3434
 		}
-	}).on('change', ['lint-server-js']);
+	})
+		.on('change', ['lint-server-js']);
 
 	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
 	gulp.watch('client/src/js/**/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 
 	gulp.watch('client/public/**').on('change', function (file) {
+		gutil.log('server changed');
 		server.changed(file.path);
 	});
 });

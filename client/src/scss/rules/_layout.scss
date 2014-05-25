@@ -16,9 +16,12 @@
 //
 // http://smacss.com/book/type-layout
 
-.site-name {
-	a {
+.navbar-default {
+	.navbar-brand {
 		color: hsla(40, 100%, 50%, 1);
+		font: {
+			family: $headings-font-family;
+		}
 		text-decoration: none;
 
 		b {

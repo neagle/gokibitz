@@ -1,1 +1,97 @@
 h1 Upload
+
+p Upload an <code>.sgf</code> file.
+
+.row
+	.col-md-3
+		h3 Select Files
+
+		div(ng-show='uploader.isHTML5')
+			input(
+				ng-file-select
+				type='file'
+				multiple
+			)
+	.col-md-9
+		h3 Upload Queue
+		p Queue length: {{ uploader.queue.length }}
+
+		table.table
+			thead
+				tr
+					th(width='50%') Name
+					th(ng-show='uploader.isHTML5') Size
+					th(ng-show='uploader.isHTML5') Progress
+					th Status
+					th Actions
+
+			tbody
+				tr(ng-repeat='item in uploader.queue')
+					td
+						strong {{ item.file.name }}
+					td(ng-show='uploader.isHTML5' nowrap)
+						| {{ item.file.size/1024/1024|number:2 }} MB
+					td(ng-show='uploader.isHTML5')
+						.progress
+							.progress-bar(
+								role='progressbar'
+								ng-style="{ 'width': item.progress + '%' }"
+							)
+					td.text-center
+						span(ng-show='item.isSuccess')
+							i.glyphicon.glyphicon-ok
+						span(ng-show='item.isCancel')
+							i.glyphicon.glyphicon-ban-circle
+						span(ng-show='item.isError')
+							i.glyphicon.glyphicon-remove
+					td(nowrap)
+						button.btn.btn-success.btn-xs(
+							type='button'
+							ng-click='item.upload()'
+							ng-disabled='item.isReady || item.isUploading || item.isSuccess'
+						)
+							span.glyphicon.glyphicon-upload
+							= ' Upload'
+						= ' '
+						button.btn.btn-warning.btn-xs(
+							type='button'
+							ng-click='item.cancel()'
+							ng-disabled='!item.isUploading'
+						)
+							span.glyphicon.glyphicon-ban-circle
+							= ' Cancel'
+						= ' '
+						button.btn.btn-danger.btn-xs(
+							type='button'
+							ng-click='item.remove()'
+						)
+							span.glyphicon.glyphicon-trash
+							= ' Remove'
+
+		div
+			p Queue progress:
+				.progress
+					.progress-bar(
+						role='progressbar'
+						ng-style="{ 'width': uploader.progress + '%' }"
+					)
+			button.btn.btn-success.btn-s(
+				ng-click='uploader.uploadAll()'
+				ng-disabled='!uploader.getNotUploadedItems().length'
+			)
+				span.glyphicon.glyphicon-upload
+				= ' Upload all'
+			= ' '
+			button.btn.btn-warning.btn-s(
+				ng-click='uploader.cancelAll()'
+				ng-disabled='!uploader.isUploading'
+			)
+				span.glyphicon.glyphicon-ban-circle
+				= ' Cancel all'
+			= ' '
+			button.btn.btn-danger.btn-s(
+				ng-click='uploader.removeAll()'
+			)
+				span.glyphicon.glyphicon-trash
+				= ' Remove all'
+

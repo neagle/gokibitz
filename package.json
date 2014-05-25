@@ -7,18 +7,28 @@
   },
   "dependencies": {
     "body-parser": "~1.0.0",
+    "connect-mongo": "^0.4.1",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
     "express": "~4.2.0",
+    "express-session": "^1.2.0",
     "jade": "~1.3.0",
+    "moment": "^2.6.0",
     "mongoose": "^3.8.9",
     "morgan": "~1.0.0",
+    "multiparty": "^3.2.6",
+    "passport": "^0.2.0",
+    "passport-local": "^1.0.0",
+    "shortid": "^2.0.0",
+    "smartgame": "^0.1.2",
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {
     "browserify": "^4.1.4",
     "browserify-shim": "^3.5.0",
+    "bulk-require": "^0.2.0",
     "bulkify": "^1.0.1",
+    "folderify": "^0.6.0",
     "glob": "^4.0.0",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
@@ -41,11 +51,41 @@
   },
   "browser": {
     "angular": "./client/src/bower_components/angular/angular.js",
-    "angular-route": "./client/src/bower_components/angular-route/angular-route.js"
+    "angular-cookies": "./client/src/bower_components/angular-cookies/angular-cookies.js",
+    "angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
+    "angular-sanitize": "./client/src/bower_components/angular-sanitize/angular-sanitize.js",
+    "angular-resource": "./client/src/bower_components/angular-resource/angular-resource.js",
+    "angular-route": "./client/src/bower_components/angular-route/angular-route.js",
+    "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js"
   },
   "browserify-shim": {
     "angular": "angular",
+    "angular-cookies": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-file-upload": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-sanitize": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-resource": {
+      "depends": [
+        "angular"
+      ]
+    },
     "angular-route": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "http-auth-interceptor": {
       "depends": [
         "angular"
       ]

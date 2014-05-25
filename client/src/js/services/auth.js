@@ -1,41 +1,80 @@
-console.log('authservice');
+'use strict';
+
 angular.module('gokibitz.services')
-	.factory('AuthService', function ($http, Session) {
-		return {
-			login: function (credentials) {
-				return $http
-					.post('/login', credentials)
-					.then(function (res) {
-						Session.create(res.id, res.userid, res.role);
-					});
+.factory('Auth', function Auth($location, $rootScope, Session, User, $cookieStore) {
+	$rootScope.currentUser = $cookieStore.get('user') || null;
+	$cookieStore.remove('user');
+
+	return {
+
+		login: function(provider, user, callback) {
+			var cb = callback || angular.noop;
+			Session.save({
+				provider: provider,
+				email: user.email,
+				password: user.password,
+				rememberMe: user.rememberMe
+			}, function(user) {
+				$rootScope.currentUser = user;
+				return cb();
+			}, function(err) {
+				return cb(err.data);
+			});
+		},
+
+		logout: function(callback) {
+			var cb = callback || angular.noop;
+			Session.delete(function(res) {
+				$rootScope.currentUser = null;
+				return cb();
 			},
-			isAuthenticated: function () {
-				return !!Session.userId;
+			function(err) {
+				return cb(err.data);
+			});
+		},
+
+		createUser: function(userinfo, callback) {
+			var cb = callback || angular.noop;
+			User.save(userinfo, function (user) {
+				$rootScope.currentUser = user;
+				return cb();
 			},
-			isAuthorized: function (authorizedRoles) {
-				if (!angular.isArray(authorizedRoles)) {
-					authorizedRoles = [authorizedRoles];
-				}
-				return (
-					this.isAuthenticated() &&
-					authorizedRoles.indexOf(Session.userRole) !== -1
-				);
-			}
-		};
-	})
-	.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
-		return {
-			responseError: function (response) {
-				if (response.status === 401) {
-					$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, response);
-				}
-				if (response.status === 403) {
-					$rootScope.$broadcast(AUTH_EVENTS.notAuthorized, response);
-				}
-				if (response.status === 419 || response.status === 440) {
-					$rootScope.$broadcast(AUTH_EVENTS.sessionTimeout, response);
-				}
-				return $q.reject(response);
-			}
-		};
-	});
+			function (err) {
+				return cb(err.data);
+			});
+		},
+
+		currentUser: function () {
+			Session.get(function(user) {
+				$rootScope.currentUser = user;
+			});
+		},
+
+		changePassword: function (email, oldPassword, newPassword, callback) {
+			var cb = callback || angular.noop;
+			User.update({
+				email: email,
+				oldPassword: oldPassword,
+				newPassword: newPassword
+			}, function (user) {
+				console.log('password changed');
+				return cb();
+			}, function (err) {
+				return cb(err.data);
+			});
+		},
+
+		removeUser: function(email, password, callback) {
+			var cb = callback || angular.noop;
+			User.delete({
+				email: email,
+				password: password
+			}, function (user) {
+				console.log(user + 'removed');
+				return cb();
+			}, function (err) {
+				return cb(err.data);
+			});
+		}
+	};
+});

@@ -3,97 +3,71 @@ var angular = require('angular');
 
 var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',
+	'gokibitz.directives',
 	'gokibitz.services',
 	'ui.bootstrap',
-	'ngRoute'
+	'ngCookies',
+	'ngResource',
+	'ngSanitize',
+	'ngRoute',
+	'http-auth-interceptor',
+	'angularFileUpload'
 ]);
 
 require('./lib/ui-bootstrap-tpls-0.9.0.js'); // UI Bootstrap
 require('angular-route');
+require('angular-file-upload');
+require('angular-cookies');
+require('angular-resource');
+require('angular-sanitize');
+require('http-auth-interceptor');
 
-
-// Constants
-gokibitz
-	.constant('AUTH_EVENTS', {
-		loginSuccess: 'auth-login-success',
-		loginFailed: 'auth-login-failed',
-		logoutSuccess: 'auth-logout-success',
-		sessionTimeout: 'auth-session-timeout',
-		notAuthenticated: 'auth-not-authenticated',
-		notAuthorized: 'auth-not-authorized'
-	})
-	.constant('USER_ROLES', {
-		all: '*',
-		admin: 'admin',
-		user: 'user',
-		guest: 'guest'
-	});
-
-// Controllers
 angular.module('gokibitz.controllers', []);
-bulk(__dirname, ['./controllers/**/*.js']);
-
-// Services
+angular.module('gokibitz.directives', []);
 angular.module('gokibitz.services', []);
-bulk(__dirname, ['./services/**/*.js']);
+bulk(__dirname, [
+	'./controllers/**/*.js',
+	'./directives/**/*.js',
+	'./services/**/*.js'
+]);
 
 gokibitz.config([
 	'$routeProvider',
 	'$locationProvider',
-	'USER_ROLES',
-	function ($routeProvider, $locationProvider, USER_ROLES) {
+	function ($routeProvider, $locationProvider) {
 		console.log('routes!');
 		$routeProvider
 			.when('/', {
-				templateUrl: 'partials/index',
+				templateUrl: '/partials/index',
 				controller: 'IndexController'
 			})
 			.when('/login', {
-				templateUrl: 'partials/login',
+				templateUrl: '/partials/login',
 				controller: 'LoginController'
 			})
 			.when('/signup', {
-				templateUrl: 'partials/signup',
+				templateUrl: '/partials/signup',
 				controller: 'SignupController'
 			})
 			.when('/profile', {
-				templateUrl: 'partials/profile',
-				controller: 'ProfileController',
-				data: {
-					authorizedRoles: [
-						USER_ROLES.admin,
-						USER_ROLES.user
-					]
-				}
+				templateUrl: '/partials/profile',
+				controller: 'ProfileController'
 			})
 			.when('/admin', {
-				templateUrl: 'partials/profile',
-				controller: 'ProfileController',
-				data: {
-					authorizedRoles: [
-						USER_ROLES.admin
-					]
-				}
+				templateUrl: '/partials/admin',
+				controller: 'AdminController'
 			})
 			.when('/upload', {
-				templateUrl: 'partials/upload',
-				controller: 'UploadController',
-				data: {
-					authorizedRoles: [
-						USER_ROLES.admin,
-						USER_ROLES.user
-					]
-				}
+				templateUrl: '/partials/upload',
+				controller: 'UploadController'
 			})
 			.when('/kifu', {
-				templateUrl: 'partials/kifu',
-				controller: 'KifuController',
-				data: {
-					authorizedRoles: [
-						USER_ROLES.admin,
-						USER_ROLES.user
-					]
-				}
+				templateUrl: '/partials/list-kifu',
+				controller: 'ListKifuController'
+			})
+			.when('/kifu/:shortid', {
+				templateUrl: '/partials/kifu',
+				controller: 'KifuController'
 			})
 			.otherwise({
 				redirectTo: '/'
@@ -103,37 +77,39 @@ gokibitz.config([
 	}
 ]);
 
-gokibitz.config([
-	'$httpProvider',
-	function ($httpProvider) {
-		$httpProvider.interceptors.push([
-			'$injector',
-			function ($injector) {
-				return $injector.get('AuthInterceptor');
-			}
-		]);
-	}
-]);
+//gokibitz.config([
+	//'$httpProvider',
+	//function ($httpProvider) {
+		//$httpProvider.interceptors.push([
+			//'$injector',
+			//function ($injector) {
+				//return $injector.get('AuthInterceptor');
+			//}
+		//]);
+	//}
+//]);
 
 gokibitz.run([
 	'$rootScope',
-	'AUTH_EVENTS',
-	'AuthService',
-	function ($rootScope, AUTH_EVENTS, AuthService) {
-		$rootScope.$on('$locationChangeStart', function (event, next) {
-			var authorizedRoles = next.data.authorizedRoles;
-			if (!AuthService.isAuthorized(authorizedRoles)) {
-				event.preventDefault();
-				if (AuthService.isAuthenticated()) {
-					if (AuthService.isAuthenticated()) {
-						// user is not allowed
-						$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-					}
-				} else {
-					// user is not logged in
-					$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-				}
+	'$location',
+	'Auth',
+	function ($rootScope, $location, Auth) {
+		//watching the value of the currentUser variable.
+		$rootScope.$watch('currentUser', function(currentUser) {
+			// if no currentUser and on a page that requires authorization then try to update it
+			// will trigger 401s if user does not have a valid session
+			if (
+				!currentUser &&
+				~['/', '/login', '/logout', '/signup'].indexOf($location.path())
+			) {
+				Auth.currentUser();
 			}
+		});
+
+		// On catching 401 errors, redirect to the login page.
+		$rootScope.$on('event:auth-loginRequired', function () {
+			$location.path('/login');
+			return false;
 		});
 	}
 ]);

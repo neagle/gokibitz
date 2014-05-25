@@ -1,3 +1,17 @@
-h2(ng-if='currentUser') Welcome, {{ currentUser.name }}
+ul
+	li
+		a(href='/login') Log in
+	li
+		a(href='/signup') Sign up
+	li
+		a(href='/profile') Profile
+	li
+		a(href='/admin') Admin
+	li
+		a(href='/kifu') Kifu
+	li
+		a(href='/upload') Upload
 
-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.
+//-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
+
+//-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.

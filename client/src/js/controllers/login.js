@@ -1,22 +1,25 @@
 angular.module('gokibitz.controllers')
-	.controller('LoginController', [
-		'$scope',
-		'$rootScope',
-		'AUTH_EVENTS',
-		'AuthService',
-		function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
-			console.log('login controller', arguments);
-			$scope.credentials = {
-				username: '',
-				password: ''
-			};
+	.controller('LoginController', function ($scope, Auth, $location) {
+		$scope.error = {};
+		$scope.user = {};
 
-			$scope.login = function (credentials) {
-				AuthService.login(credentials).then(function () {
-					$rootScope.broadcast(AUTH_EVENTS.loginSuccess);
-				}, function () {
-					$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-				});
-			};
-		}
-	]);
+		$scope.login = function (form) {
+			Auth.login('password', {
+				'email': $scope.user.email,
+				'password': $scope.user.password
+			},
+			function (err) {
+				$scope.errors = {};
+
+				if (!err) {
+					$location.path('/');
+				} else {
+					angular.forEach(err.errors, function (error, field) {
+						form[field].$setValidity('mongoose', false);
+						$scope.errors[field] = error.type;
+					});
+					$scope.error.other = err.message;
+				}
+			});
+		};
+	});

@@ -1,4 +1,22 @@
 angular.module('gokibitz.controllers')
-	.controller('SignupController', ['$scope', function ($scope) {
-		console.log('signup control');
-	}]);
+.controller('SignupController', function ($scope, Auth, $location) {
+	$scope.register = function (form) {
+		Auth.createUser({
+			email: $scope.user.email,
+			username: $scope.user.username,
+			password: $scope.user.password
+		},
+		function (err) {
+			$scope.errors = {};
+
+			if (!err) {
+				$location.path('/');
+			} else {
+				angular.forEach(err.errors, function (error, field) {
+					form[field].$setValidity('mongoose', false);
+					$scope.errors[field] = error.type;
+				});
+			}
+		});
+	};
+});

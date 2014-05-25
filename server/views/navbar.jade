@@ -1,0 +1,38 @@
+nav.navbar.navbar-default.navbar-fixed-top(role='navigation', ng-controller='NavbarController')
+	.container-fluid
+		.navbar-header
+			a.navbar-brand(href='#' name='top') go<b>kibitz</b>
+		.nav.navbar-nav
+			ul.nav.navbar-nav
+				li(
+					ng-repeat='item in menu'
+					ui-route='/{{ item.link }}'
+					ng-class='{ active: $uiRoute }'
+				)
+					a(href='/{{ item.link }}') {{ item.title }}
+				li(
+					ng-repeat='item in authMenu'
+					ng-show='currentUser'
+					ui-route='/{{ item.link }}'
+					ng-class='{ active: $uiRoute }'
+				)
+					a(href='/{{ item.link }}') {{ item.title }}
+
+		.nav.navbar-nav.pull-right
+			ul.nav.navbar-nav(ng-hide='currentUser')
+				li
+					a(href='/login') Log In
+				li
+					a(href='/signup') Sign Up
+
+			ul.nav.navbar-nav(ng-show='currentUser')
+				li.dropdown
+					a.dropdown-toggle Welcome, {{ currentUser.username }}
+						=' '
+						b.caret
+					ul.dropdown-menu
+						li
+							a(href='/profile') Profile
+						li
+							a(ng-click='logout()') Log Out
+

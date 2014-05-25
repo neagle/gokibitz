@@ -1,5 +1,5 @@
 {
-	"bitwise": true,
+	"bitwise": false,
 	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
@@ -17,7 +17,7 @@
 	"unused": "vars",
 	"strict": false,
 	"trailing": true,
-	"maxparams": "4",
+	"maxparams": "6",
 	"maxdepth": false,
 	"maxstatements": false,
 	"maxcomplexity": false,
