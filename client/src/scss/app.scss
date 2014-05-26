@@ -36,6 +36,8 @@ $icon-font-path: '/fonts/bootstrap/';
  */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+@import "lib/wgo.player";
+
 // Styles
 // ======
 // Styles are defined as part of four groups according to the principles of

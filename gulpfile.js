@@ -11,6 +11,8 @@ var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
 var livereload = require('gulp-livereload');
 var notify = require('gulp-notify');
+var imagemin = require('gulp-imagemin');
+var newer = require('gulp-newer');
 var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
@@ -23,6 +25,16 @@ gulp.task('bootstrap-assets', function () {
 gulp.task('fonts', function () {
 	return gulp.src('./client/src/assets/fonts/**')
 		.pipe(gulp.dest('./client/public/fonts'));
+});
+
+gulp.task('images', function () {
+	var imageSource = './client/src/assets/images/**';
+	var imageDest = './client/public/images';
+
+	return gulp.src(imageSource)
+		.pipe(newer(imageDest))
+		.pipe(imagemin())
+		.pipe(gulp.dest(imageDest));
 });
 
 // Hack the ability to import directories in Sass
@@ -89,7 +101,14 @@ gulp.task('lint-server-js', function () {
 	.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('default', ['lint-server-js', 'sass', 'browserify', 'fonts', 'bootstrap-assets'], function () {
+gulp.task('default', [
+	'lint-server-js',
+	'sass',
+	'browserify',
+	'fonts',
+	'images',
+	'bootstrap-assets'
+], function () {
 	// Nothing!
 });
 
@@ -110,9 +129,9 @@ gulp.task('watch', ['default'], function () {
 	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
 	gulp.watch('client/src/js/**/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
+	gulp.watch('client/src/assets/images/**/*', ['images']);
 
 	gulp.watch('client/public/**').on('change', function (file) {
-		gutil.log('server changed');
 		server.changed(file.path);
 	});
 });

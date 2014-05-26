@@ -1,3 +1,6 @@
+# Generated public files
+client/public/*
+
 # Logs
 logs
 *.log

@@ -5,6 +5,8 @@ var multiparty = require('multiparty');
 var fs = require('fs');
 var smartgame = require('smartgame');
 var Kifu = require('../models/kifu').Kifu;
+var User = require('../models/user').User;
+var Comment = require('../models/comment').Comment;
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -17,7 +19,6 @@ router.get('/', function (req, res) {
 		.skip(offset)
 		.limit(limit)
 		.exec(function (error, kifu) {
-			console.log('kifu', kifu);
 			if (!error && kifu.length) {
 				res.json(200, kifu);
 			} else if (error) {
@@ -41,15 +42,84 @@ router.get('/', function (req, res) {
 });
 
 router.get('/:shortid', function (req, res) {
+	Kifu
+		.findOne({
+			shortid: req.params.shortid
+		})
+		// TODO: Figure out how to attach comments for the kifu.
+		.populate('comments')
+		.exec(function (error, kifu) {
+			if (!error && kifu) {
+				res.json(200, kifu);
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that shortid.' });
+			}
+		});
+});
+
+// TODO: Why does the _API_ need a shortid? That's only for pretty URLs.
+// Change to _id
+router.get('/:shortid/sgf', function (req, res) {
 	Kifu.findOne({
 		shortid: req.params.shortid
 	}, function (error, kifu) {
 		if (!error && kifu) {
-			res.json(200, kifu);
+			User.findOne({
+				_id: kifu.owner
+			}, function (error, owner) {
+				console.log(kifu, owner);
+				var filename = owner.username + '--' +
+					kifu.game.info.black +
+					'-vs-' +
+					kifu.game.info.white +
+					'.sgf';
+
+				res.set({
+					'Content-Disposition': 'attachment; filename=' + filename,
+					'Content-Type': 'application/x-go-sgf'
+				});
+				res.send(200, kifu.game.sgf);
+			});
 		} else if (error) {
 			res.json(500, { message: 'Error loading kifu. ' + error });
 		} else {
 			res.json(404, { message: 'No kifu found for that shortid.' });
+		}
+	});
+});
+
+router.get('/:id/comments/:move?', function (req, res) {
+	Kifu.findOne({
+		_id: req.params.id
+	} ,function (error, kifu) {
+		if (!error && kifu) {
+			var findOptions = {
+				kifu: kifu
+			};
+
+			if (req.params.move) {
+				findOptions.move = req.params.move;
+			}
+
+			Comment
+				.find(findOptions)
+				.populate('user', 'username')
+				.exec(function (error, comments) {
+					if (error) {
+						res.json(500, { message: 'Error loading comments. ' + error });
+					} else {
+						if (!comments.length) {
+							comments = [];
+						}
+						res.json(200, comments);
+					}
+				});
+		} else if (error) {
+			res.json(500, { message: 'Error loading kifu. ' + error });
+		} else {
+			res.json(404, { message: 'No kifu found for that id.' });
 		}
 	});
 });

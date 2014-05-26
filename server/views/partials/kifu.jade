@@ -1,3 +1,35 @@
-h2 View a kifu (finally)
+.kifu-viewer
+	#player
+		a(
+			target='_self'
+			href='/api/kifu/{{ kifu.shortid }}/sgf'
+		) Download SGF
 
-pre {{ kifu.game.sgf }}
+div(ng-controller='CommentController')
+	ul
+		li(ng-repeat='comment in comments')
+			div(ng-hide='edit')
+				strong {{ comment.user.username }}
+				span(ng-bind-html='comment.content.html')
+				ul.button-group.round
+					li
+						a.small.button(ng-click='deleteComment(comment)')
+							i.fa.fa-trash-o
+					li
+						a.small.button(ng-click='edit=!edit')
+							i.fa.fa-edit
+			div(ng-hide='!edit')
+				textarea(ng-model='comment.content')
+				ul.button-group.round
+					li
+						a.small.button(ng-click='updateComment(comment)')
+							i.fa.fa-check
+					li
+						a.small.button(ng-click='cancelEdit(comment)')
+							i.fa.fa-times
+
+	form
+		label Comment:
+			textarea(ng-model='formData.content')
+		button(ng-click='addComment()') Submit
+

@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var shortid = require('shortid');
 var smartgame = require('smartgame');
 var moment = require('moment');
+//var Comment = require('./comment').Comment;
 
 var kifuSchema = new Schema({
 	shortid: {
@@ -16,6 +17,10 @@ var kifuSchema = new Schema({
 			trim: true
 		}
 	},
+	comments: [{
+		type: Schema.ObjectId,
+		ref: 'comment'
+	}],
 	uploaded: {
 		type: Date,
 		required: true,
@@ -49,6 +54,9 @@ function getProp(prop, str) {
 	return (match) ? match[1] : '';
 }
 
+/**
+ * Game Information
+ */
 kifuSchema.virtual('game.info.black')
 	.get(function () {
 		return getProp('PB', this.game.sgf);
@@ -69,6 +77,10 @@ kifuSchema.virtual('game.info.date')
 		var date = getProp('DT', this.game.sgf);
 		return moment(date).format('MMMM Do, YYYY');
 	});
+
+/**
+ * Comment Information
+ */
 
 //kifuSchema.virtual('game.obj')
 	//.get(function () {
