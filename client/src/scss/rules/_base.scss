@@ -7,3 +7,10 @@ body {
 	// Add space for the fixed navbar
 	padding-top: 70px;
 }
+
+time {
+	color: $gray-light;
+	/*font: {*/
+		/*variant: small-caps;*/
+	/*}*/
+}

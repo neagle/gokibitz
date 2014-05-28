@@ -1,3 +1,5 @@
+var pathString = require('../helpers/pathString.js');
+
 angular.module('gokibitz.controllers')
 	.controller('CommentController', [
 		'$rootScope',
@@ -15,9 +17,12 @@ angular.module('gokibitz.controllers')
 					$scope.formData = {};
 
 					$scope.listComments = function () {
-						//console.log('list comments itself, checking move', $scope.move);
-						if ($scope.move >= 0) {
-							$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + $scope.move)
+						//console.log('list comments itself, checking path', $scope.path);
+						if ($scope.path) {
+							$http.get('/api/kifu/' +
+								$scope.kifu._id + '/comments/' +
+								pathString.stringify($scope.path)
+							)
 								.success(function (data) {
 									$scope.comments = data;
 									console.log(data);
@@ -31,7 +36,7 @@ angular.module('gokibitz.controllers')
 					$scope.addComment = function () {
 						var data = $scope.formData;
 						data._id = $scope.kifu._id;
-						data.move = $scope.move;
+						data.path = pathString.stringify($scope.path);
 						console.log('checking data', data);
 
 						var newComment = new Comment(data);
@@ -85,9 +90,9 @@ angular.module('gokibitz.controllers')
 						$scope.listComments();
 					}, 3000);
 
-					$scope.$on('move', function (event, move) {
-						console.log('received broadcast for move', move);
-						console.log('$scope.move', $scope.move);
+					$scope.$on('path', function (event, path) {
+						console.log('received broadcast for path', path);
+						console.log('$scope.path', $scope.path);
 						$scope.listComments();
 					});
 				}

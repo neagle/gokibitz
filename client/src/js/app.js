@@ -10,17 +10,21 @@ var gokibitz = angular.module('gokibitz', [
 	'ngResource',
 	'ngSanitize',
 	'ngRoute',
+	'ngAnimate',
 	'http-auth-interceptor',
-	'angularFileUpload'
+	'angularFileUpload',
+	'ui.utils'
 ]);
 
 require('./lib/ui-bootstrap-tpls-0.9.0.js'); // UI Bootstrap
+require('angular-animate');
 require('angular-route');
 require('angular-file-upload');
 require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
 require('http-auth-interceptor');
+require('ui-utils');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);

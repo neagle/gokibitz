@@ -1,35 +1,81 @@
-.kifu-viewer
-	#player
-		a(
-			target='_self'
-			href='/api/kifu/{{ kifu.shortid }}/sgf'
-		) Download SGF
+.row
+	.player-container.col-md-8
+		#player
+			a(
+				target='_self'
+				href='/api/kifu/{{ kifu.shortid }}/sgf'
+			) Download SGF
 
-div(ng-controller='CommentController')
-	ul
-		li(ng-repeat='comment in comments')
-			div(ng-hide='edit')
-				strong {{ comment.user.username }}
-				span(ng-bind-html='comment.content.html')
-				ul.button-group.round
-					li
-						a.small.button(ng-click='deleteComment(comment)')
-							i.fa.fa-trash-o
-					li
-						a.small.button(ng-click='edit=!edit')
-							i.fa.fa-edit
-			div(ng-hide='!edit')
-				textarea(ng-model='comment.content')
-				ul.button-group.round
-					li
-						a.small.button(ng-click='updateComment(comment)')
-							i.fa.fa-check
-					li
-						a.small.button(ng-click='cancelEdit(comment)')
-							i.fa.fa-times
+	.col-md-4(ng-controller='CommentController')
+		.row.comments
+			.media.col-md-12(
+				ng-repeat='comment in comments track by comment._id'
+				ng-animate="'animate-comments'"
+			)
+				a.pull-left(href='/users/{{ comment.user.username }}')
+					img.media-object(
+						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						style='width: 24px; height: 24px'
+					)
+				.comment.media-body(ng-hide='edit')
+					.btn-group.btn-group-xs.pull-right(
+						ng-hide='comment.user.username !== currentUser.username'
+					)
+						button.btn.btn-default(ng-click='edit=!edit')
+							i.glyphicon.glyphicon-edit
+						button.btn.btn-danger(ng-click='deleteComment(comment)')
+							i.glyphicon.glyphicon-trash
 
-	form
-		label Comment:
-			textarea(ng-model='formData.content')
-		button(ng-click='addComment()') Submit
+					strong {{ comment.user.username }}
+					= ' '
+					time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
+
+					span(ng-bind-html='comment.content.html')
+
+				.comment.media-body(ng-hide='!edit')
+					textarea.form-control(
+						rows='3'
+						ng-model='comment.content.markdown'
+						gk-comment-box='updateComment(comment), cancelEdit(comment)'
+						gk-comment-submit='updateComment(comment)'
+						gk-comment-cancel='cancelEdit(comment)'
+						gk-focus-me='edit'
+					)
+					span.help-block.pull-right <code>&lt;enter&gt;</code> to submit
+						| <br><code>&lt;shift&gt; + &lt;enter&gt;</code> to add a return
+
+					span.help-block= 'You can use '
+						a(href='http://daringfireball.net/projects/markdown/syntax') Markdown
+						= ' for formatting.'
+
+					button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
+						i.glyphicon.glyphicon-ok
+					= ' '
+					button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
+						i.glyphicon.glyphicon-remove
+
+		.comment-compose
+			.row
+				.col-md-12
+					form(ng-submit='addComment()')
+						label Comment:
+						textarea.form-control(
+							ng-model='formData.content'
+							rows=3
+							gk-comment-box
+							gk-comment-submit='addComment()'
+						)
+			.row
+				.col-md-12
+					span.help-block.pull-right <code>&lt;enter&gt;</code> to submit
+						| <br><code>&lt;shift&gt; + &lt;enter&gt;</code> to add a return
+
+					span.help-block= 'You can use '
+						a(href='http://daringfireball.net/projects/markdown/syntax') Markdown
+						= ' for formatting.'
+
+			.row
+				.col-md-12
+					p.pull-right
+						button.btn.btn-primary(ng-click='addComment()') Submit
 

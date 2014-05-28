@@ -24,15 +24,12 @@ angular.module('gokibitz.controllers')
 						},
 						enableWheel: false,
 						update: function (event) {
-							//console.log('update', event);
-							var move = event.path.m;
+							console.log('update', event);
+							console.log('path', event.path);
+							var path = event.path;
 
-							if (move >= 0) {
-								//console.log('$rootScope', $rootScope);
-								$scope.move = move;
-								//console.log('$scope.move', $scope.move);
-								$rootScope.$broadcast('move', move);
-							}
+							$scope.path = path;
+							$rootScope.$broadcast('path', path);
 						}
 					});
 

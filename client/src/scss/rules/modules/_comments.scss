@@ -1,0 +1,29 @@
+.animate-comments-enter,
+.animate-comments-leave {
+	transition: all 1s;
+	opacity: 0;
+}
+
+.animate-comments-enter.animate-comments-enter-active {
+	opacity: 1;
+}
+
+.animate-comments-leave.animate-comments-leave-active,
+.animate-comments-leave {
+	opacity: 0;
+	/*height: 0;*/
+}
+
+.comments {
+	.comment {
+		.btn-group {
+			opacity: 0;
+			transition: opacity 0.2s;
+		}
+		&:hover {
+			.btn-group {
+				opacity: 1;
+			}
+		}
+	}
+}

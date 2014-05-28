@@ -1,5 +1,7 @@
 angular.module('gokibitz.controllers')
 .controller('NavbarController', function ($scope, Auth, $location) {
+	$scope.isCollapsed = true;
+
 	$scope.menu = [{
 		'title': 'Kifu',
 		'link': 'kifu'

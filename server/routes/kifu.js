@@ -90,7 +90,7 @@ router.get('/:shortid/sgf', function (req, res) {
 	});
 });
 
-router.get('/:id/comments/:move?', function (req, res) {
+router.get('/:id/comments/:path?', function (req, res) {
 	Kifu.findOne({
 		_id: req.params.id
 	} ,function (error, kifu) {
@@ -99,13 +99,15 @@ router.get('/:id/comments/:move?', function (req, res) {
 				kifu: kifu
 			};
 
-			if (req.params.move) {
-				findOptions.move = req.params.move;
+			if (req.params.path) {
+				console.log('checking for path', req.params.path);
+				findOptions.path = req.params.path;
+				//findOptions.path = decodeURIComponent(req.params.path);
 			}
 
 			Comment
 				.find(findOptions)
-				.populate('user', 'username')
+				.populate('user', 'username email gravatar')
 				.exec(function (error, comments) {
 					if (error) {
 						res.json(500, { message: 'Error loading comments. ' + error });

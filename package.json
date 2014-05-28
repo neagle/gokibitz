@@ -6,6 +6,7 @@
     "start": "export $(cat .env | xargs) && node ./server/bin/www"
   },
   "dependencies": {
+    "MD5": "^1.2.1",
     "body-parser": "~1.0.0",
     "connect-mongo": "^0.4.1",
     "cookie-parser": "~1.0.1",
@@ -57,9 +58,11 @@
     "angular-cookies": "./client/src/bower_components/angular-cookies/angular-cookies.js",
     "angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
     "angular-sanitize": "./client/src/bower_components/angular-sanitize/angular-sanitize.js",
+    "angular-animate": "./client/src/bower_components/angular-animate/angular-animate.js",
     "angular-resource": "./client/src/bower_components/angular-resource/angular-resource.js",
     "angular-route": "./client/src/bower_components/angular-route/angular-route.js",
-    "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js"
+    "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
+		"ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js"
   },
   "browserify-shim": {
     "angular": "angular",
@@ -83,6 +86,11 @@
         "angular"
       ]
     },
+		"angular-animate": {
+			"depends": [
+				"angular"
+			]
+		},
     "angular-route": {
       "depends": [
         "angular"
@@ -92,6 +100,11 @@
       "depends": [
         "angular"
       ]
-    }
+    },
+		"ui-utils": {
+			"depends": [
+				"angular"
+			]
+		}
   }
 }

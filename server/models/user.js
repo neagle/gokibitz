@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
+var md5 = require('MD5');
 
 var UserSchema = new Schema({
 	email: {
@@ -39,6 +40,13 @@ UserSchema
 	.virtual('userInfo')
 	.get(function () {
 		return { '_id': this._id, 'username': this.username, 'email': this.email };
+	});
+
+UserSchema
+	.virtual('gravatar')
+	.get(function () {
+		var hash = md5(this.email.trim().toLowerCase());
+		return 'http://www.gravatar.com/avatar/' + hash;
 	});
 
 /**
