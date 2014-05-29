@@ -7,11 +7,25 @@ angular.module('gokibitz.directives')
 .directive('gkCommentBox', function () {
 	return {
 		restrict: 'A',
+		require: '?ngModel',
 		scope: {
 			submit: '&gkCommentSubmit',
 			cancel: '&gkCommentCancel'
 		},
-		link: function ($scope, element, attributes) {
+		link: function ($scope, element, attributes, ngModel) {
+			// Prevent changes in the model that happen elsewhere (ie, a regularly
+			// polling update) from updating more than the initial value of the
+			// comment box
+			if (attributes.gkCommentOneway) {
+				ngModel.$render = function () {
+					if (element.val() === '') {
+						element.val(ngModel.$viewValue);
+					} else {
+						ngModel.$setViewValue(element.val());
+					}
+				};
+			}
+
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;

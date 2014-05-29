@@ -14,3 +14,11 @@ time {
 		/*variant: small-caps;*/
 	/*}*/
 }
+
+html.no-touch .only-touch {
+	display: none;
+}
+
+html.touch .only-no-touch {
+	display: none;
+}

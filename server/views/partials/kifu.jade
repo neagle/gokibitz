@@ -8,9 +8,8 @@
 
 	.col-md-4(ng-controller='CommentController')
 		.row.comments
-			.media.col-md-12(
+			.comment.animate.media.col-md-12(
 				ng-repeat='comment in comments track by comment._id'
-				ng-animate="'animate-comments'"
 			)
 				a.pull-left(href='/users/{{ comment.user.username }}')
 					img.media-object(
@@ -39,6 +38,7 @@
 						gk-comment-box='updateComment(comment), cancelEdit(comment)'
 						gk-comment-submit='updateComment(comment)'
 						gk-comment-cancel='cancelEdit(comment)'
+						gk-comment-oneway
 						gk-focus-me='edit'
 					)
 					span.help-block.pull-right <code>&lt;enter&gt;</code> to submit
@@ -77,5 +77,5 @@
 			.row
 				.col-md-12
 					p.pull-right
-						button.btn.btn-primary(ng-click='addComment()') Submit
+						button.btn.btn-primary.only-touch(ng-click='addComment()') Submit
 

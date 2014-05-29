@@ -27,6 +27,11 @@ gulp.task('fonts', function () {
 		.pipe(gulp.dest('./client/public/fonts'));
 });
 
+gulp.task('js-assets', function () {
+	return gulp.src('./client/src/assets/js/**')
+		.pipe(gulp.dest('./client/public/js'));
+});
+
 gulp.task('images', function () {
 	var imageSource = './client/src/assets/images/**';
 	var imageDest = './client/public/images';
@@ -106,6 +111,7 @@ gulp.task('default', [
 	'sass',
 	'browserify',
 	'fonts',
+	'js-assets',
 	'images',
 	'bootstrap-assets'
 ], function () {
@@ -130,6 +136,7 @@ gulp.task('watch', ['default'], function () {
 	gulp.watch('client/src/js/**/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 	gulp.watch('client/src/assets/images/**/*', ['images']);
+	gulp.watch('client/src/assets/js/**/*', ['js-assets']);
 
 	gulp.watch('client/public/**').on('change', function (file) {
 		server.changed(file.path);

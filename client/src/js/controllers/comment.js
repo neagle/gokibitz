@@ -9,10 +9,10 @@ angular.module('gokibitz.controllers')
 		'Comment',
 		function ($rootScope, $scope, $http, $routeParams, Comment) {
 			console.log('Comment Controller');
-			console.log('scope', $scope);
+			//console.log('scope', $scope);
 
 			$scope.$watch('kifu', function () {
-				console.log('KIFU', $scope.kifu);
+				//console.log('KIFU', $scope.kifu);
 				if ($scope.kifu) {
 					$scope.formData = {};
 
@@ -25,7 +25,7 @@ angular.module('gokibitz.controllers')
 							)
 								.success(function (data) {
 									$scope.comments = data;
-									console.log(data);
+									//console.log(data);
 								})
 								.error(function (data) {
 									console.log('Error: ' + data);
@@ -37,7 +37,7 @@ angular.module('gokibitz.controllers')
 						var data = $scope.formData;
 						data._id = $scope.kifu._id;
 						data.path = pathString.stringify($scope.path);
-						console.log('checking data', data);
+						//console.log('checking data', data);
 
 						var newComment = new Comment(data);
 						newComment.$save(function (response) {
@@ -94,6 +94,10 @@ angular.module('gokibitz.controllers')
 						console.log('received broadcast for path', path);
 						console.log('$scope.path', $scope.path);
 						$scope.listComments();
+					});
+
+					$scope.$on('edit', function (event, edit) {
+						console.log('edit has changed', edit);
 					});
 				}
 			});
