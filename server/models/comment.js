@@ -51,7 +51,7 @@ commentSchema.methods.isOwner = function (user) {
 	return String(this.user._id) === String(user._id);
 };
 
-var comment = mongoose.model('comment', commentSchema);
+var comment = mongoose.model('Comment', commentSchema);
 
 module.exports = {
 	Comment: comment

@@ -1,5 +1,3 @@
-var pathString = require('../helpers/pathString.js');
-
 angular.module('gokibitz.controllers')
 	.controller('CommentController', [
 		'$rootScope',
@@ -7,37 +5,51 @@ angular.module('gokibitz.controllers')
 		'$http',
 		'$routeParams',
 		'Comment',
-		function ($rootScope, $scope, $http, $routeParams, Comment) {
+		'pathFilter',
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter) {
 			console.log('Comment Controller');
 			//console.log('scope', $scope);
 
 			$scope.$watch('kifu', function () {
-				//console.log('KIFU', $scope.kifu);
+				console.log('KIFU', $scope.kifu);
 				if ($scope.kifu) {
 					$scope.formData = {};
 
 					$scope.listComments = function () {
-						//console.log('list comments itself, checking path', $scope.path);
-						if ($scope.path) {
-							$http.get('/api/kifu/' +
-								$scope.kifu._id + '/comments/' +
-								pathString.stringify($scope.path)
-							)
-								.success(function (data) {
-									$scope.comments = data;
-									//console.log(data);
-								})
-								.error(function (data) {
-									console.log('Error: ' + data);
-								});
+						console.log('checking $scope.comments', $scope.comments);
+						//console.log('$scope.loading', $scope.loading);
+						console.log('list comments itself, checking path', $scope.kifu.path);
+						var path;
+
+						if ($scope.kifu.path.m === 0) {
+							path = '';
+						} else {
+							path = pathFilter($scope.kifu.path, 'string');
 						}
+						console.log('path', path);
+
+						$http.get('/api/kifu/' +
+							$scope.kifu._id + '/comments/' + path
+						)
+							.success(function (data) {
+								data.forEach(function (comment) {
+									comment.path = pathFilter(comment.path, 'object');
+								});
+								$scope.comments = data;
+								setTimeout(function () {
+									$scope.loading = false;
+								}, 0);
+							})
+							.error(function (data) {
+								console.log('Error: ' + data);
+							});
 					};
 
 					$scope.addComment = function () {
 						var data = $scope.formData;
 						data._id = $scope.kifu._id;
-						data.path = pathString.stringify($scope.path);
-						//console.log('checking data', data);
+						data.path = pathFilter($scope.kifu.path, 'string');
+						console.log('checking data', data);
 
 						var newComment = new Comment(data);
 						newComment.$save(function (response) {
@@ -84,17 +96,18 @@ angular.module('gokibitz.controllers')
 					};
 
 					// Load Comments
+					$scope.loading = true;
 					$scope.listComments();
 
-					setInterval(function () {
-						$scope.listComments();
-					}, 3000);
+					//setInterval(function () {
+						//$scope.listComments();
+					//}, 3000);
 
-					$scope.$on('path', function (event, path) {
-						console.log('received broadcast for path', path);
-						console.log('$scope.path', $scope.path);
+					$scope.$watch('kifu.path', function () {
+						$scope.loading = true;
+						$scope.comments = null;
 						$scope.listComments();
-					});
+					}, true);
 
 					$scope.$on('edit', function (event, edit) {
 						console.log('edit has changed', edit);

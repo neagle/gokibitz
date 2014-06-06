@@ -17,12 +17,20 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 			comment.path = req.body.path;
 			comment.content.markdown = req.body.content;
 
-			console.log('comment.path', comment.path);
 			comment.save(function (error) {
 				if (!error) {
-					res.json(201, { message: 'Comment created with id: ' + comment._id });
+					kifu.comments.push(comment);
+					kifu.save(function (error) {
+						if (!error) {
+							res.json(201, { message: 'Comment created with id: ' + comment._id });
+						} else {
+							res.json(500, {
+								message: 'Error pushing reference to parent kifu. Error: ' + error
+							});
+						}
+					});
 				} else {
-					res.json(500, { message: 'Could not create comment. Error: ' + error });
+					res.json(500, { message: 'Error saving comment. Error: ' + error });
 				}
 			});
 

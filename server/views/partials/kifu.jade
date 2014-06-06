@@ -7,8 +7,34 @@
 			) Download SGF
 
 	.col-md-4(ng-controller='CommentController')
-		.row.comments
-			.comment.animate.media.col-md-12(
+		.row.comments(
+			ng-show='kifu.path.m === 0 && comments.length'
+		)
+			h2 {{ comments.length }} Comments
+			.comment.media.col-md-12(
+				ng-repeat='comment in comments track by comment._id'
+				ng-class="{ false: 'animate', true: 'loading' }[loading]"
+			)
+				a.pull-left(href='/users/{{ comment.user.username }}')
+					img.media-object(
+						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						style='width: 24px; height: 24px'
+					)
+				.comment-media-body
+					a(
+						href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
+						ng-click='kifu.path = comment.path'
+					)
+						| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
+					time.relative.small(
+						datetime='{{ comment.date }}'
+					) {{ comment.relativeDate | verboseNumbers }}
+
+		.row.comments(
+			ng-show='kifu.path.m !== 0'
+		)
+			.comment.media.col-md-12(
+				ng-class="{ false: 'animate', true: 'loading' }[loading]"
 				ng-repeat='comment in comments track by comment._id'
 			)
 				a.pull-left(href='/users/{{ comment.user.username }}')
@@ -29,7 +55,9 @@
 					= ' '
 					time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
 
-					span(ng-bind-html='comment.content.html')
+					span.comment-text(
+						ng-bind-html='comment.content.html | markCoordinates'
+					)
 
 				.comment.media-body(ng-hide='!edit')
 					textarea.form-control(
@@ -54,7 +82,9 @@
 					button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
 						i.glyphicon.glyphicon-remove
 
-		.comment-compose
+		.comment-compose(
+			ng-if='path.m !== 0 && currentUser.username'
+		)
 			.row
 				.col-md-12
 					form(ng-submit='addComment()')

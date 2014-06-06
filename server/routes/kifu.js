@@ -46,8 +46,6 @@ router.get('/:shortid', function (req, res) {
 		.findOne({
 			shortid: req.params.shortid
 		})
-		// TODO: Figure out how to attach comments for the kifu.
-		.populate('comments')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);
@@ -75,12 +73,12 @@ router.get('/:shortid/sgf', function (req, res) {
 					'-vs-' +
 					kifu.game.info.white +
 					'.sgf';
-
 				res.set({
 					'Content-Disposition': 'attachment; filename=' + filename,
 					'Content-Type': 'application/x-go-sgf'
 				});
 				res.send(200, kifu.game.sgf);
+
 			});
 		} else if (error) {
 			res.json(500, { message: 'Error loading kifu. ' + error });
@@ -100,13 +98,18 @@ router.get('/:id/comments/:path?', function (req, res) {
 			};
 
 			if (req.params.path) {
-				console.log('checking for path', req.params.path);
+				//console.log('checking for path', req.params.path);
 				findOptions.path = req.params.path;
 				//findOptions.path = decodeURIComponent(req.params.path);
 			}
 
 			Comment
 				.find(findOptions)
+				.sort({
+					// For a lit of all comments, use reverse chron
+					// For path-specific comments, use chron
+					date: (findOptions.path) ? 'asc' : 'desc'
+				})
 				.populate('user', 'username email gravatar')
 				.exec(function (error, comments) {
 					if (error) {

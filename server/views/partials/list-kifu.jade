@@ -1,6 +1,13 @@
-h2 Kifu
+.row
+	.col-md-12
+		h2 Kifu
 
-ul
-	li(ng-repeat='k in kifu')
-		a(href='/kifu/{{ k.shortid }}')
-			| {{ k.game.info.black }} vs. {{ k.game.info.white }} ({{ k.game.info.result }})
+		ul.list-group
+			li.list-group-item(ng-repeat='item in kifu')
+				span.badge(
+					ng-if='item.comments.length > 0'
+					tooltip='{{ item.comments.length }} comments'
+				) {{ item.comments.length }}
+
+				a(href='/kifu/{{ item.shortid }}')
+					| {{ item.game.info.black }} vs. {{ item.game.info.white }} ({{ item.game.info.result }})

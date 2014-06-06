@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var shortid = require('shortid');
 var smartgame = require('smartgame');
 var moment = require('moment');
-//var Comment = require('./comment').Comment;
+var Comment = require('./comment').Comment;
 
 var kifuSchema = new Schema({
 	shortid: {
@@ -18,8 +18,8 @@ var kifuSchema = new Schema({
 		}
 	},
 	comments: [{
-		type: Schema.ObjectId,
-		ref: 'comment'
+		type: Schema.Types.ObjectId,
+		ref: 'Comment'
 	}],
 	uploaded: {
 		type: Date,
@@ -112,7 +112,7 @@ kifuSchema.statics = {
 	}
 };
 
-var kifu = mongoose.model('kifu', kifuSchema);
+var kifu = mongoose.model('Kifu', kifuSchema);
 
 module.exports = {
 	Kifu: kifu

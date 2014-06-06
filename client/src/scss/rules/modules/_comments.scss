@@ -1,4 +1,9 @@
+	/*.loading {*/
+		/*border: 10px solid red;*/
+		/*transition: none;*/
+	/*}*/
 .comments {
+
 	.comment {
 		.btn-group {
 			opacity: 0;
@@ -11,18 +16,28 @@
 		}
 	}
 
-	.animate.ng-enter,
-	.animate.ng-leave {
-		transition: all 0.5s;
+	.wgo-move-link {
+		cursor: pointer;
+		@extend code;
 	}
 
-	.animate.ng-leave.animate.ng-leave-active,
-	.animate.ng-enter {
-		opacity: 0;
+	.loading {
 	}
 
-	.animate.ng-enter.ng-enter-active, 
-	.animate.ng-leave {
-		opacity: 1;
+	.animate {
+		&.ng-enter,
+		&.ng-leave {
+			transition: all 0.5s;
+		}
+
+		&.ng-leave.ng-leave-active,
+		&.ng-enter {
+			opacity: 0;
+		}
+
+		&.ng-enter.ng-enter-active,
+		&.ng-leave	{
+			opacity: 1;
+		}
 	}
 }

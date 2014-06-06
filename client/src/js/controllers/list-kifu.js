@@ -11,7 +11,9 @@ angular.module('gokibitz.controllers')
 
 			$http.get(url)
 				.success(function (data) {
+					console.log('data', data);
 					$scope.kifu = data;
+					//$scope.comments = data.comments;
 				})
 				.error(function (data) {
 					console.log('Error:', data);

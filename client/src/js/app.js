@@ -5,6 +5,7 @@ var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',
 	'gokibitz.directives',
 	'gokibitz.services',
+	'gokibitz.filters',
 	'ui.bootstrap',
 	'ngCookies',
 	'ngResource',
@@ -29,10 +30,12 @@ require('ui-utils');
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);
 angular.module('gokibitz.services', []);
+angular.module('gokibitz.filters', []);
 bulk(__dirname, [
 	'./controllers/**/*.js',
 	'./directives/**/*.js',
-	'./services/**/*.js'
+	'./services/**/*.js',
+	'./filters/**/*.js'
 ]);
 
 gokibitz.config([
@@ -71,7 +74,8 @@ gokibitz.config([
 			})
 			.when('/kifu/:shortid', {
 				templateUrl: '/partials/kifu',
-				controller: 'KifuController'
+				controller: 'KifuController',
+				reloadOnSearch: false
 			})
 			.otherwise({
 				redirectTo: '/'
