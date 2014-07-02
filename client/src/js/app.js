@@ -1,12 +1,18 @@
 var bulk = require('bulk-require');
 var angular = require('angular');
 
+// WGo
+console.log('loading wgo...');
+require('./lib/wgo/wgo.min.js');
+console.log('wgo?', WGo);
+
 var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',
 	'gokibitz.directives',
 	'gokibitz.services',
 	'gokibitz.filters',
 	'ui.bootstrap',
+	'ui.bootstrap.tpls',
 	'ngCookies',
 	'ngResource',
 	'ngSanitize',
@@ -17,7 +23,6 @@ var gokibitz = angular.module('gokibitz', [
 	'ui.utils'
 ]);
 
-require('./lib/ui-bootstrap-tpls-0.9.0.js'); // UI Bootstrap
 require('angular-animate');
 require('angular-route');
 require('angular-file-upload');
@@ -25,6 +30,8 @@ require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
 require('http-auth-interceptor');
+require('ui-bootstrap-tpls');
+require('ui-bootstrap');
 require('ui-utils');
 
 angular.module('gokibitz.controllers', []);
@@ -42,20 +49,19 @@ gokibitz.config([
 	'$routeProvider',
 	'$locationProvider',
 	function ($routeProvider, $locationProvider) {
-		console.log('routes!');
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/index',
 				controller: 'IndexController'
 			})
-			.when('/login', {
-				templateUrl: '/partials/login',
-				controller: 'LoginController'
-			})
-			.when('/signup', {
-				templateUrl: '/partials/signup',
-				controller: 'SignupController'
-			})
+			//.when('/login', {
+				//templateUrl: '/partials/login',
+				//controller: 'LoginController'
+			//})
+			//.when('/signup', {
+				//templateUrl: '/partials/signup',
+				//controller: 'SignupController'
+			//})
 			.when('/profile', {
 				templateUrl: '/partials/profile',
 				controller: 'ProfileController'
@@ -108,7 +114,7 @@ gokibitz.run([
 			// will trigger 401s if user does not have a valid session
 			if (
 				!currentUser &&
-				~['/', '/login', '/logout', '/signup'].indexOf($location.path())
+				!~['/', '/login', '/logout', '/signup', '/kifu'].indexOf($location.path())
 			) {
 				Auth.currentUser();
 			}
@@ -116,7 +122,7 @@ gokibitz.run([
 
 		// On catching 401 errors, redirect to the login page.
 		$rootScope.$on('event:auth-loginRequired', function () {
-			$location.path('/login');
+			$location.path('/');
 			return false;
 		});
 	}

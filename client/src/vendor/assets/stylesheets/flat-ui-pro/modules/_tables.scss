@@ -1,0 +1,110 @@
+//
+// Tables
+// --------------------------------------------------
+
+.table {
+  font-size: floor($component-font-size-base * 1.067); // 16px
+  
+  // Cells
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        padding: 9px 25px;
+        line-height: 1.231; // ~19.7px
+        border-top: 2px solid $table-border-color;
+      }
+      > th {
+        color: mix($brand-primary, white, 85%);
+        border-bottom: 2px solid $table-border-color;
+      }
+    }
+  }
+  [class*="fui-"] {
+    vertical-align: baseline;
+    font-size: 20px;
+    margin: -5px 0;
+    position: relative;
+    top: 2px;
+  }
+  .checkbox,
+  .radio {
+    margin: 0 0 0 -9px;
+
+    &.no-label {
+      padding-left: 0;
+    }
+  }
+  .selected-row {
+    > td {
+      background-color: mix($brand-secondary, white, 5.5%);
+    }
+  }
+  img { vertical-align: top; }
+}
+
+// Bordered table
+.table-bordered {
+  border: 2px solid $table-border-color;
+  font-size: ceil($component-font-size-base * 0.933); // ~14px
+  
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      th,
+      td {
+        border: 2px solid $table-border-color !important;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        vertical-align: middle;
+      }
+    }
+  }  
+}
+
+// Stripped
+.table-striped {
+  > tbody {
+    > tr {
+      &:nth-child(even),
+      &.selected-row {
+        > td,
+        > th {
+          background-color: $table-bg-active;
+        }
+      }
+      &:nth-child(odd) {
+        > td,
+        > th {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}
+
+// Hovered table
+.table-hover {
+  > tbody {
+    > tr:hover {
+      > td,
+      > th {
+        background-color: $table-bg-active;
+      }
+    }
+  }
+}
+
+// Table backgrounds
+//
+// Exact selectors below required to override `.table-striped` and prevent
+// inheritance to nested tables.
+
+// Generate the contextual variants
+@include table-row-variant(success, $table-success);
+@include table-row-variant(info, $table-info);
+@include table-row-variant(warning, $table-warning);
+@include table-row-variant(danger, $table-danger);

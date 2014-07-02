@@ -1,5 +1,5 @@
 angular.module('gokibitz.controllers')
-.controller('NavbarController', function ($scope, Auth, $location) {
+.controller('NavbarController', function ($rootScope, $scope, Auth, $location, $modal) {
 	$scope.isCollapsed = true;
 
 	$scope.menu = [{
@@ -12,10 +12,29 @@ angular.module('gokibitz.controllers')
 		'link': 'upload'
 	}];
 
-	$scope.logout = function() {
-		Auth.logout(function(err) {
-			if(!err) {
-				$location.path('/login');
+	$scope.loginModal = function () {
+		$modal.open({
+			templateUrl: '/partials/login',
+			controller: 'LoginController'
+		});
+	};
+
+	$scope.signupModal = function () {
+		$modal.open({
+			templateUrl: '/partials/signup',
+			controller: 'SignupController'
+		});
+	}
+
+	$scope.logout = function () {
+		Auth.logout(function (err) {
+			console.log('log out');
+			if (!err) {
+				$location.path('/');
+				$rootScope.flash = {
+					type: 'success',
+					message: 'You have logged out. Hope to see you again soon!'
+				};
 			}
 		});
 	};

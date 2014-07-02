@@ -1,0 +1,106 @@
+//
+// Modals
+// --------------------------------------------------
+
+
+// Container that the modal scrolls within
+.modal {
+  z-index: $zindex-modal;
+}
+
+// Actual modal
+.modal-content {
+  background-color: $modal-content-bg;
+  border: 2px solid $modal-content-border-color;
+  border-radius: $modal-content-border-radius;
+  @include background-clip(border-box);
+  @include box-shadow(none);
+}
+
+// Background
+.modal-backdrop {
+  z-index: $zindex-modal-background;
+  background-color: $modal-backdrop-bg;
+  
+  // Fade for backdrop
+  &.in { @include opacity($modal-backdrop-opacity); }
+}
+
+// Modal header
+// Top section of the modal w/ title and dismiss
+.modal-header {
+  padding: $modal-title-padding;
+  border-bottom: 1px solid $modal-header-border-color;
+}
+
+ // Close icon
+.modal-header .close {
+  margin: 5px 0 0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: $brand-primary;
+}
+
+// Title text within header
+.modal-title {
+  margin: 0;
+  font-size: ceil($component-font-size-base * 1.60); // ~24px
+  line-height: $modal-title-line-height;
+}
+
+// Body (where all modal content resides)
+.modal-body {
+  padding: $modal-body-padding;
+  
+  p {
+    font-size: floor($component-font-size-base * 1.067); // ~16px
+    line-height: 1.625; // ~26px
+  }
+}
+
+// Footer (for actions)
+.modal-footer {
+  padding: $modal-footer-padding;
+  margin-top: 0;
+  background-color: $modal-footer-bg;
+  border-top: none;
+  border-radius: 0 0 $modal-content-border-radius $modal-content-border-radius;
+
+  .btn + .btn {
+    margin-left: 12px;
+  }
+  
+  @media (max-width: $screen-xs-max) {
+    .btn {
+      display: block;
+      min-width: auto;
+      margin-bottom: 15px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .btn + .btn {
+      margin-left: 0;
+    }
+  }  
+}
+
+// Scale up the modal
+@media (min-width: $screen-sm-min) {
+
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: $modal-md;
+    margin: 30px auto;
+  }
+  .modal-content {
+    @include box-shadow(none);
+  }
+
+  // Modal sizes
+  .modal-sm { width: $modal-sm; }
+  .modal-lg { width: $modal-lg; }
+
+}

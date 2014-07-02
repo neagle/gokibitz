@@ -1,5 +1,5 @@
 angular.module('gokibitz.controllers')
-	.controller('LoginController', function ($scope, Auth, $location) {
+	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location) {
 		$scope.error = {};
 		$scope.user = {};
 
@@ -12,7 +12,13 @@ angular.module('gokibitz.controllers')
 				$scope.errors = {};
 
 				if (!err) {
-					$location.path('/');
+					console.log('$scope', $scope);
+					$rootScope.flash = {
+						type: 'success',
+						message: 'Welcome back, ' + $scope.currentUser.username + '!'
+					};
+					$modalInstance.close($scope.user);
+					//$location.path('/');
 				} else {
 					angular.forEach(err.errors, function (error, field) {
 						form[field].$setValidity('mongoose', false);
@@ -21,5 +27,9 @@ angular.module('gokibitz.controllers')
 					$scope.error.other = err.message;
 				}
 			});
+
+			$scope.cancel = function () {
+				$modalInstance.dismiss('cancel');
+			};
 		};
 	});

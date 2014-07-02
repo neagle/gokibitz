@@ -1,0 +1,96 @@
+//
+// Alerts
+// --------------------------------------------------
+
+// Base styles
+.alert {
+  color: $brand-primary;
+  padding: 18px 45px 14px 30px;
+  text-shadow: none;
+  background-color: mix($brand-warning, $alert-bg, 3%);
+  border: 2px solid mix($brand-warning, $alert-border, 3%);
+  font-size: floor($component-font-size-base * 1.067); // ~16px
+  line-height: 1.625; // ~26px
+  border-radius: $border-radius-large;
+
+  a {
+    color: $brand-warning;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+    &.btn {
+      color: $btn-default-color;
+      text-decoration: none;
+      
+      &:active,
+      &.active {
+        color: fade($btn-default-color, 75%);
+      }
+    }
+  }
+
+  h4 {
+    font-size: ceil($component-font-size-base * 1.6); // ~24px
+    line-height: 1.2; // ~28.8px
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .close {
+    position: relative;
+    top: 3px;
+    right: -31px;
+    line-height: 18px;
+    font-size: 18px;
+    color: $brand-primary;
+  }
+
+  .btn {
+    margin-bottom: 15px;
+    margin-right: 15px;
+    margin-top: 15px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .btn {
+      display: block;
+      min-width: auto;
+      margin-bottom: 10px;
+      margin-right: -15px;
+    }
+  }
+}
+
+// Variations
+// -------------------------
+
+.alert-success {
+  background-color: mix($brand-success, $alert-bg, 5%);
+  border-color: mix($brand-success, $alert-border, 5%);
+
+  a {
+    color: $link-color;
+  }
+}
+.alert-info {
+  background-color: mix($brand-info, $alert-bg, 1%);
+  border-color: mix($brand-info, $alert-border, 1%);
+
+  a {
+    color: $brand-info;
+  }
+}
+.alert-error {
+  background-color: mix($brand-danger, $alert-bg, 2.5%);
+  border-color: mix($brand-danger, $alert-border, 2.5%);
+
+  a {
+    color: $brand-danger;
+  }
+}

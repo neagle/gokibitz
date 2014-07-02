@@ -8,17 +8,14 @@ angular.module('gokibitz.controllers')
 		'$location',
 		'pathFilter',
 		function ($rootScope, $scope, $http, $routeParams, $location, pathFilter) {
-			require('../lib/wgo/wgo.js');
-			require('../lib/wgo/wgo.player.min.js');
-			require('../lib/wgo/basicplayer.commentbox.js');
-			console.log('kifu control', $routeParams);
-
+			//console.log('kifu control', $routeParams);
+			var comments = require('../helpers/comments.js');
 
 			$http.get('/api/kifu/' + $routeParams.shortid)
 				.success(function (data) {
-					console.log('data', data);
+					//console.log('data', data);
 					$scope.kifu = data;
-					console.log('scope kifu', $scope.kifu);
+					//console.log('scope kifu', $scope.kifu);
 
 					// Get the initial path from the URL
 					var initialPath = $location.search().path;
@@ -34,6 +31,15 @@ angular.module('gokibitz.controllers')
 							background: '/images/kaya/kaya-texA3.jpg',
 							font: 'Righteous'
 						},
+						layout: [
+							// Default
+							{
+								className: 'wgo-onecol wgo-xsmall',
+								layout: {
+									bottom: ['Control']
+								}
+							}
+						],
 						move: initialPath,
 						enableWheel: false,
 						formatMoves: true,
@@ -48,14 +54,24 @@ angular.module('gokibitz.controllers')
 								});
 							}
 							$scope.updating = false;
+
+							//console.log('args', arguments);
+							$scope.sgfComment = comments.format(event.node.comment);
+							//console.log('sgfComment', $scope.sgfComment, $scope);
 						}
 					});
 					player.setCoordinates(true);
 					$scope.player = player;
 					window.player = player;
 
+					$scope.$on('$routeUpdate', function () {
+						var path = $location.search().path || '{ m: 0 }';
+						var newPath = pathFilter(path);
+						$scope.kifu.path = newPath;
+					});
+
 					$scope.$watch('kifu.path', function (newValue, oldValue) {
-						console.log('watching the path', newValue, oldValue);
+						//console.log('watching the path', newValue, oldValue);
 
 						if (newValue) {
 							if (newValue.m > 0) {

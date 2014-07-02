@@ -1,4 +1,4 @@
 angular.module('gokibitz.controllers')
-	.controller('IndexController', ['$scope', function ($scope) {
+	.controller('IndexController', function ($rootScope, $scope) {
 		console.log('index control');
-	}]);
+	});

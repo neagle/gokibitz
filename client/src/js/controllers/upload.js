@@ -63,6 +63,7 @@ angular.module('gokibitz.controllers')
 
 			uploader.bind('complete', function (event, xhr, item, response) {
 				console.info('Complete', xhr, item, response);
+				item.shortid = response.shortid;
 			});
 
 			uploader.bind('progressall', function (event, progress) {

@@ -1,0 +1,124 @@
+//
+// Carousel
+// --------------------------------------------------
+
+.carousel-inner {
+  > .item {
+    &.active {
+      > img,
+      > a > img {
+        border-radius: $border-radius-large;
+      }
+      @media (max-width: $screen-xs-max) {
+        > img {
+          border-radius: $border-radius-large $border-radius-large 0 0;
+        }
+      } 
+    } 
+    &.active.left,
+    &.active.right {
+      > img,
+      > a > img {
+        border-radius: 0;
+      }
+    }   
+  }
+}
+
+// Left/right controls for nav
+// ---------------------------
+
+.carousel-control {
+  position: absolute;
+  top: 45%;
+  font-size: 20px;
+  line-height: 32px;
+  color: $inverse;    
+  text-indent: 1px;  
+  border: 3px solid $inverse;  
+  height: 40px;
+  right: 15px;
+  margin-top: -20px;  
+  text-align: center;
+  width: 40px;
+  outline: none !important;
+  border-radius: 23px;
+  @include opacity(.5);
+  
+  &.left,
+  &.right {
+    background: none $carousel-controls-background;
+  }
+  &.left {
+    text-indent: -1px;
+    left: 15px;
+  }
+  &.right {
+    left: auto;
+    right: 15px;
+  }
+}
+
+// Optional indicator pips
+//
+// Add an unordered list with the following class and add a list item for each
+// slide your carousel holds.
+
+.carousel-indicators {
+  bottom: auto;
+  left: auto;
+  margin: 0;
+  right: 16px;
+  top: 16px;
+  width: auto;
+  line-height: 8px;
+  @include user-select(none);
+
+  li {
+    vertical-align: top;
+    border: none;
+    width: 8px;
+    height: 8px;
+    margin: 0 0 0 6px;
+    background-color: $carousel-controls-background;
+    background-color: rgba(red($carousel-controls-background), green($carousel-controls-background), blue($carousel-controls-background),.5);
+  }
+  li.active {
+    background-color: #fff;
+    width: 8px;
+    height: 8px;
+    margin: 0 0 0 6px;
+  }
+}
+
+// Caption for text below images
+// -----------------------------
+.carousel-caption {
+  padding: 20px 19px 22px;
+  background: $carousel-background;
+  background: rgba(red($carousel-background), green($carousel-background), blue($carousel-background),.7);  
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: left;
+  border-radius: 0 0 $border-radius-large $border-radius-large;
+  text-shadow: none;
+
+  h3,
+  p {
+    color: $inverse;
+  }
+  h3 {
+    font-size: ceil($component-font-size-base * 1.2); // ~18px
+    line-height: 20px;
+    margin: 0 0 5px;
+  }
+  p {
+    font-size: $component-font-size-base;
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+  @media (max-width: $screen-xs-max) {
+    position: static;
+  }
+}

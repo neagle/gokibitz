@@ -1,0 +1,112 @@
+//
+// File input
+// --------------------------------------------------
+
+.btn-file {
+  overflow: hidden;
+  position: relative;
+  
+  > input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    @include opacity(0);
+    font-size: 23px;
+    direction: ltr;
+    cursor: pointer;
+    width: 100%;
+  }
+}
+
+.fileinput {
+  margin-bottom: 9px;
+  display: block;
+  
+  .fileinput-filename {
+    font-size: $component-font-size-base;   
+  }
+  .uneditable-input {
+    display: inline-block;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    cursor: text;  
+    @include text-overflow();  
+    
+    [class^="fui-"] {
+      margin-right: .3em;
+    }
+  }
+  .fileinput-preview {
+    cursor: pointer;
+  }
+  .thumbnail {
+    overflow: hidden;
+    display: inline-block;
+  }
+}
+.fileinput-exists .fileinput-new,
+.fileinput-new .fileinput-exists {
+  display: none;
+}
+.fileinput-inline .fileinput-controls {
+  display: inline;
+}
+
+// Not 100% correct, but helps in typical use case
+.fileinput-new .input-group .btn-file {
+  border-radius: 0 $border-radius-base $border-radius-base 0;
+}
+.fileinput-new .input-group .btn-file.btn-xs,
+.fileinput-new .input-group .btn-file.btn-sm {
+  border-radius: 0 $border-radius-small $border-radius-small 0;
+}
+.fileinput-new .input-group .btn-file.btn-lg {
+  border-radius: 0 $border-radius-large $border-radius-large 0;
+}
+
+.form-group.has-warning .fileinput {
+  .uneditable-input {
+    color: $state-warning-text;
+    border-color: $state-warning-border;
+  }
+  .fileinput-preview {
+    color: $state-warning-text;
+  }
+  .thumbnail {
+    border-color: $state-warning-border;
+  }
+}
+.form-group.has-error .fileinput {
+  .uneditable-input {
+    color: $state-danger-text;
+    border-color: $state-danger-border;
+  }
+  .fileinput-preview {
+    color: $state-danger-text;
+  }
+  .thumbnail {
+    border-color: $state-danger-border;
+  }
+}
+.form-group.has-success .fileinput {
+  .uneditable-input {
+    color: $state-success-text;
+    border-color: $state-success-border;
+  }
+  .fileinput-preview {
+    color: $state-success-text;
+  }
+  .thumbnail {
+    border-color: $state-success-border;
+  }
+}
+
+
+// Input group fixes
+
+.input-group-addon:not(:first-child) {
+  border-left: 0;
+}

@@ -1,0 +1,20 @@
+// Easy-to-remember flat ui colors
+// https://github.com/obibring/flat-ui-colors-sass
+@import "lib/_flat-colors";
+
+$body-bg: $flat-turquoise;
+$text-color: $flat-asbestos;
+/*$brand-primary: darken($flat-pomegranate, 20%);*/
+$brand-primary: $flat-green-sea;
+$brand-secondary: $flat-sunflower;
+
+$link-color: $flat-orange;
+$link-hover-color: $flat-sunflower;
+
+$font-family-base: Oxygen;
+$font-size-base: 14px;
+
+$headings-font-family: Righteous, fantasy;
+$headings-color: $brand-primary;
+
+/*$navbar-default-bg: $flat-clouds;*/

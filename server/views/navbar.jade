@@ -1,4 +1,4 @@
-nav.navbar.navbar-default.navbar-fixed-top(
+nav.navbar.navbar-inverse.navbar-fixed-top(
 	role='navigation'
 	ng-controller='NavbarController'
 )
@@ -34,9 +34,11 @@ nav.navbar.navbar-default.navbar-fixed-top(
 
 			ul.nav.navbar-nav.navbar-right(ng-hide='currentUser')
 				li
-					a(href='/login') Log In
+					//-a(href='/login') Log In
+					a(ng-click='loginModal()') Log In
 				li
-					a(href='/signup') Sign Up
+					//-a(href='/signup') Sign Up
+					a(ng-click='SignupModal()') Sign Up
 
 			ul.nav.navbar-nav.navbar-right(ng-show='currentUser')
 				li.dropdown

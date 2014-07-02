@@ -1,0 +1,53 @@
+//
+// Flat UI Pro main stylesheet that aggregates all modules
+// --------------------------------------------------
+
+
+// Flat-UI-Icons
+@import "flat-ui-pro/modules/glyphicons";
+
+// Utility mixins for greater good
+@import "flat-ui-pro/mixins";
+
+@import "flat-ui-pro/modules/scaffolding";
+
+// Modules
+@import "flat-ui-pro/modules/type";
+@import "flat-ui-pro/modules/code";
+@import "flat-ui-pro/modules/thumbnails";
+@import "flat-ui-pro/modules/buttons";
+@import "flat-ui-pro/modules/button-groups";
+@import "flat-ui-pro/modules/caret";
+@import "flat-ui-pro/modules/select";
+@import "flat-ui-pro/modules/forms";
+@import "flat-ui-pro/modules/input-icons";
+@import "flat-ui-pro/modules/input-groups";
+@import "flat-ui-pro/modules/file-input";
+@import "flat-ui-pro/modules/checkbox-and-radio";
+@import "flat-ui-pro/modules/tagsinput";
+@import "flat-ui-pro/modules/typeahead";
+@import "flat-ui-pro/modules/progress-bars";
+@import "flat-ui-pro/modules/slider";
+@import "flat-ui-pro/modules/spinner";
+@import "flat-ui-pro/modules/datepicker";
+@import "flat-ui-pro/modules/pager";
+@import "flat-ui-pro/modules/pagination";
+@import "flat-ui-pro/modules/tooltip";
+@import "flat-ui-pro/modules/dropdown";
+@import "flat-ui-pro/modules/tables";
+@import "flat-ui-pro/modules/labels";
+@import "flat-ui-pro/modules/badges";
+@import "flat-ui-pro/modules/alerts";
+@import "flat-ui-pro/modules/bottom";
+@import "flat-ui-pro/modules/navs";
+@import "flat-ui-pro/modules/navbar";
+@import "flat-ui-pro/modules/iconbar";
+@import "flat-ui-pro/modules/breadcrumbs";
+@import "flat-ui-pro/modules/popover";
+@import "flat-ui-pro/modules/dialog";
+@import "flat-ui-pro/modules/modals";
+@import "flat-ui-pro/modules/switch";
+@import "flat-ui-pro/modules/carousel";
+
+// Spaces
+@import "flat-ui-pro/spaces";

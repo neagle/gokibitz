@@ -12,33 +12,59 @@ router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 
+	// Get the total count of kifu
+	Kifu.count({
+		public: true,
+		deleted: false
+	}, function (error, count) {
+		// Get the requested subset
+		Kifu
+			.where('public').equals(true)
+			.where('deleted').equals(false)
+			.sort({ uploaded: -1 })
+			.skip(offset)
+			.limit(limit)
+			.exec(function (error, kifu) {
+				if (!error && kifu.length) {
+					res.json(200, {
+						kifu: kifu,
+						total: count
+					});
+				} else if (error) {
+					res.json(500, { message: 'Error loading kifu. ' + error });
+				} else {
+					res.json(404, { message: 'No kifu found.' });
+				}
+			});
+	});
+});
+
+router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 	Kifu
-		.where('public').equals(true)
-		.where('deleted').equals(false)
-		.sort({ uploaded: -1 })
-		.skip(offset)
-		.limit(limit)
+		.findById(req.params.id)
+		.populate('user')
 		.exec(function (error, kifu) {
-			if (!error && kifu.length) {
-				res.json(200, kifu);
-			} else if (error) {
-				res.json(500, { message: 'Error loading kifu. ' + error });
+			if (!error && kifu) {
+				if (!kifu.isOwner(req.user) && !req.user.admin) {
+					res.json(550, { message: 'You can\'t delete another user\'s kifu.' });
+				} else {
+					kifu.deleted = true;
+					kifu.save(function (error) {
+						if (!error) {
+							res.json(200, {
+								message: 'Kifu deleted.'
+							});
+						} else {
+							res.json(500, { message: 'Could not delete kifu.' + error });
+						}
+					});
+				}
+			} else if (!error) {
+				res.json(404, { message: 'Could not find kifu.' });
 			} else {
-				res.json(404, { message: 'No kifu found.' });
+				res.json(403, { messgae: 'Could not delete comment. ' + error });
 			}
 		});
-
-	//Kifu.find({
-		//owner: req.user
-	//}, function (error, kifu) {
-		//if (!error && kifu) {
-			//res.json(200, kifu);
-		//} else if (error) {
-			//res.json(500, { message: 'Error loading kifu. ' + error });
-		//} else {
-			//res.json(404, { message: 'This user hasn\'t uploaded any kifu, yet.' });
-		//}
-	//});
 });
 
 router.get('/:shortid', function (req, res) {

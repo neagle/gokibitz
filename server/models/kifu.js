@@ -7,7 +7,8 @@ var Comment = require('./comment').Comment;
 
 var kifuSchema = new Schema({
 	shortid: {
-		type: String
+		type: String,
+		index: true
 	},
 	game: {
 		sgf: {
@@ -88,6 +89,9 @@ kifuSchema.virtual('game.info.date')
 		//return this.game.sgf;
 		////return smartgame.parse(this.game.sgf);
 	//});
+kifuSchema.methods.isOwner = function (user) {
+	return String(this.owner) === String(user._id);
+};
 
 /**
  * Pre hook.

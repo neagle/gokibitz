@@ -1,0 +1,52 @@
+//
+// Flat UI Pro main stylesheet that aggregates all modules
+// --------------------------------------------------
+
+// Flat-UI-Icons
+@import "modules/glyphicons";
+
+// Utility mixins for greater good
+@import "mixins";
+
+@import "modules/scaffolding";
+
+// Modules
+@import "modules/type";
+@import "modules/code";
+@import "modules/thumbnails";
+@import "modules/buttons";
+@import "modules/button-groups";
+@import "modules/caret";
+@import "modules/select";
+@import "modules/forms";
+@import "modules/input-icons";
+@import "modules/input-groups";
+@import "modules/file-input";
+@import "modules/checkbox-and-radio";
+@import "modules/tagsinput";
+@import "modules/typeahead";
+@import "modules/progress-bars";
+@import "modules/slider";
+@import "modules/spinner";
+@import "modules/datepicker";
+@import "modules/pager";
+@import "modules/pagination";
+@import "modules/tooltip";
+@import "modules/dropdown";
+@import "modules/tables";
+@import "modules/labels";
+@import "modules/badges";
+@import "modules/alerts";
+@import "modules/bottom";
+@import "modules/navs";
+@import "modules/navbar";
+@import "modules/iconbar";
+@import "modules/breadcrumbs";
+@import "modules/popover";
+@import "modules/dialog";
+@import "modules/modals";
+@import "modules/switch";
+@import "modules/carousel";
+
+// Spaces
+@import "spaces";

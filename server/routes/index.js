@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 //var path = require('path');
 var auth = require('../config/auth');
+//var markdown = require('markdown').markdown;
 
 // User routes
 var users = require('../controllers/users');

@@ -1,0 +1,128 @@
+// Spinner
+// --------------------------------------------------
+
+// Spinner Wrapper
+.ui-spinner {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0 37px 0 0;
+  position: relative;
+  vertical-align: middle;
+
+  @media (max-width: $grid-float-breakpoint) {
+    display: block;
+  }
+
+  .ui-button-text {
+    display: block;
+    line-height: normal;
+  }
+
+  // Focus State
+  &.focus {
+    .ui-spinner-input {
+      color: $spinner-input-focus-color;
+      border-color: $spinner-input-focus-border;
+    }
+    .ui-spinner-button {
+      background-color: $spinner-btn-focus-bg;
+
+      &:hover {
+        background-color: $spinner-btn-focus-hover-bg;
+      }
+    }
+    .ui-spinner-up {
+      border-bottom-color: $spinner-up-btn-focus-border;
+    }
+  }
+}
+
+// Spinner Input
+.ui-spinner-input {
+  width: $spinner-input-width;
+  border-radius: $border-radius-large 0 0 $border-radius-large;
+  text-align: center;
+  padding: 6px 12px;
+  border-right-width: 0 !important;
+  font-weight: bold;
+  font-size: $spinner-input-font-size;
+  line-height: $spinner-input-line-height;
+  @include placeholder($spinner-input-placeholder);
+  
+  @media (max-width: $grid-float-breakpoint) {
+    width: 100%;
+  }
+
+  // Spinner sizing
+  &.input-hg {
+    @include spinner-variant(28px, 25px, 25px);
+  }
+  &.input-lg {
+    @include spinner-variant(24px, 21px, 21px);
+  }
+  &.input-sm {
+    font-size: 18px;
+    line-height: 1;
+
+    @include spinner-variant(19px, 17px, 1);
+  }
+}
+
+// Prepend spinner
+.input-group-addon + .ui-spinner {
+  .ui-spinner-input {
+    @include border-left-radius(0);
+  }
+}
+
+// Spinner Buttons
+.ui-spinner-button {
+  cursor: default;
+  display: block;
+  font-size: .5em;
+  line-height: 19px;
+  height: 22px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  width: 37px;
+  cursor: pointer;
+  color: $inverse;
+  text-decoration: none;
+  background-color: $spinner-btn-bg;
+  outline: none;
+
+  &:hover {
+    background-color: $spinner-btn-hover-bg;
+    color: $spinner-btn-hover-color;
+  }
+
+  // Icon
+  .ui-icon {
+    font-size: 0;
+    
+    &:before {
+      content: "\e001";
+      font-family: "Flat-UI-Icons";
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+  }
+}
+.ui-spinner-up {
+  border-bottom: 2px solid $spinner-up-btn-border;
+  top: 0;
+  border-radius: 0 $border-radius-large 0 0;
+}
+.ui-spinner-down {
+  bottom: 0;
+  height: 20px;
+  border-radius: 0 0 $border-radius-large 0;
+  
+  .ui-icon:before {
+    content: "\e005";
+  }
+}

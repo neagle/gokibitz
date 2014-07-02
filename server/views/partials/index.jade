@@ -1,16 +1,9 @@
-ul
-	li
-		a(href='/login') Log in
-	li
-		a(href='/signup') Sign up
-	li
-		a(href='/profile') Profile
-	li
-		a(href='/admin') Admin
-	li
-		a(href='/kifu') Kifu
-	li
-		a(href='/upload') Upload
+.jumbotron.hero
+	img.pull-left(src='/images/goban_bubble.svg')
+	h3 Kibitzers welcome!
+	p
+		:markdown
+			GoKibitz makes it easy to have conversations about go games.
 
 //-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
 

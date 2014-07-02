@@ -3,6 +3,7 @@ var gutil = require('gulp-util');
 var debug = require('gulp-debug');
 //var concat = require('gulp-concat');
 var sass = require('gulp-sass');
+var bourbon = require('node-bourbon');
 var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
@@ -77,7 +78,10 @@ gulp.task('sass-includes', function (callback) {
 
 gulp.task('sass', ['sass-includes'], function () {
 	return gulp.src('./client/src/scss/app.scss')
-	.pipe(sass({ errLogToConsole: true }))
+	.pipe(sass({
+		includePaths: bourbon.includePaths,
+		errLogToConsole: true
+	}))
 	.pipe(autoprefix())
 	.pipe(gulp.dest('./client/public/css'));
 });
@@ -134,6 +138,7 @@ gulp.task('watch', ['default'], function () {
 
 	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
 	gulp.watch('client/src/js/**/*.js', ['browserify']);
+	gulp.watch('client/src/submodules/wgo.js/wgo/src/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 	gulp.watch('client/src/assets/images/**/*', ['images']);
 	gulp.watch('client/src/assets/js/**/*', ['js-assets']);

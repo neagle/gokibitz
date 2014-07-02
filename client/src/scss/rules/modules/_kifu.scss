@@ -1,0 +1,14 @@
+.list-kifu {
+	.kifu {
+		.pull-right {
+			opacity: 0;
+			transition: opacity 0.2s;
+		}
+
+		&:hover {
+			.pull-right {
+				opacity: 1;
+			}
+		}
+	}
+}

@@ -5,6 +5,9 @@
 .comments {
 
 	.comment {
+		/*background: {*/
+			/*color: $flat-clouds;*/
+		/*}*/
 		.btn-group {
 			opacity: 0;
 			transition: opacity 0.2s;
@@ -14,11 +17,6 @@
 				opacity: 1;
 			}
 		}
-	}
-
-	.wgo-move-link {
-		cursor: pointer;
-		@extend code;
 	}
 
 	.loading {

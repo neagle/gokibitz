@@ -1,7 +1,7 @@
 /**
  * The angular file upload module
  * @author: nerv
- * @version: 0.5.6, 2014-04-24
+ * @version: 0.5.7, 2014-05-23
  */
 
 // It is attached to an element that catches the event drop file
@@ -32,8 +32,10 @@ app.directive('ngFileDrop', ['$fileUploader', function ($fileUploader) {
                     dataTransfer.dropEffect = 'copy';
                     scope.$broadcast('file:addoverclass');
                 })
-                .bind('dragleave', function () {
-                    scope.$broadcast('file:removeoverclass');
+                .bind('dragleave', function (event) {
+                    if (event.target === element[0]) {
+                        scope.$broadcast('file:removeoverclass');
+                    }
                 });
         }
     };

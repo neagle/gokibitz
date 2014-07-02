@@ -1,0 +1,155 @@
+//
+// Icon Bar
+// --------------------------------------------------
+// Use as a sidebar navigation with icons only.
+
+.iconbar {
+  background-color: $iconbar-background;
+  border-radius: 6px;
+  float: left;
+  margin: 0 20px 20px 0;
+  -webkit-backface-visibility: hidden;
+  @include clearfix();
+
+  > ul {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      margin: 0;
+      padding: 0;
+
+      &.active {
+        > a {
+          color: $brand-secondary;
+        }
+      }
+
+      &:first-child {
+        > a {
+          padding-top: 32px;
+        }
+      }
+
+      > a {
+        color: $inverse;
+        display: block;
+        font-size: ceil($component-font-size-base * 1.600); // ~24px
+        line-height: 1;
+        padding: 8px 30px 32px;
+        position: relative;
+        text-decoration: none;
+        
+        &:hover,
+        &:focus {
+          color: $brand-secondary;
+        }
+      }
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    &,
+    &.iconbar-horizontal {
+      > ul {
+        > li,
+        > li.active {
+          > a {
+            display: inline-block;
+            padding: 25px;
+          }
+        }
+      }
+    }
+    & {
+      .iconbar-unread {
+        right: 15px;
+        top: 13px;
+      }
+    }
+    &.iconbar-horizontal {
+      height: 70px;
+      overflow: auto;
+      width: 100%;
+      white-space: nowrap;
+      > ul {
+        > li {
+          float: none;
+          display: inline;
+        }
+      }
+      .iconbar-unread {
+        right: 15px;
+      }
+    }
+  }
+}
+
+// Stick to a screen side
+[class*="iconbar-stick-"] {
+  border-radius: 0;
+  margin: 0;
+  position: fixed;
+  z-index: 1001;
+
+  > ul { margin: 0; }
+}
+
+.iconbar-stick-left {
+  bottom: 0;
+  left: 0;
+  top: 0;
+}
+
+// Unread icon
+.iconbar-unread {
+  background-color: mix($brand-info, black, 80%);
+  border-radius: 50%;
+  color: $inverse;
+  font-family: $font-family-base;
+  font-size: ceil($component-font-size-base * .80); // ~12px
+  font-weight: 700;
+  line-height: 1.667; // ~25px
+  min-width: 20px;
+  padding: 0 2px;
+  position: absolute;
+  right: 20px;
+  text-align: center;
+  top: -2px;
+  -webkit-font-smoothing: auto;
+}
+
+// Alternate Colors
+// --------------------------------------------------
+.iconbar-success { @include swap-iconbar-color($brand-success); }
+.iconbar-danger  { @include swap-iconbar-color($brand-danger); }
+.iconbar-warning { @include swap-iconbar-color($brand-warning); }
+.iconbar-info    { @include swap-iconbar-color($brand-info); }
+
+// Horizontal layout
+// --------------------------------------------------
+.iconbar-horizontal {
+  clear: both;
+  float: left;
+
+  > ul {
+    > li {
+      float: left;
+      &:first-child {
+        > a {
+          padding: 23px 32px 23px;
+        }
+      }
+
+      > a {
+        padding: 23px 32px 23px 8px;
+      }
+    }
+  }
+  .iconbar-unread {
+    right: 23px;
+    top: 13px;
+  }
+}

@@ -1,0 +1,76 @@
+//
+// Dialog
+// --------------------------------------------------
+
+.dialog {
+  background-color: mix($brand-primary, white, 9%);
+  border-top: 2px solid mix($brand-primary, white, 20);
+  font-size: $dialog-font-size;
+  margin-bottom: 20px;
+  padding: $dialog-padding;
+  position: relative;
+  text-align: center;
+
+  .btn {
+    vertical-align: baseline;
+  }
+  form {
+    margin-bottom: 0;
+
+    input,
+    .btn {
+      margin-bottom: 0;
+      margin-left: 20px;
+      vertical-align: top;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  // Dialog styles
+  // -----------
+  &.dialog-success {
+    background-color: #f0faf8;
+    border-top-color: #e2edeb;
+  }
+
+  &.dialog-danger  { @include swap-dialog-color($brand-danger); }
+  &.dialog-warning { @include swap-dialog-color($brand-warning); }
+  &.dialog-info    { @include swap-dialog-color($brand-info); }
+  &.dialog-inverse {
+    background-color: $brand-primary;
+    border-top-color: mix($brand-primary, black, 80%);
+    color: $inverse;
+  }
+}
+
+//
+// Responsive: Landscape phone to desktop/tablet
+// --------------------------------------------------
+@media (max-width: $grid-float-breakpoint-max) {
+  .dialog {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    form .btn,
+    .btn {
+      display: block;
+      margin: 9px 0;
+      min-width: auto;
+      width: 100%;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    form .btn + .btn,
+    .btn + .btn {
+      margin-top: 18px;
+    }
+    form input {
+      margin: 9px 0;
+    }
+  }
+}

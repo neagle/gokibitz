@@ -1,0 +1,120 @@
+//
+// Bottom Menus
+// --------------------------------------------------
+
+.bottom-menu {
+  background: mix($brand-primary, white, 10%);
+  color: mix($brand-primary, white, 33%);
+  padding: 39px 0 42px;
+
+  .navbar-brand {
+    font-size: floor($component-font-size-base * 1.6); // ~24px
+    margin-top: -4px;
+    padding: 0;
+  }
+  .title {
+    font-size: floor($component-font-size-base * 0.933); // ~14px
+    font-weight: 700;
+    margin-top: 0;
+  }
+  a {
+    color: inherit;
+
+    .active &,
+    &:hover,
+    &:focus {
+      color: $brand-secondary;
+    }
+  }
+  .label,
+  .badge {
+    vertical-align: middle;
+  }
+  .bottom-links {
+    font-size: ceil($component-font-size-base * 0.933); // ~14px
+    line-height: 1.286; // ~18px
+  }
+  .bottom-links,
+  .bottom-icons {
+    @include clearfix();
+  }
+}
+
+// Bottom menu icons font
+.bottom-icons {
+  font-size: floor($component-font-size-base * 1.067); // ~16px
+  line-height: 1;
+}
+
+// Dark skin
+.bottom-menu-inverse {
+  background-color: $brand-primary;
+  color: mix($brand-primary, white, 75%);
+}
+
+// Large size
+.bottom-menu-large {
+  padding-bottom: 56px;
+  padding-top: 60px;
+
+  .navbar-brand {
+    margin-top: -2px;
+  }
+
+  .bottom-links {       
+    li {
+      float: none;
+      line-height: 22px;
+      margin-right: 0;
+    }
+  }
+  
+  .title {
+    margin-bottom: 10px;
+  }
+}
+
+// LINKS LIST
+// ----------------------
+
+.bottom-links,
+.bottom-icons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: block;
+    float: left;
+    margin: 0 18px 0 0;
+  }
+}
+
+//
+// Responsive: Landscape phone to desktop/tablet
+// --------------------------------------------------
+@media (max-width: $grid-float-breakpoint-max) {
+  .bottom-menu {
+    .navbar-brand,
+    .bottom-links {
+      margin-bottom: 30px;
+    }
+    .navbar-brand {
+      padding: 15px;
+      float: none;
+    }
+
+    .bottom-links {
+      li {
+        float: none;
+        margin-bottom: 2px;
+      }
+    }
+
+    [class*="span"]:last-child {
+      .bottom-links {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ body {
 }
 
 time {
-	color: $gray-light;
+	color: $flat-silver;
 	/*font: {*/
 		/*variant: small-caps;*/
 	/*}*/
@@ -22,3 +22,8 @@ html.no-touch .only-touch {
 html.touch .only-no-touch {
 	display: none;
 }
+
+.clickable {
+	cursor: pointer;
+}
+

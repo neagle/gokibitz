@@ -32,7 +32,7 @@
     "bulkify": "^1.0.1",
     "folderify": "^0.6.0",
     "glob": "^4.0.0",
-    "gulp": "^3.6.2",
+    "gulp": "^3.8.0",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "^2.2.0",
     "gulp-debug": "^0.3.0",
@@ -45,6 +45,7 @@
     "gulp-sass": "^0.7.1",
     "gulp-util": "^2.2.14",
     "jshint-stylish": "^0.2.0",
+    "node-bourbon": "^1.2.3",
     "vinyl-source-stream": "^0.1.1"
   },
   "browserify": {
@@ -62,7 +63,9 @@
     "angular-resource": "./client/src/bower_components/angular-resource/angular-resource.js",
     "angular-route": "./client/src/bower_components/angular-route/angular-route.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
-		"ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js"
+    "ui-bootstrap": "./client/src/bower_components/angular-bootstrap/ui-bootstrap.js",
+    "ui-bootstrap-tpls": "./client/src/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+    "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js"
   },
   "browserify-shim": {
     "angular": "angular",
@@ -86,11 +89,11 @@
         "angular"
       ]
     },
-		"angular-animate": {
-			"depends": [
-				"angular"
-			]
-		},
+    "angular-animate": {
+      "depends": [
+        "angular"
+      ]
+    },
     "angular-route": {
       "depends": [
         "angular"
@@ -101,10 +104,12 @@
         "angular"
       ]
     },
-		"ui-utils": {
-			"depends": [
-				"angular"
-			]
-		}
+    "ui-utils": {
+      "depends": [
+        "angular"
+      ]
+    },
+		"ui-bootstrap": { "depends": [ "angular" ] },
+		"ui-bootstrap-tpls": { "depends": [ "angular" ] }
   }
 }

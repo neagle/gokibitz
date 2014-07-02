@@ -16,16 +16,28 @@
 //
 // http://smacss.com/book/type-layout
 
-.navbar-default {
+.navbar-header {
 	.navbar-brand {
-		color: hsla(40, 100%, 50%, 1);
+		color: $flat-sunflower;
 		font: {
 			family: $headings-font-family;
+			size: 24px;
 		}
+		line-height: 1;
 		text-decoration: none;
 
 		b {
-			color: hsla(20, 100%, 50%, 1);
+			color: $flat-orange;
 		}
 	}
 }
+
+sgf.media-object {
+	width: 100px;
+}
+
+.wgo-move-link {
+	cursor: help;
+	@extend code;
+}
+

@@ -33,6 +33,15 @@ When files are selected or dropped into the component, one or more filters are a
 - **$fileUploader**: Manages the upload queue and the uploading of files
 
 
+### Service API:
+
+#### Properties
+- **isHTML5** `{Boolean}`: `true` if uploader is html5-uploader. Read only.
+
+#### Methods
+- **create**`function(params) {return {Uploader};}`: Creates an instance of uploader. [Params](https://github.com/nervgh/angular-file-upload#properties)
+
+
 ### The Uploader API:
 
 #### Properties
@@ -185,6 +194,14 @@ uploader.bind('progress', function(event, item, progress) {
       });
     ```
 
+3. How to update options dynamically?
+
+    See this [comment](https://github.com/nervgh/angular-file-upload/issues/97#issuecomment-39248062)
+
+4. I need custom options. Are there they?
+
+    See this [comment](https://github.com/nervgh/angular-file-upload/pull/104#issuecomment-39887419)
+
 ---
 
 ## Русская документация
@@ -214,6 +231,16 @@ uploader.bind('progress', function(event, item, progress) {
 ### Сервис
 
 - **$fileUploader** - управляет очередью и загрузкой файлов
+
+
+### Service API:
+
+#### Properties
+- **isHTML5** `{Boolean}` - `true`, если это html5-загрузчик. Только для чтения.
+
+#### Methods
+- **create**`function(params) {return {Uploader};}`: Создает экземпляр загрузчика. [Params](https://github.com/nervgh/angular-file-upload#%D0%A1%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%B0)
+
 
 ### Загрузчик API:
 
@@ -348,3 +375,15 @@ uploader.bind('progress', function(event, item, progress) {
     uploader.queue.push(item);
     uploader.progress = 100;
 ```
+
+2. Как работать с CSRF защитой?
+
+    См. [#40](https://github.com/nervgh/angular-file-upload/issues/40)
+
+3. Как динамически обновлять опции?
+
+    См. [комментарий](https://github.com/nervgh/angular-file-upload/issues/97#issuecomment-39248062)
+
+4. Мне нужны пользовательские опции. Они существуют?
+
+    См. [комментарий](https://github.com/nervgh/angular-file-upload/pull/104#issuecomment-39887419)
