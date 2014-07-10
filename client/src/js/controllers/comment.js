@@ -99,9 +99,9 @@ angular.module('gokibitz.controllers')
 					$scope.loading = true;
 					$scope.listComments();
 
-					//setInterval(function () {
-						//$scope.listComments();
-					//}, 3000);
+					setInterval(function () {
+						$scope.listComments();
+					}, 3000);
 
 					$scope.$watch('kifu.path', function () {
 						$scope.loading = true;
