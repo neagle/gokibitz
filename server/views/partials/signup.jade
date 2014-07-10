@@ -72,7 +72,7 @@
 
 .modal-footer
 	button.btn.btn-primary(
-		type='submit'
+		ng-click='register(form)'
 		ng-disabled='form.$invalid'
 	) Sign up
 	button.btn.btn-warning(ng-click='cancel()') Cancel

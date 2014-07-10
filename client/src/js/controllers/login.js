@@ -19,7 +19,6 @@ angular.module('gokibitz.controllers')
 						message: 'Welcome back, ' + $scope.currentUser.username + '!'
 					};
 					$modalInstance.close($scope.user);
-					//$location.path('/');
 				} else {
 					angular.forEach(err.errors, function (error, field) {
 						form[field].$setValidity('mongoose', false);
