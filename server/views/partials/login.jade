@@ -1,14 +1,14 @@
-form.form-horizontal.form-signin(
-	name='form'
-	ng-submit='login(form)'
-	novalidate
-	role='form'
-)
+.modal-header
+	h3.modal-title Login
 
-	.modal-header
-		h3.modal-title Login
+.modal-body
+	form.form-horizontal.form-signin(
+		name='form'
+		ng-submit='login(form)'
+		novalidate
+		role='form'
+	)
 
-	.modal-body
 		p.help-block(ng-show="form.email.$error.mongoose") {{ errors.email }}
 		p.help-block(ng-show="form.password.$error.mongoose") {{ errors.password }}
 
@@ -46,8 +46,10 @@ form.form-horizontal.form-signin(
 
 		p Don't have an account, yet?
 			= ' '
-			a(href='/signup') Sign up!
+			a(ng-click='cancel(signupModal);') Sign up!
 
-	.modal-footer
-		button.btn.btn-primary(type='submit') Login
-		button.btn.btn-warning(ng-click='cancel()') Cancel
+		button.hidden(type='submit') Log in
+
+.modal-footer
+	button.btn.btn-primary(ng-click='login(form)') Log in
+	button.btn.btn-warning(ng-click='cancel()') Cancel

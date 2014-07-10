@@ -47,6 +47,11 @@ angular.module('gokibitz.controllers')
 							// TODO: Is this a reasonable way of creating one situation where
 							// an update to the $scope.kifu.path variable shouldn't update
 							// the player object?
+							console.log('update wat', event);
+							console.log('setting captures', event.position.capCount);
+							$scope.captures = event.position.capCount;
+							//$scope.info.black.captures = event.position.capCount.black;
+							//$scope.info.white.captures = event.position.capCount.white;
 							$scope.updating = true;
 							if (!$scope.$$phase) {
 								$scope.$apply(function () {
@@ -60,9 +65,12 @@ angular.module('gokibitz.controllers')
 							//console.log('sgfComment', $scope.sgfComment, $scope);
 						}
 					});
+					$scope.info = player.kifu.info;
+					console.log('player.kifu.info', player.kifu.info);
 					player.setCoordinates(true);
-					$scope.player = player;
+					//$scope.player = player;
 					window.player = player;
+					window.$scope = $scope;
 
 					$scope.$on('$routeUpdate', function () {
 						var path = $location.search().path || '{ m: 0 }';

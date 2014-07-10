@@ -1,6 +1,7 @@
 angular.module('gokibitz.controllers')
-.controller('SignupController', function ($scope, Auth, $location) {
+.controller('SignupController', function ($rootScope, $scope, $modalInstance, Auth, $location) {
 	$scope.register = function (form) {
+		console.log('register function');
 		Auth.createUser({
 			email: $scope.user.email,
 			username: $scope.user.username,
@@ -18,5 +19,9 @@ angular.module('gokibitz.controllers')
 				});
 			}
 		});
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
 	};
 });

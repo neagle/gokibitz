@@ -29,6 +29,22 @@
 		b {
 			color: $flat-orange;
 		}
+
+		.release {
+			color: lighten($brand-primary, 10%);
+			display: inline-block;
+			font: {
+				family: $font-family-base;
+				size: 8px;
+			}
+			letter-spacing: 0.1em;
+			margin: {
+				left: -1.6em;
+				top: -0.5em;
+			}
+			text-transform: uppercase;
+			vertical-align: top;
+		}
 	}
 }
 

@@ -1,13 +1,35 @@
-.player-container.col-xs-12.col-sm-6.col-md-4
+.kifu-banner.col-lg-12
+	.white
+		.name {{ info.white.name || 'Anonymous' }}
+		= ' '
+		.rank {{ info.white.rank }}
+		.captures(
+			tooltip-placement='right'
+			tooltip='White’s captured prisoners'
+		) {{ captures.white }}
+
+	.black
+		.name {{ info.black.name || 'Anonymous' }}
+		= ' '
+		.rank {{ info.black.rank }}
+		.captures(
+			tooltip-placement='left'
+			tooltip='Black’s captured prisoners'
+		) {{ captures.black }}
+
+.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3
 	#player
 		a(
 			target='_self'
 			href='/api/kifu/{{ kifu.shortid }}/sgf'
 		) Download SGF
 
-.sgf-comments.col-xs-12.col-sm-6.col-md-4
+.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
 	div.panel.panel-default
-		div.panel-heading Game Comments
+		div.panel-heading
+			span.fui-document
+			= ' '
+			| Game Comments
 		div.panel-body
 			div(ng-bind-html='sgfComment')
 			div(ng-if='!sgfComment') &hellip;
@@ -20,33 +42,37 @@
 	.comments(
 		ng-show='kifu.path.m === 0 && comments.length'
 	)
-		h4 {{ comments.length }}
-			= ' '
-			ng-pluralize(
-				count='comments.length'
-				when='{ "one": "Comment", "other": "Comments" }'
-			)
-
-		.list-group
-			.list-group-item
-				.comment.media(
-					ng-repeat='comment in comments track by comment._id'
-					ng-class="{ false: 'animate', true: 'loading' }[loading]"
+		.panel.panel-default
+			.panel-heading
+				span.fui-chat
+				= ' '
+				| Kibitz: {{ comments.length }}
+				= ' '
+				ng-pluralize(
+					count='comments.length'
+					when='{ "one": "Comment", "other": "Comments" }'
 				)
-					a.pull-left(href='/users/{{ comment.user.username }}')
-						img.media-object(
-							src='{{ comment.user.gravatar }}?s=24&d=retro'
-							style='width: 24px; height: 24px'
-						)
-					.comment-media-body
-						a(
-							href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
-							ng-click='kifu.path = comment.path'
-						)
-							| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
-						time.relative.small(
-							datetime='{{ comment.date }}'
-						) {{ comment.relativeDate | verboseNumbers }}
+
+			.panel-body
+				ul.media-list
+					li.comment.media(
+						ng-repeat='comment in comments track by comment._id'
+						ng-class="{ false: 'animate', true: 'loading' }[loading]"
+					)
+						a.pull-left(href='/users/{{ comment.user.username }}')
+							img.media-object(
+								src='{{ comment.user.gravatar }}?s=24&d=retro'
+								style='width: 24px; height: 24px'
+							)
+						.comment-media-body
+							a(
+								href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
+								ng-click='kifu.path = comment.path'
+							)
+								| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
+							time.relative.small(
+								datetime='{{ comment.date }}'
+							) {{ comment.relativeDate | verboseNumbers }}
 
 
 	//----------------------------------//
@@ -56,9 +82,14 @@
 		ng-show='kifu.path.m !== 0'
 	)
 		.panel.panel-default
-			.panel-heading Kibitz
+			.panel-heading
+				span.fui-chat
+				= ' '
+				| Kibitz
 			.panel-body(
 			)
+				div(ng-if='!comments.length') &hellip;
+
 				ul.media-list(
 					ng-show='comments.length'
 				)
@@ -108,7 +139,7 @@
 								| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
 
 							span.help-block= 'You can use '
-								a(href='http://daringfireball.net/projects/markdown/syntax') Markdown
+								a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
 								= ' for formatting.'
 
 							button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
@@ -136,7 +167,7 @@
 							| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
 
 						span.help-block= 'You can use '
-							a(href='http://daringfireball.net/projects/markdown/syntax') Markdown
+							a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
 							= ' for formatting.'
 
 				.row

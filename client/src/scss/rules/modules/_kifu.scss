@@ -12,3 +12,92 @@
 		}
 	}
 }
+
+/*@media (max-width: $screen-sm-min) {*/
+	/*.kifu-banner {*/
+		/*.name {*/
+			/*color: red;*/
+		/*}*/
+	/*}*/
+/*}*/
+
+.kifu-banner {
+	$stone-size: 3em;
+
+	@extend .clearfix;
+	margin: {
+		bottom: 1em;
+	}
+	/*padding: {*/
+		/*left: $stone-size + 1em;*/
+		/*right: $stone-size + 1em;*/
+	/*}*/
+	position: relative;
+
+	.name {
+		@extend h1;
+		display: inline-block;
+		margin: {
+			bottom: 0;
+			left: 0;
+			right: 0;
+			top: 0;
+		};
+		@include small() {
+			color: red;
+		};
+	}
+
+	.rank {
+		@extend h1;
+		display: inline-block;
+		margin: 0;
+		opacity: 0.5;
+	}
+
+	.captures {
+		border-radius: 50%;
+		cursor: help;
+		/*bottom: 0;*/
+		/*display: inline-block;*/
+		font-family: Righteous;
+		height: $stone-size;
+		line-height: $stone-size;
+		position: relative;
+		text-align: center;
+		top: 0.5em;
+		width: $stone-size;
+		/*top: 50%;*/
+		/*transform: translateY(-50%);*/
+	}
+
+	$space: 1em;
+	.white {
+		@extend .pull-left;
+		color: hsl(0, 0%, 80%);
+
+		.captures {
+			@extend .pull-left;
+
+			background: {
+				color: hsl(0, 0%, 95%);
+			}
+			margin-right: $space;
+			/*left: 0;*/
+		}
+	}
+
+	.black {
+		@extend .pull-right;
+		color: hsl(0, 0%, 40%);
+
+		.captures {
+			@extend .pull-right;
+			background: {
+				color: hsl(0, 0%, 20%);
+			}
+			margin-left: $space;
+			/*right: 0;*/
+		}
+	}
+}

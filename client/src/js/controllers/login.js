@@ -4,6 +4,7 @@ angular.module('gokibitz.controllers')
 		$scope.user = {};
 
 		$scope.login = function (form) {
+			console.log('login function wat');
 			Auth.login('password', {
 				'email': $scope.user.email,
 				'password': $scope.user.password
@@ -28,8 +29,14 @@ angular.module('gokibitz.controllers')
 				}
 			});
 
-			$scope.cancel = function () {
-				$modalInstance.dismiss('cancel');
-			};
+		};
+
+		$scope.cancel = function (callback) {
+			$modalInstance.dismiss('cancel');
+
+			console.log('firing callback...', callback);
+			if (typeof callback === 'function') {
+				callback();
+			}
 		};
 	});

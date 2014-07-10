@@ -12,7 +12,11 @@ module.exports = {
 			html = '<p>' + comment.replace(/\n/g, '</p><p>') + '</p>';
 
 			// Format nicknames
-			html = html.replace(/(<p>)([^:\s]{3,}:)\s/g, '<p><span class="wgo-comments-nick">$2</span> ');
+			console.log('html checkeroo', html);
+			html = html.replace(
+				/(<p>)([^:\s]{3,}(\s\[[^:\]]*\])?:)/g,
+				'<p><span class="wgo-comments-nick">$2</span> '
+			);
 
 			// Format moves
 			html = html.replace(/\b[a-zA-Z]1?\d\b/g, '<b class="wgo-move-link">$&</b>');

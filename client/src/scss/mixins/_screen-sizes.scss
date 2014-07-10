@@ -1,0 +1,11 @@
+@mixin small() {
+	@media (max-width: $screen-sm-min) { @content; }
+}
+
+@mixin medium() {
+	@media (max-width: $screen-md-min) { @content; }
+}
+
+@mixin large() {
+	@media (max-width: $screen-lg-min) { @content; }
+}

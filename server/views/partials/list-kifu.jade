@@ -43,7 +43,9 @@
 					h5.media-heading
 						a(
 							href='/kifu/{{ item.shortid }}'
-						) {{ item.game.info.black }} vs. {{ item.game.info.white }} ({{ item.game.info.result }})
+						) {{ item.game.info.white || 'Anonymous' }} vs. {{ item.game.info.black || 'Anonymous' }}
+							= ' '
+							span(ng-if='item.game.info.result') ({{ item.game.info.result }})
 							= ' '
 							.label.label-info(ng-if='item.comments.length > 0') {{ item.comments.length }}
 								= ' '
@@ -51,6 +53,7 @@
 									count='item.comments.length'
 									when='{ "one": "Comment", "other": "Comments" }'
 								)
+					= ' '
 					time(
 						datetime='{{ item.game.info.date }}'
 					) {{ item.game.info.date | date: 'longDate' }}

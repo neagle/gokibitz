@@ -20,6 +20,7 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.signupModal = function () {
+		console.log('sign up muthafucka');
 		$modal.open({
 			templateUrl: '/partials/signup',
 			controller: 'SignupController'

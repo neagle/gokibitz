@@ -13,6 +13,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 				.icon-bar
 				.icon-bar
 			a.navbar-brand(href='/' name='top') go<b>kibitz</b>
+				span.release alpha
 
 		.collapse.navbar-collapse(
 			collapse='isCollapsed'
@@ -38,7 +39,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					a(ng-click='loginModal()') Log In
 				li
 					//-a(href='/signup') Sign Up
-					a(ng-click='SignupModal()') Sign Up
+					a(ng-click='signupModal()') Sign Up
 
 			ul.nav.navbar-nav.navbar-right(ng-show='currentUser')
 				li.dropdown

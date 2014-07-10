@@ -63,7 +63,7 @@ angular.module('gokibitz.controllers')
 				clearTimeout(searchTimeout);
 				searchTimeout = setTimeout(function () {
 					$scope.listKifu(true);
-				}, 500);
+				}, 200);
 			}
 			//if ($scope.search && $scope.search.length > 2) {
 			//}
