@@ -7,7 +7,7 @@ angular.module('gokibitz.controllers')
 		'Comment',
 		'pathFilter',
 		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter) {
-			console.log('Comment Controller');
+			//console.log('Comment Controller');
 			//console.log('scope', $scope);
 
 			$scope.$watch('kifu', function () {
@@ -16,9 +16,9 @@ angular.module('gokibitz.controllers')
 					$scope.formData = {};
 
 					$scope.listComments = function () {
-						console.log('checking $scope.comments', $scope.comments);
+						//console.log('checking $scope.comments', $scope.comments);
 						//console.log('$scope.loading', $scope.loading);
-						console.log('list comments itself, checking path', $scope.kifu.path);
+						//console.log('list comments itself, checking path', $scope.kifu.path);
 						var path;
 
 						if ($scope.kifu.path.m === 0) {
@@ -26,7 +26,7 @@ angular.module('gokibitz.controllers')
 						} else {
 							path = pathFilter($scope.kifu.path, 'string');
 						}
-						console.log('path', path);
+						//console.log('path', path);
 
 						$http.get('/api/kifu/' +
 							$scope.kifu._id + '/comments/' + path
@@ -49,7 +49,7 @@ angular.module('gokibitz.controllers')
 						var data = $scope.formData;
 						data._id = $scope.kifu._id;
 						data.path = pathFilter($scope.kifu.path, 'string');
-						console.log('checking data', data);
+						//console.log('checking data', data);
 
 						var newComment = new Comment(data);
 						newComment.$save(function (response) {
@@ -110,7 +110,7 @@ angular.module('gokibitz.controllers')
 					}, true);
 
 					$scope.$on('edit', function (event, edit) {
-						console.log('edit has changed', edit);
+						//console.log('edit has changed', edit);
 					});
 				}
 			});

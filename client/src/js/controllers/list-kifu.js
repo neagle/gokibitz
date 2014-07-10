@@ -7,8 +7,8 @@ angular.module('gokibitz.controllers')
 			if (typeof replace === 'undefined') {
 				replace = false;
 			}
-			console.log('replace?', replace);
-			console.log('listing kifu, starting with', $scope.index)
+			//console.log('replace?', replace);
+			//console.log('listing kifu, starting with', $scope.index)
 			var url;
 			if ($scope.currentUser) {
 				url = '/api/user/' + $scope.currentUser.username + '/kifu';
@@ -24,7 +24,7 @@ angular.module('gokibitz.controllers')
 			if ($scope.search && $scope.search.length > 2) {
 				params.search = $scope.search;
 				//replace = true;
-				console.log('and searching for', $scope.search);
+				//console.log('and searching for', $scope.search);
 			}
 
 			$http.get(url, {
@@ -46,7 +46,6 @@ angular.module('gokibitz.controllers')
 		};
 
 		$scope.moreKifu = function () {
-			console.log('moar kifu');
 			$scope.index += $scope.kifu.length;
 			$scope.listKifu(false);
 		};
@@ -56,7 +55,6 @@ angular.module('gokibitz.controllers')
 			//console.log('resetting scope index from', $scope.index);
 			$scope.index = 0;
 			//console.log('...to', $scope.index);
-			console.log('searching kifu');
 
 			if ($scope.searched !== $scope.search) {
 				$scope.searched = $scope.search;
@@ -76,7 +74,6 @@ angular.module('gokibitz.controllers')
 					for (var i = $scope.kifu.length - 1; i >= 0; i -= 1) {
 						var item = $scope.kifu[i];
 						if (item._id === kifu._id) {
-							console.log('delete!!!');
 							$scope.kifu.splice(i, 1);
 						}
 					}

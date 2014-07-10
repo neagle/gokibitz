@@ -2,9 +2,7 @@ var bulk = require('bulk-require');
 var angular = require('angular');
 
 // WGo
-console.log('loading wgo...');
 require('./lib/wgo/wgo.min.js');
-console.log('wgo?', WGo);
 
 var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',

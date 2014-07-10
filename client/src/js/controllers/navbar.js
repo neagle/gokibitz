@@ -20,7 +20,6 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.signupModal = function () {
-		console.log('sign up muthafucka');
 		$modal.open({
 			templateUrl: '/partials/signup',
 			controller: 'SignupController'
@@ -29,7 +28,6 @@ angular.module('gokibitz.controllers')
 
 	$scope.logout = function () {
 		Auth.logout(function (err) {
-			console.log('log out');
 			if (!err) {
 				$location.path('/');
 				$rootScope.flash = {
