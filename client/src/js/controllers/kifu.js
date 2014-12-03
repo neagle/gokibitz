@@ -29,6 +29,7 @@ angular.module('gokibitz.controllers')
 						sgf: data.game.sgf,
 						board: {
 							background: '/images/kaya/kaya-texA3.jpg',
+							stoneHandler: window.WGo.Board.drawHandlers.FLAT,
 							font: 'Righteous'
 						},
 						layout: [

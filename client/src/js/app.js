@@ -2,7 +2,18 @@ var bulk = require('bulk-require');
 var angular = require('angular');
 
 // WGo
-require('./lib/wgo/wgo.min.js');
+require('./lib/wgo/src/wgo.js');
+require('./lib/wgo/src/kifu.js');
+require('./lib/wgo/src/sgfparser.js');
+require('./lib/wgo/src/player.js');
+require('./lib/wgo/src/basicplayer.js');
+require('./lib/wgo/src/basicplayer.component.js');
+require('./lib/wgo/src/basicplayer.infobox.js');
+require('./lib/wgo/src/basicplayer.commentbox.js');
+require('./lib/wgo/src/basicplayer.control.js');
+require('./lib/wgo/src/player.editable.js');
+require('./lib/wgo/src/scoremode.js');
+require('./lib/wgo/src/player.permalink.js');
 
 var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',
