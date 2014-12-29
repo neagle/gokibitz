@@ -160,7 +160,12 @@
 								rows=3
 								gk-comment-box
 								gk-comment-submit='addComment()'
+								gk-comment-preview='preview'
 							)
+				.row
+					.col-md-12
+						h5(ng-hide='!preview') Preview
+						.preview(ng-bind-html='preview')
 				.row
 					.col-md-12
 						span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit

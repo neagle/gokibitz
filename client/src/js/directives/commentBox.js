@@ -40,6 +40,16 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				if (key === 27) {
 					$scope.cancel();
+				} else {
+					if (element.val() !== text) {
+						text = element.val();
+
+						// Get an HTML preview of the markdown
+						$http.post('/api/markdown/', {markdown: element.val()})
+							.success(function (data) {
+								$scope.preview = data.markup;
+							});
+					}
 				}
 			});
 		}
