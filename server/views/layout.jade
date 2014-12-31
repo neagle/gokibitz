@@ -8,12 +8,12 @@ html(lang='en', ng-app='gokibitz')
 		link(rel='stylesheet', href='/css/app.css')
 		style .ng-cloak { display:none; }
 		script(src='/js/modernizr.js')
-		script.
-			function resize() {
-				var height = document.getElementsByTagName('html')[0].scrollHeight;
-				console.log('resize', height);
-				window.parent.postMessage(['setHeight', height], '*');
-			}
+		//script.
+		//	function resize() {
+		//		var height = document.getElementsByTagName('html')[0].scrollHeight;
+		//		console.log('resize', height);
+		//		window.parent.postMessage(['setHeight', height], '*');
+		//	}
 
 	body
 		include navbar

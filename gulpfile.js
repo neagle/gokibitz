@@ -8,7 +8,10 @@ var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var browserify = require('browserify');
+var uglify = require('gulp-uglify');
 var source = require('vinyl-source-stream');
+var transform = require('vinyl-transform');
+var buffer = require('vinyl-buffer');
 var nodemon = require('gulp-nodemon');
 var livereload = require('gulp-livereload');
 var notify = require('gulp-notify');
@@ -87,20 +90,31 @@ gulp.task('sass', ['sass-includes'], function () {
 });
 
 gulp.task('browserify', function () {
-	return browserify({
-		entries: ['./client/src/js/app.js']
-	})
-	.bundle({ debug: true })
-	.on('error', notify.onError({
-		title: 'Browserify Error',
-		message: '<%= error.message %>'
-	}))
-	.on('error', function (e) {
-		gutil.log(e);
-		this.emit('end');
-	})
-	.pipe(source('app.js'))
-	.pipe(gulp.dest('./client/public/js/'));
+	var bundler = browserify({
+		// Required watchify args
+		cache: {}, packageCache: {}, fullPaths: true,
+		entries: './client/src/js/app.js'
+	});
+
+	var bundle = function () {
+		return bundler
+			.bundle()
+			// Report compile errors
+			.on('error', notify.onError({
+				title: 'Browserify Error',
+				message: '<%= error.message %>'
+			}))
+			// Use vinyl-source-stream to make the
+			// stream gulp compatible. Specifiy the
+			// desired output filename here
+			.pipe(source('app.js'))
+			.pipe(buffer())
+			.pipe(uglify())
+			// Specify the output destination
+			.pipe(gulp.dest('./client/public/js/'));
+	};
+
+	return bundle();
 });
 
 // Lint our server-side JS

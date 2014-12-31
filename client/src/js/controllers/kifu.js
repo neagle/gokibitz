@@ -10,7 +10,7 @@ angular.module('gokibitz.controllers')
 		LoginSignup
 	) {
 			$scope.LoginSignup = LoginSignup;
-			console.log('LoginSignup', LoginSignup);
+			//console.log('LoginSignup', LoginSignup);
 
 			//console.log('kifu control', $routeParams);
 			var comments = require('../helpers/comments.js');

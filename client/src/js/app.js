@@ -130,14 +130,14 @@ gokibitz.run([
 	'Auth',
 	function ($rootScope, $location, Auth) {
 
-		console.log('resizing from run');
-		resize();
+		//console.log('resizing from run');
+		//resize();
 
 		//watching the value of the currentUser variable.
 		$rootScope.$watch('currentUser', function(currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
-			console.log('$location.path()', $location.path());
+			//console.log('$location.path()', $location.path());
 			var path = $location.path().split('/');
 			path = '/' +  path[1];
 			console.log('path', path);
