@@ -107,6 +107,10 @@ angular.module('gokibitz.controllers')
 						$scope.loading = true;
 						$scope.comments = null;
 						$scope.listComments();
+
+						// Resize the iframe
+						console.log('resize from comments controller');
+						resize();
 					}, true);
 
 					$scope.$on('edit', function (event, edit) {
