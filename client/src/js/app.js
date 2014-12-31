@@ -129,6 +129,10 @@ gokibitz.run([
 	'$location',
 	'Auth',
 	function ($rootScope, $location, Auth) {
+
+		console.log('resizing from run');
+		resize();
+
 		//watching the value of the currentUser variable.
 		$rootScope.$watch('currentUser', function(currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
