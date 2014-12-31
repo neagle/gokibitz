@@ -1,77 +1,61 @@
 angular.module('gokibitz.controllers')
-	.controller('UploadController', [
-		'$scope',
-		'$fileUploader',
-		function ($scope, $fileUploader) {
-			console.log('upload control');
-			// create a uploader with options
-			var uploader = $scope.uploader = $fileUploader.create({
-				scope: $scope,                          // to automatically update the html. Default: $rootScope
+	.controller('UploadController',
+		function ($scope, FileUploader) {
+			console.log('upload control', FileUploader);
+			var uploader = $scope.uploader = new FileUploader({
 				url: '/api/kifu/upload',
-				formData: [
-					{ key: 'value' }
-				],
-				filters: [
-					function (item) {                    // first user filter
-					console.info('filter1');
-					return true;
-				}
-				]
 			});
 
+			// FILTERS
 
-			// ADDING FILTERS
+			//uploader.filters.push({
+			//	name: 'customFilter',
+			//	fn: function(item /*{File|FileLikeObject}*/, options) {
+			//		return this.queue.length < 10;
+			//	}
+			//});
 
-			uploader.filters.push(function (item) { // second user filter
-				console.info('filter2');
-				return true;
-			});
+			// CALLBACKS
 
-			// REGISTER HANDLERS
+			uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+				console.info('onWhenAddingFileFailed', item, filter, options);
+			};
+			uploader.onAfterAddingFile = function(fileItem) {
+				console.info('onAfterAddingFile', fileItem);
+			};
+			uploader.onAfterAddingAll = function(addedFileItems) {
+				console.info('onAfterAddingAll', addedFileItems);
+			};
+			uploader.onBeforeUploadItem = function(item) {
+				console.info('onBeforeUploadItem', item);
+			};
+			uploader.onProgressItem = function(fileItem, progress) {
+				console.info('onProgressItem', fileItem, progress);
+			};
+			uploader.onProgressAll = function(progress) {
+				console.info('onProgressAll', progress);
+			};
+			uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				console.info('onSuccessItem', fileItem, response, status, headers);
+				fileItem.shortid = response.shortid;
+			};
+			uploader.onErrorItem = function(fileItem, response, status, headers) {
+				console.info('onErrorItem', fileItem, response, status, headers);
+			};
+			uploader.onCancelItem = function(fileItem, response, status, headers) {
+				console.info('onCancelItem', fileItem, response, status, headers);
+			};
+			uploader.onCompleteItem = function(fileItem, response, status, headers) {
+				console.info('onCompleteItem', fileItem, response, status, headers);
+			};
+			uploader.onCompleteAll = function() {
+				console.info('onCompleteAll');
+			};
 
-			uploader.bind('afteraddingfile', function (event, item) {
-				console.info('After adding a file', item);
-			});
+			//uploader.bind('complete', function (event, xhr, item, response) {
+			//	console.info('Complete', xhr, item, response);
+			//	//item.shortid = response.shortid;
+			//});
 
-			uploader.bind('whenaddingfilefailed', function (event, item) {
-				console.info('When adding a file failed', item);
-			});
-
-			uploader.bind('afteraddingall', function (event, items) {
-				console.info('After adding all files', items);
-			});
-
-			uploader.bind('beforeupload', function (event, item) {
-				console.info('Before upload', item);
-			});
-
-			uploader.bind('progress', function (event, item, progress) {
-				console.info('Progress: ' + progress, item);
-			});
-
-			uploader.bind('success', function (event, xhr, item, response) {
-				console.info('Success', xhr, item, response);
-			});
-
-			uploader.bind('cancel', function (event, xhr, item) {
-				console.info('Cancel', xhr, item);
-			});
-
-			uploader.bind('error', function (event, xhr, item, response) {
-				console.info('Error', xhr, item, response);
-			});
-
-			uploader.bind('complete', function (event, xhr, item, response) {
-				console.info('Complete', xhr, item, response);
-				item.shortid = response.shortid;
-			});
-
-			uploader.bind('progressall', function (event, progress) {
-				console.info('Total progress: ' + progress);
-			});
-
-			uploader.bind('completeall', function (event, items) {
-				console.info('Complete all', items);
-			});
 		}
-	]);
+	);

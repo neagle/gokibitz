@@ -12,7 +12,6 @@ module.exports = {
 			html = '<p>' + comment.replace(/\n/g, '</p><p>') + '</p>';
 
 			// Format nicknames
-			console.log('html checkeroo', html);
 			html = html.replace(
 				/(<p>)([^:\s]{3,}(\s\[[^:\]]*\])?:)/g,
 				'<p><span class="wgo-comments-nick">$2</span> '

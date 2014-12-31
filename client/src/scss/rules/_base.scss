@@ -5,7 +5,6 @@
 
 body {
 	// Add space for the fixed navbar
-	padding-top: 70px;
 }
 
 time {
@@ -23,7 +22,6 @@ html.touch .only-no-touch {
 	display: none;
 }
 
-.clickable {
+a[ng-click], .clickable {
 	cursor: pointer;
 }
-

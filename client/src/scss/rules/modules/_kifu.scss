@@ -27,6 +27,7 @@
 	@extend .clearfix;
 	margin: {
 		bottom: 1em;
+		top: 20px;
 	}
 	/*padding: {*/
 		/*left: $stone-size + 1em;*/
@@ -44,7 +45,7 @@
 			top: 0;
 		};
 		@include small() {
-			color: red;
+			font-size: 24px;
 		};
 	}
 
@@ -53,6 +54,9 @@
 		display: inline-block;
 		margin: 0;
 		opacity: 0.5;
+		@include small() {
+			font-size: 24px;
+		};
 	}
 
 	.captures {
@@ -69,6 +73,13 @@
 		width: $stone-size;
 		/*top: 50%;*/
 		/*transform: translateY(-50%);*/
+		@include small() {
+			font-size: 12px;
+			height: $stone-size / 1.8;
+			line-height: $stone-size / 1.8;
+			top: 0.3em;
+			width: $stone-size / 1.8;
+		}
 	}
 
 	$space: 1em;

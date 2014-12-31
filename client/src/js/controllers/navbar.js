@@ -24,7 +24,7 @@ angular.module('gokibitz.controllers')
 			templateUrl: '/partials/signup',
 			controller: 'SignupController'
 		});
-	}
+	};
 
 	$scope.logout = function () {
 		Auth.logout(function (err) {

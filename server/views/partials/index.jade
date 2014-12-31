@@ -1,10 +1,33 @@
-.jumbotron.hero
-	img.pull-left(src='/images/goban_bubble.svg')
-	h3 Kibitzers welcome!
-	p
-		:markdown
-			GoKibitz makes it easy to have conversations about go games.
+.jumbotron
+	.container-fluid
+		.row
+			.col-md-12
+				h3
+					span GO
+					span KIBITZ
+				p Move-by-move conversations about go games.
+				img.goban(src='/images/goban_1.svg')
 
-//-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
 
-//-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.
+
+.container-fluid
+	.row.copy
+		.col-sm-4
+			h3 Social Game Reviews
+			p Have you ever asked for comments on a game you&rsquo;ve played, then had to wade through paragraphs of &ldquo;at move 150, maybe you should have considered c9&hellip;&rdquo;?
+			p GoKibitz lets people comment on individual moves so that it&rsquo;s easy to have specific and detailed conversations about game records.
+		.col-sm-4
+			h3 GoKibitz is in Alpha
+			p That means there are going to be bugs, and lots of things that need improvement. But it also means you get to help shape the future of GoKibitz with your
+				= ' '
+				a(href='mailto:nate@nateeagle.com') feedback!
+			p There will be lots of changes as I work to get the app ready for a more feature-complete beta release.
+		.col-sm-4
+			h3 Sign Up
+			p You&rsquo;ll need an account to upload kifu or leave comments on games. GoKibitz is completely free.
+			button.btn.btn-primary(ng-click='LoginSignup.loginModal()') Log In
+			= ' '
+			button.btn.btn-primary(ng-click='LoginSignup.signupModal()') Sign Up
+	//-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
+
+	//-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.

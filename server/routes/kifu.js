@@ -3,7 +3,7 @@ var router = express.Router();
 var auth = require('../config/auth');
 var multiparty = require('multiparty');
 var fs = require('fs');
-var smartgame = require('smartgame');
+//var smartgame = require('smartgame');
 var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
@@ -161,7 +161,7 @@ router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 	form.parse(req, function (error, fields, files) {
 		files.file.forEach(function (file) {
 			var sgf = fs.readFileSync(file.path, { encoding: 'utf-8' });
-			var game = smartgame.parse(sgf);
+			//var game = smartgame.parse(sgf);
 			var newKifu = new Kifu();
 
 			newKifu.owner = req.user;

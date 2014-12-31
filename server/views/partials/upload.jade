@@ -7,7 +7,8 @@
 		.panel-body
 			div(ng-show='uploader.isHTML5')
 				input(
-					ng-file-select
+					nv-file-select
+					uploader='uploader'
 					type='file'
 					multiple
 				)
@@ -34,11 +35,11 @@
 									ng-if='item.shortid'
 									href='/kifu/{{ item.shortid }}'
 								)
-									{{ item.file.name }}
+									| {{ item.file.name }}
 								span(
 									ng-if='!item.shortid'
 								)
-									{{ item.file.name }}
+									| {{ item.file.name }}
 						td(ng-show='uploader.isHTML5' nowrap)
 							| {{ item.file.size/1024/1024|number:2 }} MB
 						td(ng-show='uploader.isHTML5')

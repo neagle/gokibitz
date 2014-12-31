@@ -50,10 +50,12 @@ var routes = require('./server/routes/index');
 var user = require('./server/routes/user');
 var kifu = require('./server/routes/kifu');
 var comment = require('./server/routes/comment');
+var markdown = require('./server/routes/markdown');
 app.use('/', routes);
 app.use('/api/user/', user);
 app.use('/api/kifu/', kifu);
 app.use('/api/comment/', comment);
+app.use('/api/markdown/', markdown);
 app.use('*', routes);
 
 /// catch 404 and forward to error handler

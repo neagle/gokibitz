@@ -1,24 +1,21 @@
 doctype html
 html(lang='en', ng-app='gokibitz')
 	head
+		base(href='/')
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		title= title
 		link(rel='stylesheet', href='/css/app.css')
+		style
+			.ng-cloak { display:none; }
 		script(src='/js/modernizr.js')
 	body
 		include navbar
+
 		block header
 
-		.container-fluid
-			.row
-				// Flash messages
-				.col-sm-12(ng-show='flash')
-					alert(
-						type='{{ flash.type }}'
-						close='flash = null'
-					) {{ flash.message }}
+		block content
 
-				block content
+		include footer
 
 		script(src='/js/app.js')

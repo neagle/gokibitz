@@ -16,6 +16,13 @@
 //
 // http://smacss.com/book/type-layout
 
+.navbar + * {
+	margin: {
+		top: 53px;
+//		top: 70px;
+	}
+}
+
 .navbar-header {
 	.navbar-brand {
 		color: $flat-sunflower;
@@ -48,12 +55,228 @@
 	}
 }
 
-sgf.media-object {
-	width: 100px;
+.navbar-nav {
+	> li {
+    > a {
+			font: {
+				family: $headings-font-family;
+				size: 14px;
+			}
+		}
+	}
 }
+
+
+
+.open > .dropdown-menu {
+	margin-top: 4px !important;
+}
+
+sgf.media-object {
+		width: 100px;
+	}
 
 .wgo-move-link {
-	cursor: help;
-	@extend code;
+		cursor: help;
+		@extend code;
+	}
+
+.jumbotron {
+	background-color: transparent;
+  margin-bottom: 0;
+	padding: {
+		bottom: 20px;
+		top: 0;
+	}
+
+	h3 {
+		font-size: 15em;
+
+		@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+			font: {
+				size: 13em;
+			}
+		}
+
+		@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+			font: {
+				size: 10em;
+			}
+		}
+
+		@media (max-width: $screen-xs-max) {
+			font: {
+				size: 5em;
+			}
+		}
+
+		letter-spacing: -2px;
+		line-height: 1;
+		margin: {
+			bottom: 0px;
+			left: 0;
+			right: 0;
+			top: 40px;
+		}
+		opacity: 0.6;
+		position: relative;
+		text-align: center;
+		z-index: 1;
+
+		span {
+		}
+		span:first-child {
+//			color: darken($flat-green-1, 2.5%);
+			color: $flat-orange-1;
+		}
+
+		span:last-child {
+//			color: darken($flat-green-1, 5%);
+			color: $flat-carrot;
+		}
+	}
+
+	img.goban {
+		display: block;
+		margin: 0 auto;
+		position: absolute;
+		left: calc(50% - 15em);
+		top: 20px;
+		width: 30em;
+
+		@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+			$width: 25em;
+			left: calc(50% - ($width / 2));
+			width: $width;
+		}
+
+		@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+			left: calc(50% - 10em);
+			top: -10px;
+			width: 20em;
+		}
+
+		@media (max-width: $screen-xs-max) {
+			left: calc(50% - 6em);
+			top: -15px;
+			width: 12em;
+		}
+	}
+
+	p {
+//		color: lighten($flat-green-1, 20%);
+//		color: darken($flat-green-2, 5%);
+		color: $flat-green-2;
+		font: {
+			size: 48px;
+			weight: bold;
+		}
+
+		@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+			font: {
+				size: 36px;
+			}
+		}
+
+		@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+			font: {
+				size: 24px;
+			}
+		}
+
+		@media (max-width: $screen-xs-max) {
+			color: darken($flat-green-2, 10%);
+			font: {
+				size: 12px;
+			}
+		}
+
+		margin: {
+//			bottom: 50px;
+//			left: 400px;
+		}
+		opacity: 0.8;
+		position: relative;
+		text-align: center;
+		z-index: 1;
+	}
 }
 
+
+.copy {
+  /*background-color: $flat-clouds;*/
+  color: $flat-clouds;
+  padding: 30px;
+
+  h4 {
+    color: $flat-clouds;
+  }
+}
+
+sgf.fill {
+  left: -5em;
+  top: -10em;
+  right: -5em;
+  opacity: 1;
+  position: absolute;
+  z-index: 0;
+
+  .wgo-board {
+    background-color: transparent;
+  }
+}
+
+.navbar-inverse {
+	.navbar-nav {
+		> li {
+			> a {
+				color: lighten($flat-green-1, 20%);
+			}
+		}
+	}
+}
+
+.footer {
+	background-color: $flat-wet-asphalt;
+	color: $flat-clouds;
+	font: {
+		family: $headings-font-family;
+	}
+	padding: {
+		bottom: 2px;
+		top: 15px;
+	}
+
+	.copyright {
+		position: relative;
+
+		.symbol {
+			font: {
+				size: 42px;
+			}
+			left: 0;
+			line-height: 0;
+			opacity: 0.3;
+			position: absolute;
+			top: 14px;
+		}
+	}
+
+	p {
+		font: {
+			size: 18px;
+		}
+		padding: {
+			left: 30px;
+		}
+	}
+}
+
+.copy {
+	background-color: $flat-clouds;
+	color: $flat-gray-4;
+}
+
+.form-control {
+	color: $flat-gray-4;
+}

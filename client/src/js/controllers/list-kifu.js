@@ -1,13 +1,12 @@
 angular.module('gokibitz.controllers')
 	.controller('ListKifuController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
-		console.log('list kifu control');
 		$scope.index = 0;
 		$scope.kifu = [];
 		$scope.listKifu = function (replace) {
 			if (typeof replace === 'undefined') {
 				replace = false;
 			}
-			//console.log('replace?', replace);
+
 			//console.log('listing kifu, starting with', $scope.index)
 			var url;
 			if ($scope.currentUser) {
@@ -32,6 +31,8 @@ angular.module('gokibitz.controllers')
 			})
 				.success(function (data) {
 					//console.log('data', data);
+					$scope.noKifu = false;
+
 					if (!replace) {
 						$scope.kifu = $scope.kifu.concat(data.kifu);
 					} else {
@@ -42,6 +43,7 @@ angular.module('gokibitz.controllers')
 				})
 				.error(function (data) {
 					console.log('Error:', data);
+					$scope.noKifu = true;
 				});
 		};
 

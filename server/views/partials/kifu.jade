@@ -1,182 +1,232 @@
-.kifu-banner.col-lg-12
-	.white
-		.name {{ info.white.name || 'Anonymous' }}
-		= ' '
-		.rank {{ info.white.rank }}
-		.captures(
-			tooltip-placement='right'
-			tooltip='White’s captured prisoners'
-		) {{ captures.white }}
-
-	.black
-		.name {{ info.black.name || 'Anonymous' }}
-		= ' '
-		.rank {{ info.black.rank }}
-		.captures(
-			tooltip-placement='left'
-			tooltip='Black’s captured prisoners'
-		) {{ captures.black }}
-
-.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3
-	#player
-		a(
-			target='_self'
-			href='/api/kifu/{{ kifu.shortid }}/sgf'
-		) Download SGF
-
-.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
-	div.panel.panel-default
-		div.panel-heading
-			span.fui-document
-			= ' '
-			| Game Comments
-		div.panel-body
-			div(ng-bind-html='sgfComment')
-			div(ng-if='!sgfComment') &hellip;
-
-.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
-
-	//-------------------------//
-	//- All-kifu comment list -//
-	//-------------------------//
-	.comments(
-		ng-show='kifu.path.m === 0 && comments.length'
-	)
-		.panel.panel-default
-			.panel-heading
-				span.fui-chat
+.container-fluid
+	.row
+		.kifu-banner.col-lg-12
+			.white
+				.name {{ info.white.name || 'Anonymous' }}
 				= ' '
-				| Kibitz: {{ comments.length }}
+				.rank {{ info.white.rank }}
+				.captures(
+					tooltip-placement='right'
+					tooltip='White’s captured prisoners'
+				) {{ captures.white }}
+
+			.black
+				.name {{ info.black.name || 'Anonymous' }}
 				= ' '
-				ng-pluralize(
-					count='comments.length'
-					when='{ "one": "Comment", "other": "Comments" }'
-				)
+				.rank {{ info.black.rank }}
+				.captures(
+					tooltip-placement='left'
+					tooltip='Black’s captured prisoners'
+				) {{ captures.black }}
 
-			.panel-body
-				ul.media-list
-					li.comment.media(
-						ng-repeat='comment in comments track by comment._id'
-						ng-class="{ false: 'animate', true: 'loading' }[loading]"
-					)
-						a.pull-left(href='/users/{{ comment.user.username }}')
-							img.media-object(
-								src='{{ comment.user.gravatar }}?s=24&d=retro'
-								style='width: 24px; height: 24px'
-							)
-						.comment-media-body
-							a(
-								href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
-								ng-click='kifu.path = comment.path'
-							)
-								| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
-							time.relative.small(
-								datetime='{{ comment.date }}'
-							) {{ comment.relativeDate | verboseNumbers }}
+		.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3
+			#player
+				a(
+					target='_self'
+					href='/api/kifu/{{ kifu.shortid }}/sgf'
+				) Download SGF
 
-
-	//----------------------------------//
-	//- List comments on a single move -//
-	//----------------------------------//
-	.comments(
-		ng-show='kifu.path.m !== 0'
-	)
-		.panel.panel-default
-			.panel-heading
-				span.fui-chat
-				= ' '
-				| Kibitz
-			.panel-body(
+		.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
+			div.panel.panel-default(
+				ng-hide='kifu.path.m !== 0'
 			)
-				div(ng-if='!comments.length') &hellip;
+				.panel-heading
+					span.fui-info
+					= ' '
+					| Game Info
+				.panel-body
+					table.table-condensed
+						tbody
+							tr(ng-if='kifu.game.info.date')
+								th Date:
+								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.result')
+								th Result:
+								td {{ kifu.game.info.result }}
 
-				ul.media-list(
-					ng-show='comments.length'
-				)
-					li.comment.media.col-md-12(
-						ng-class="{ false: 'animate', true: 'loading' }[loading]"
-						ng-repeat='comment in comments track by comment._id'
-					)
-						a.pull-left(href='/users/{{ comment.user.username }}')
-							img.media-object(
-								src='{{ comment.user.gravatar }}?s=24&d=retro'
-								style='width: 24px; height: 24px'
-							)
-						.comment.media-body(ng-hide='edit')
-							.btn-group.btn-group-xs.pull-right(
-								ng-hide='comment.user.username !== currentUser.username'
-							)
-								button.btn.btn-primary(ng-click='edit=!edit')
-									i.fui-new
+			div.panel.panel-default
+				div.panel-heading
+					span.fui-document
+					= ' '
+					| Game Comments
+				div.panel-body
+					div(ng-bind-html='sgfComment')
+					div(ng-if='!sgfComment') &hellip;
 
-								button.btn.btn-danger(
-									gk-really-message='Are you sure you want to delete your comment?'
-									gk-really-click='deleteComment(comment)'
-									gk-really-class='btn-danger'
-									gk-really-verb='Delete'
-								)
-									i.fui-trash
+		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
 
-							strong {{ comment.user.username }}
-							= ' '
-							time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
-
-							span.comment-text(
-								ng-bind-html='comment.content.html | markCoordinates'
-							)
-
-						.comment.media-body(ng-hide='!edit')
-							textarea.form-control(
-								rows='3'
-								ng-model='comment.content.markdown'
-								gk-comment-box='updateComment(comment), cancelEdit(comment)'
-								gk-comment-submit='updateComment(comment)'
-								gk-comment-cancel='cancelEdit(comment)'
-								gk-comment-oneway
-								gk-focus-me='edit'
-							)
-							span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-								| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-							span.help-block= 'You can use '
-								a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-								= ' for formatting.'
-
-							button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
-								i.fui-check
-							= ' '
-							button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
-								i.fui-cross
-
-			.panel-footer.comment-compose(
-				ng-if='kifu.path.m !== 0 && currentUser.username'
+			//-------------------------//
+			//- All-kifu comment list -//
+			//-------------------------//
+			.comments(
+				ng-show='kifu.path.m === 0'
 			)
-				.row
-					.col-md-12
-						form(ng-submit='addComment()')
-							label Comment:
-							textarea.form-control(
-								ng-model='formData.content'
-								rows=3
-								gk-comment-box
-								gk-comment-submit='addComment()'
-								gk-comment-preview='preview'
+				.panel.panel-default
+					.panel-heading
+						span.fui-chat
+						= ' '
+						| Kibitz: {{ comments.length }}
+						= ' '
+						ng-pluralize(
+							count='comments.length'
+							when='{ "one": "Comment", "other": "Comments" }'
+						)
+
+					.panel-body
+						p(ng-if='!comments.length') &hellip;
+						ul.media-list
+							li.comment.media(
+								ng-repeat='comment in comments track by comment._id'
 							)
-				.row
-					.col-md-12
-						h5(ng-hide='!preview') Preview
-						.preview(ng-bind-html='preview')
-				.row
-					.col-md-12
-						span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-							| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
+								a.pull-left(href='/users/{{ comment.user.username }}')
+									img.media-object(
+										src='{{ comment.user.gravatar }}?s=24&d=retro'
+										style='width: 24px; height: 24px'
+									)
+								.comment-media-body
+									a(
+										href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
+										ng-click='kifu.path = comment.path'
+									)
+										| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
+									time.relative.small(
+										datetime='{{ comment.date }}'
+									) {{ comment.relativeDate | verboseNumbers }}
 
-						span.help-block= 'You can use '
-							a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-							= ' for formatting.'
 
-				.row
-					.col-md-12
-						p.pull-right
-							button.btn.btn-primary.only-touch(ng-click='addComment()') Submit
+			//----------------------------------//
+			//- List comments on a single move -//
+			//----------------------------------//
+			.comments(
+				ng-show='kifu.path.m !== 0'
+			)
+				.panel.panel-default
+					.panel-heading
+						span.fui-chat
+						= ' '
+						| Kibitz
+					.panel-body(
+						ng-if='comments.length'
+					)
+						//-div(ng-if='!comments.length') &hellip;
+
+						ul.media-list(
+							ng-show='comments.length'
+						)
+							li.comment.media.col-md-12(
+								ng-class="{ false: 'animate', true: 'loading' }[loading]"
+								ng-repeat='comment in comments track by comment._id'
+							)
+								a.pull-left(href='/users/{{ comment.user.username }}')
+									img.media-object(
+										src='{{ comment.user.gravatar }}?s=24&d=retro'
+										style='width: 24px; height: 24px'
+									)
+								.comment.media-body(ng-hide='edit')
+									.btn-group.btn-group-xs.pull-right(
+										ng-hide='comment.user.username !== currentUser.username'
+									)
+										button.btn.btn-primary(ng-click='edit=!edit')
+											i.fui-new
+
+										button.btn.btn-danger(
+											gk-really-message='Are you sure you want to delete your comment?'
+											gk-really-click='deleteComment(comment)'
+											gk-really-class='btn-danger'
+											gk-really-verb='Delete'
+										)
+											i.fui-trash
+
+									strong {{ comment.user.username }}
+									= ' '
+									time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
+
+									span.comment-text(
+										ng-bind-html='comment.content.html | markCoordinates'
+									)
+
+								.comment.media-body(ng-hide='!edit')
+									textarea.form-control(
+										rows='3'
+										ng-model='comment.content.markdown'
+										gk-comment-box='updateComment(comment), cancelEdit(comment)'
+										gk-comment-submit='updateComment(comment)'
+										gk-comment-cancel='cancelEdit(comment)'
+										gk-comment-preview='preview'
+										gk-comment-oneway
+										gk-focus-me='edit'
+									)
+
+									h5(ng-hide='!preview') Preview
+									.preview(ng-bind-html='preview')
+
+									span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
+										| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
+
+									span.help-block= 'You can use '
+										a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
+										= ' for formatting.'
+
+									button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
+										i.fui-check
+									= ' '
+									button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
+										i.fui-cross
+
+					//-.panel-footer.comment-compose(
+						//-ng-if='kifu.path.m !== 0 && !currentUser.username'
+					//-)
+						//-.row
+							//-.col-md-12
+								//-a(ng-click='loginModal()') Log in
+								//-= ' or '
+								//-a(ng-click='signupModal()') sign up
+								//-= ' to leave comments.'
+
+					.panel-footer.comment-compose(
+						ng-if='kifu.path.m !== 0 && !currentUser.username'
+					)
+						.row
+							.col-md-12
+								p You need an account to make comments.
+								p
+									button.btn.btn-primary(
+										ng-click='LoginSignup.loginModal()'
+									) Log in
+									= ' '
+									button.btn.btn-primary(
+										ng-click='LoginSignup.signupModal()'
+									) Sign up
+
+					.panel-footer.comment-compose(
+						ng-if='kifu.path.m !== 0 && currentUser.username'
+					)
+						.row
+							.col-md-12
+								form(ng-submit='addComment()')
+									label Comment:
+									textarea.form-control(
+										ng-model='formData.content'
+										rows=3
+										gk-comment-box
+										gk-comment-submit='addComment()'
+										gk-comment-preview='preview'
+									)
+						.row
+							.col-md-12
+								h5(ng-hide='!preview') Preview
+								.preview(ng-bind-html='preview')
+						.row
+							.col-md-12
+								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
+									| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
+
+								span.help-block= 'You can use '
+									a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
+									= ' for formatting.'
+
+						.row
+							.col-md-12
+								p.pull-right
+									button.btn.btn-primary.only-touch(ng-click='addComment()') Submit
 

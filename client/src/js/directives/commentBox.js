@@ -4,21 +4,25 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function () {
+.directive('gkCommentBox', function ($http) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
 		scope: {
 			submit: '&gkCommentSubmit',
-			cancel: '&gkCommentCancel'
+			cancel: '&gkCommentCancel',
+			preview: '=gkCommentPreview'
 		},
 		link: function ($scope, element, attributes, ngModel) {
+			var text = element.val();
+
 			// Prevent changes in the model that happen elsewhere (ie, a regularly
 			// polling update) from updating more than the initial value of the
 			// comment box
 			if (attributes.gkCommentOneway) {
 				ngModel.$render = function () {
-					if (element.val() === '') {
+					var hasFocus = document.activeElement === element[0];
+					if (!hasFocus) {
 						element.val(ngModel.$viewValue);
 					} else {
 						ngModel.$setViewValue(element.val());

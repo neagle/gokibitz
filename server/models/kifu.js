@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var shortid = require('shortid');
-var smartgame = require('smartgame');
+//var smartgame = require('smartgame');
 var moment = require('moment');
-var Comment = require('./comment').Comment;
+//var Comment = require('./comment').Comment;
 
 var kifuSchema = new Schema({
 	shortid: {

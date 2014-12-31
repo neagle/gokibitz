@@ -20,6 +20,7 @@ var gokibitz = angular.module('gokibitz', [
 	'gokibitz.directives',
 	'gokibitz.services',
 	'gokibitz.filters',
+	'ui.router',
 	'ui.bootstrap',
 	'ui.bootstrap.tpls',
 	'ngCookies',
@@ -32,6 +33,7 @@ var gokibitz = angular.module('gokibitz', [
 	'ui.utils'
 ]);
 
+require('angular-ui-router');
 require('angular-animate');
 require('angular-route');
 require('angular-file-upload');
@@ -61,7 +63,17 @@ gokibitz.config([
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/index',
-				controller: 'IndexController'
+				controller: 'IndexController',
+				resolve: {
+					//  Just for old-times sake: we're no longer using a kifu on the homepage
+					//kifu: function ($http) {
+					//	return $http.get('/api/kifu', {
+					//		params: {
+					//			limit: 1
+					//		}
+					//	});
+					//}
+				}
 			})
 			//.when('/login', {
 				//templateUrl: '/partials/login',
@@ -121,10 +133,15 @@ gokibitz.run([
 		$rootScope.$watch('currentUser', function(currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
+			console.log('$location.path()', $location.path());
+			var path = $location.path().split('/');
+			path = '/' +  path[1];
+			console.log('path', path);
 			if (
 				!currentUser &&
-				!~['/', '/login', '/logout', '/signup', '/kifu'].indexOf($location.path())
+				!~['/', '/login', '/logout', '/signup', '/kifu'].indexOf(path)
 			) {
+				console.log('redirect to auth!');
 				Auth.currentUser();
 			}
 		});

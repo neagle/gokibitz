@@ -1,4 +1,5 @@
 angular.module('gokibitz.controllers')
-	.controller('IndexController', function ($rootScope, $scope) {
-		console.log('index control');
+	.controller('IndexController', function ($rootScope, $scope, $http, LoginSignup) {
+		console.log('+index control', LoginSignup);
+		$scope.LoginSignup = LoginSignup;
 	});

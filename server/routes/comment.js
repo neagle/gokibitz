@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../config/auth');
 var Kifu = require('../models/kifu').Kifu;
-var User = require('../models/user').User;
+//var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
@@ -68,10 +68,19 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 		.exec(function (error, comment) {
 
 			if (!error && comment) {
-				console.log('hi!', comment.isOwner(req.user));
+				//console.log('hi!', comment.isOwner(req.user));
 				if (!comment.isOwner(req.user) && !req.user.admin) {
 					res.json(550, { message: 'You can\'t delete another user\'s comment.' });
 				} else {
+					// Delete the reference to the comment in the parent kifu
+					Kifu.findOne({
+						_id: comment.kifu
+					}, function (error, kifu) {
+						var comments = kifu.comments;
+						var index = comments.indexOf(id);
+						comments.splice(index, 1);
+						kifu.save();
+					});
 					comment.remove();
 					res.json(200, { message: 'Comment removed.' });
 				}

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../config/auth');
+//var auth = require('../config/auth');
 var User = require('../models/user').User;
 var Kifu = require('../models/kifu').Kifu;
 
@@ -24,7 +24,6 @@ router.get('/:user/kifu', function (req, res) {
 	}
 
 	function listKifu(user) {
-		console.log('just checking', offset, limit);
 		// Get the total count of kifu
 		var criteria = {
 			owner: user,

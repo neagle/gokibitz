@@ -1,13 +1,17 @@
 /*jshint browser:true*/
 angular.module('gokibitz.controllers')
-	.controller('KifuController', [
-		'$rootScope',
-		'$scope',
-		'$http',
-		'$routeParams',
-		'$location',
-		'pathFilter',
-		function ($rootScope, $scope, $http, $routeParams, $location, pathFilter) {
+	.controller('KifuController',  function (
+		$rootScope,
+		$scope,
+		$http,
+		$routeParams,
+		$location,
+		pathFilter,
+		LoginSignup
+	) {
+			$scope.LoginSignup = LoginSignup;
+			console.log('LoginSignup', LoginSignup);
+
 			//console.log('kifu control', $routeParams);
 			var comments = require('../helpers/comments.js');
 
@@ -28,9 +32,16 @@ angular.module('gokibitz.controllers')
 					var player = new window.WGo.BasicPlayer(elem, {
 						sgf: data.game.sgf,
 						board: {
-							background: '/images/kaya/kaya-texA3.jpg',
+							//background: '/images/kaya/kaya-texA3.jpg',
 							stoneHandler: window.WGo.Board.drawHandlers.FLAT,
-							font: 'Righteous'
+							font: 'Righteous',
+							theme: {
+								gridLinesColor: 'hsl(50, 50%, 30%)',
+								gridLinesWidth: function(board) {
+									return board.stoneRadius/15;
+								},
+								starColor: 'hsl(50, 50%, 30%)',
+							}
 						},
 						layout: [
 							// Default
@@ -45,6 +56,8 @@ angular.module('gokibitz.controllers')
 						enableWheel: false,
 						formatMoves: true,
 						update: function (event) {
+							//console.log('update event yo', event);
+							//console.log(event.node.children.length);
 							// TODO: Is this a reasonable way of creating one situation where
 							// an update to the $scope.kifu.path variable shouldn't update
 							// the player object?
@@ -70,14 +83,15 @@ angular.module('gokibitz.controllers')
 					window.$scope = $scope;
 
 					$scope.$on('$routeUpdate', function () {
-						var path = $location.search().path || '{ m: 0 }';
-						var newPath = pathFilter(path);
-						$scope.kifu.path = newPath;
+						var path = $location.search().path;
+						if (path) {
+							var newPath = pathFilter(path);
+							$scope.kifu.path = newPath;
+						}
 					});
 
 					$scope.$watch('kifu.path', function (newValue, oldValue) {
 						//console.log('watching the path', newValue, oldValue);
-
 						if (newValue) {
 							if (newValue.m > 0) {
 								$location.search('path', pathFilter(newValue, 'string'));
@@ -98,4 +112,4 @@ angular.module('gokibitz.controllers')
 					console.log('Error:', data);
 				});
 		}
-	]);
+	);

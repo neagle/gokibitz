@@ -18,7 +18,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 		.collapse.navbar-collapse(
 			collapse='isCollapsed'
 		)
-			ul.nav.navbar-nav
+			ul.nav.navbar-nav.ng-cloak
 				li(
 					ng-repeat='item in menu'
 					ui-route='/{{ item.link }}'
@@ -41,14 +41,13 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					//-a(href='/signup') Sign Up
 					a(ng-click='signupModal()') Sign Up
 
-			ul.nav.navbar-nav.navbar-right(ng-show='currentUser')
+			ul.nav.navbar-nav.navbar-right.ng-cloak(ng-show='currentUser')
 				li.dropdown
 					a.dropdown-toggle Welcome, {{ currentUser.username }}
 						=' '
 						b.caret
 					ul.dropdown-menu
-						li
-							a(href='/profile') Profile
+						//-li
+							//-a(href='/profile') Profile
 						li
 							a(ng-click='logout()') Log Out
-
