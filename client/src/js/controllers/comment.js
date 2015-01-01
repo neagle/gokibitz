@@ -11,7 +11,7 @@ angular.module('gokibitz.controllers')
 			//console.log('scope', $scope);
 
 			$scope.$watch('kifu', function () {
-				console.log('KIFU', $scope.kifu);
+				//console.log('KIFU', $scope.kifu);
 				if ($scope.kifu) {
 					$scope.formData = {};
 
