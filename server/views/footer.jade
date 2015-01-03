@@ -1,7 +1,7 @@
 footer.footer.container-fluid
 	.row
 		.col-md-12
-			.copyright
+			.copyright.pull-left
 				p
 					span.symbol &copy;
 					= ' '
@@ -12,3 +12,15 @@ footer.footer.container-fluid
 					| &bull;
 					= ' '
 					a(href='http://twitter.com/gokibitz') @gokibitz
+
+			.project.pull-right
+				p
+					a(href='https://github.com/neagle/gokibitz/issues/new?title=Feature%20Request') Feature Requests
+					= ' '
+					| &bull;
+					= ' '
+					a(href='https://github.com/neagle/gokibitz/issues/new?title=Bug') Bugs
+					= ' '
+					| &bull;
+					= ' '
+					a(href='https://github.com/neagle/gokibitz') Github
