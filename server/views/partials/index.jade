@@ -21,13 +21,28 @@
 			p That means there are going to be bugs, and lots of things that need improvement. But it also means you get to help shape the future of GoKibitz with your
 				= ' '
 				a(href='mailto:nate@nateeagle.com') feedback!
-			p There will be lots of changes as I work to get the app ready for a more feature-complete beta release.
+			p There will be lots of changes as I work to get the app ready for a more feature-complete beta release. You can
+				= ' '
+				a(href='https://twitter.com/GoKibitz') follow our progress on Twitter
+				| .
 		.col-sm-4
-			h3 Sign Up
-			p You&rsquo;ll need an account to upload kifu or leave comments on games. GoKibitz is completely free.
-			button.btn.btn-primary(ng-click='LoginSignup.loginModal()') Log In
-			= ' '
-			button.btn.btn-primary(ng-click='LoginSignup.signupModal()') Sign Up
+			div(ng-if='currentUser')
+				h3 Logged in as {{ currentUser.username }}
+				p Look at the
+					= ' '
+					a(href='/kifu') kifu
+					= ' '
+					| you have uploaded, or
+					= ' '
+					a(href='/upload') upload
+					= ' '
+					| some more.
+			div(ng-if='!currentUser')
+				h3 Sign Up
+				p You&rsquo;ll need an account to upload kifu or leave comments on games. GoKibitz is completely free.
+				button.btn.btn-primary(ng-click='LoginSignup.loginModal()') Log In
+				= ' '
+				button.btn.btn-primary(ng-click='LoginSignup.signupModal()') Sign Up
 	//-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
 
 	//-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.

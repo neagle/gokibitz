@@ -24,6 +24,7 @@ router.get('/', function (req, res) {
 			.sort({ uploaded: -1 })
 			.skip(offset)
 			.limit(limit)
+			.populate('owner')
 			.exec(function (error, kifu) {
 				if (!error && kifu.length) {
 					res.json(200, {

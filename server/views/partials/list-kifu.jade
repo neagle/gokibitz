@@ -1,9 +1,16 @@
 .container-fluid
 	.row
 		.col-md-12
-			h2(ng-show='!currentUser') Public Kifu
-			h2(ng-show='currentUser') Your Kifu
+			h2 Kifu
 
+	.row
+		.col-md-12
+			.btn-group.bottom-buffer
+				label.btn.btn-primary(btn-radio='\'owned\'' ng-model='kifuToggle') Just Yours
+				label.btn.btn-primary(btn-radio='\'public\'' ng-model='kifuToggle') Everybody&rsquo;s
+
+	.row
+		.col-md-12
 			.form-group(
 				style='max-width: 400px'
 			)
@@ -18,17 +25,11 @@
 						placeholder='Search'
 						ng-model='search'
 						ng-init='focused = false'
-						ng-focus='focused = true'
-						ng-blur='focused = false'
 						ng-keyup='searchKifu()'
 					)
 
 			p.copy(ng-show='noKifu')
-				| You don&rsquo;t have any kifu uploaded yet. Why not
-				= ' '
-				a(href='/upload') upload
-				= ' '
-				| some now?
+				| No kifu found.
 
 			.list-kifu.list-group
 				.kifu.list-group-item(
@@ -67,6 +68,7 @@
 							time(
 								datetime='{{ item.game.info.date }}'
 							) {{ item.game.info.date | date: 'longDate' }}
+							p(ng-if='item.owner.username') Uploaded by {{ item.owner.username }}
 
 			p
 				button.btn.btn-primary.btn-lg(

@@ -2,6 +2,8 @@ angular.module('gokibitz.controllers')
 	.controller('ListKifuController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
 		$scope.index = 0;
 		$scope.kifu = [];
+		$scope.kifuToggle = ($scope.currentUser) ? 'owned' : 'public';
+
 		$scope.listKifu = function (replace) {
 			if (typeof replace === 'undefined') {
 				replace = false;
@@ -9,7 +11,8 @@ angular.module('gokibitz.controllers')
 
 			//console.log('listing kifu, starting with', $scope.index)
 			var url;
-			if ($scope.currentUser) {
+
+			if ($scope.kifuToggle === 'owned') {
 				url = '/api/user/' + $scope.currentUser.username + '/kifu';
 			} else {
 				url = '/api/kifu';
@@ -20,7 +23,7 @@ angular.module('gokibitz.controllers')
 			};
 
 			//console.log('scope.search?', $scope.search);
-			if ($scope.search && $scope.search.length > 2) {
+			if ($scope.search) {
 				params.search = $scope.search;
 				//replace = true;
 				//console.log('and searching for', $scope.search);
@@ -44,6 +47,9 @@ angular.module('gokibitz.controllers')
 				.error(function (data) {
 					console.log('Error:', data);
 					$scope.noKifu = true;
+					if (replace) {
+						$scope.kifu = {};
+					}
 				});
 		};
 
@@ -89,6 +95,10 @@ angular.module('gokibitz.controllers')
 		$scope.go = function (shortid) {
 			$location.path('/kifu/' + shortid);
 		};
+
+		$scope.$watch('kifuToggle', function () {
+			$scope.listKifu(true);
+		});
 
 		$scope.listKifu();
 	}]);
