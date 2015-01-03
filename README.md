@@ -27,7 +27,7 @@ Support
 
 There are two ways you can support development of GoKibitz:
 
-1) Feedback! I wrote this to help go players. If you use GoKibitz and tell me so, it's great encouragement to keep plugging away at features and bugs.
-2) Pull Requests: it's asking a lot to ask other developers to dive into your code and contribute, but if anyone feels especially generous, I'd welcome collaboration.
+1. [Feedback](mailto:nate@nateeagle.com)! I wrote this to help go players. If you use GoKibitz and tell me so, it's great encouragement to keep plugging away at features and bugs.
+2. Pull Requests: it's asking a lot to ask other developers to dive into your code and contribute, but if anyone feels especially generous, I'd welcome collaboration.
 
 (If you'd like to contribute, let me know: I can put together contribution guidelines to help you get set up to develop locally.)
