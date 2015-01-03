@@ -93,6 +93,7 @@ angular.module('gokibitz.controllers')
 					$scope.loading = true;
 					$scope.listComments();
 
+					// Poll Comments
 					var pollComments = setInterval(function () {
 						$scope.listComments();
 					}, 3000);
