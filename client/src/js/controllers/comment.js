@@ -1,11 +1,5 @@
 angular.module('gokibitz.controllers')
-	.controller('CommentController', [
-		'$rootScope',
-		'$scope',
-		'$http',
-		'$routeParams',
-		'Comment',
-		'pathFilter',
+	.controller('CommentController',
 		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter) {
 			//console.log('Comment Controller');
 			//console.log('scope', $scope);
@@ -99,9 +93,13 @@ angular.module('gokibitz.controllers')
 					$scope.loading = true;
 					$scope.listComments();
 
-					setInterval(function () {
+					var pollComments = setInterval(function () {
 						$scope.listComments();
 					}, 3000);
+
+					$scope.$on('$routeChangeStart', function (next, current) {
+						clearInterval(pollComments);
+					});
 
 					$scope.$watch('kifu.path', function () {
 						$scope.loading = true;
@@ -119,4 +117,4 @@ angular.module('gokibitz.controllers')
 				}
 			});
 		}
-	]);
+	);
