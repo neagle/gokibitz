@@ -3,7 +3,7 @@
 		.col-md-12
 			h2 Kifu
 
-	.row(ng-if='currentUser')
+	.row(ng-show='currentUser')
 		.col-md-12
 			.btn-group.bottom-buffer
 				label.btn.btn-primary(btn-radio='\'owned\'' ng-model='kifuToggle') Just Yours
