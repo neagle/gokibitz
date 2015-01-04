@@ -30,7 +30,8 @@ var gokibitz = angular.module('gokibitz', [
 	'ngAnimate',
 	'http-auth-interceptor',
 	'angularFileUpload',
-	'ui.utils'
+	'ui.utils',
+	'ngStorage'
 ]);
 
 require('angular-ui-router');
@@ -44,6 +45,7 @@ require('http-auth-interceptor');
 require('ui-bootstrap-tpls');
 require('ui-bootstrap');
 require('ui-utils');
+require('ngStorage');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);

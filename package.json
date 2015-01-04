@@ -57,6 +57,7 @@
     "gulp-util": "^2.2.14",
     "jshint-stylish": "^0.2.0",
     "lodash": "^2.4.1",
+    "ng-storage": "^0.3.1",
     "node-bourbon": "^1.2.3",
     "pretty-hrtime": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
@@ -80,6 +81,7 @@
     "angular-resource": "./node_modules/angular-resource/angular-resource.min.js",
     "angular-route": "./node_modules/angular-route/angular-route.min.js",
     "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
+    "ngStorage": "./node_modules/ng-storage/ngStorage.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
     "ui-bootstrap": "./client/src/bower_components/angular-bootstrap/ui-bootstrap.js",
     "ui-bootstrap-tpls": "./client/src/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
@@ -138,6 +140,11 @@
       ]
     },
     "ui-bootstrap-tpls": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "ngStorage": {
       "depends": [
         "angular"
       ]

@@ -1,8 +1,12 @@
 angular.module('gokibitz.controllers')
-	.controller('ListKifuController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+	.controller('ListKifuController', function ($scope, $http, $location, $localStorage) {
 		$scope.index = 0;
 		$scope.kifu = [];
-		$scope.kifuToggle = ($scope.currentUser) ? 'owned' : 'public';
+
+		$scope.$storage = $localStorage;
+		if (!$scope.$storage.kifuToggle) {
+			$scope.$storage.kifuToggle = ($scope.currentUser) ? 'owned' : 'public';
+		}
 
 		$scope.listKifu = function (replace) {
 			if (typeof replace === 'undefined') {
@@ -12,7 +16,7 @@ angular.module('gokibitz.controllers')
 			//console.log('listing kifu, starting with', $scope.index)
 			var url;
 
-			if ($scope.kifuToggle === 'owned') {
+			if ($scope.$storage.kifuToggle === 'owned') {
 				url = '/api/user/' + $scope.currentUser.username + '/kifu';
 			} else {
 				url = '/api/kifu';
@@ -96,9 +100,9 @@ angular.module('gokibitz.controllers')
 			$location.path('/kifu/' + shortid);
 		};
 
-		$scope.$watch('kifuToggle', function () {
+		$scope.$watch('$storage.kifuToggle', function () {
 			$scope.listKifu(true);
 		});
 
 		$scope.listKifu();
-	}]);
+	});
