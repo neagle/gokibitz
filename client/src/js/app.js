@@ -28,6 +28,7 @@ var gokibitz = angular.module('gokibitz', [
 	'ngSanitize',
 	'ngRoute',
 	'ngAnimate',
+	'ngTouch',
 	'http-auth-interceptor',
 	'angularFileUpload',
 	'ui.utils',
@@ -41,6 +42,7 @@ require('angular-file-upload');
 require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
+require('angular-touch');
 require('http-auth-interceptor');
 require('ui-bootstrap-tpls');
 require('ui-bootstrap');

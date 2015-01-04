@@ -19,7 +19,10 @@
 					tooltip='Black’s captured prisoners'
 				) {{ captures.black }}
 
-		.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3
+		.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3(
+			ng-swipe-left='player.next()'
+			ng-swipe-right='player.previous()'
+		)
 			#player
 				a(
 					target='_self'
