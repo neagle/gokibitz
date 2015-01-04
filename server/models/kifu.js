@@ -58,14 +58,22 @@ function getProp(prop, str) {
 /**
  * Game Information
  */
-kifuSchema.virtual('game.info.black')
+kifuSchema.virtual('game.info.black.name')
 	.get(function () {
 		return getProp('PB', this.game.sgf);
 	});
+kifuSchema.virtual('game.info.black.rank')
+	.get(function () {
+		return getProp('BR', this.game.sgf);
+	});
 
-kifuSchema.virtual('game.info.white')
+kifuSchema.virtual('game.info.white.name')
 	.get(function () {
 		return getProp('PW', this.game.sgf);
+	});
+kifuSchema.virtual('game.info.white.rank')
+	.get(function () {
+		return getProp('WR', this.game.sgf);
 	});
 
 kifuSchema.virtual('game.info.result')
