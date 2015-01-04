@@ -8,7 +8,7 @@ var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var browserify = require('browserify');
-var uglify = require('gulp-uglify');
+var watchify = require('watchify');
 var source = require('vinyl-source-stream');
 var transform = require('vinyl-transform');
 var buffer = require('vinyl-buffer');
@@ -89,7 +89,44 @@ gulp.task('sass', ['sass-includes'], function () {
 	.pipe(gulp.dest('./client/public/css'));
 });
 
-gulp.task('browserify', function () {
+function scripts(watch) {
+	var bundler, rebundle;
+	watch = watch || false;
+
+	bundler = browserify('./client/src/js/app.js', {
+		//basedir: __dirname,
+		cache: {},
+		packageCache: {},
+		fullPaths: watch
+	});
+
+	if (watch) {
+		console.log('watchifying!');
+		bundler = watchify(bundler);
+	}
+
+	rebundle = function () {
+		console.log('starting to rebundle');
+		var stream = bundler.bundle();
+		stream.on('error', notify.onError({
+			title: 'Browserify Error',
+			message: '<%= error.message %>'
+		}));
+
+		stream = stream.pipe(source('app.js'));
+		return stream.pipe(gulp.dest('./client/public/js'));
+	};
+
+	bundler.on('update', function () {
+		console.log('update!');
+		rebundle();
+	});
+	return rebundle();
+}
+
+//gulp.task('browserify', function () {
+	//return scripts(true);
+	/*
 	var bundler = browserify({
 		// Required watchify args
 		cache: {}, packageCache: {}, fullPaths: true,
@@ -105,7 +142,7 @@ gulp.task('browserify', function () {
 				message: '<%= error.message %>'
 			}))
 			// Use vinyl-source-stream to make the
-			// stream gulp compatible. Specifiy the
+			// stream gulp compatible. Specify the
 			// desired output filename here
 			.pipe(source('app.js'))
 			.pipe(buffer())
@@ -114,8 +151,16 @@ gulp.task('browserify', function () {
 			.pipe(gulp.dest('./client/public/js/'));
 	};
 
+	bundler = watchify(bundler);
+	bundler.on('update', bundle);
+
 	return bundle();
-});
+	*/
+//});
+
+require('./gulp/tasks/browserify');
+require('./gulp/tasks/watchify');
+require('./gulp/tasks/uglify');
 
 // Lint our server-side JS
 gulp.task('lint-server-js', function () {
@@ -136,7 +181,7 @@ gulp.task('default', [
 	// Nothing!
 });
 
-gulp.task('watch', ['default'], function () {
+gulp.task('watch', ['watchify'], function () {
 	var server = livereload();
 
 	nodemon({
@@ -151,8 +196,7 @@ gulp.task('watch', ['default'], function () {
 		.on('change', ['lint-server-js']);
 
 	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
-	gulp.watch('client/src/js/**/*.js', ['browserify']);
-	gulp.watch('client/src/submodules/wgo.js/wgo/src/*.js', ['browserify']);
+	//gulp.watch('client/src/submodules/wgo.js/wgo/src/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 	gulp.watch('client/src/assets/images/**/*', ['images']);
 	gulp.watch('client/src/assets/js/**/*', ['js-assets']);

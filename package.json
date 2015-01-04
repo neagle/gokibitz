@@ -51,13 +51,17 @@
     "gulp-nodemon": "^1.0.4",
     "gulp-notify": "^1.2.5",
     "gulp-sass": "^0.7.1",
+    "gulp-size": "^1.1.0",
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^2.2.14",
     "jshint-stylish": "^0.2.0",
+    "lodash": "^2.4.1",
     "node-bourbon": "^1.2.3",
+    "pretty-hrtime": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
-    "vinyl-transform": "^1.0.0"
+    "vinyl-transform": "^1.0.0",
+    "watchify": "^2.2.1"
   },
   "browserify": {
     "transform": [
