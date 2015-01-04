@@ -1,4 +1,5 @@
 var express = require('express');
+var compression = require('compression');
 var session = require('express-session');
 var fs = require('fs');
 var path = require('path');
@@ -13,6 +14,9 @@ var configDB = require('./server/config/database.js');
 
 var app = express();
 mongoose.connect(configDB.url);
+
+// Compress all requests
+app.use(compression());
 
 // Bootstrap models
 var modelsPath = path.join(__dirname, 'server/models');
