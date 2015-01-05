@@ -16,7 +16,7 @@ angular.module('gokibitz.controllers')
 			//console.log('listing kifu, starting with', $scope.index)
 			var url;
 
-			if ($scope.$storage.kifuToggle === 'owned') {
+			if ($scope.$storage.kifuToggle === 'owned' && $scope.currentUser) {
 				url = '/api/user/' + $scope.currentUser.username + '/kifu';
 			} else {
 				url = '/api/kifu';
