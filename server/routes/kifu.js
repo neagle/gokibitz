@@ -96,9 +96,9 @@ router.get('/:shortid/sgf', function (req, res) {
 			}, function (error, owner) {
 				console.log(kifu, owner);
 				var filename = owner.username + '--' +
-					kifu.game.info.black +
+					kifu.game.info.black.name +
 					'-vs-' +
-					kifu.game.info.white +
+					kifu.game.info.white.name +
 					'.sgf';
 				res.set({
 					'Content-Disposition': 'attachment; filename=' + filename,
