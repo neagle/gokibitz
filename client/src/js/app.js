@@ -32,7 +32,8 @@ var gokibitz = angular.module('gokibitz', [
 	'http-auth-interceptor',
 	'angularFileUpload',
 	'ui.utils',
-	'ngStorage'
+	'ngStorage',
+	'720kb.socialshare'
 ]);
 
 require('angular-ui-router');
@@ -48,6 +49,10 @@ require('ui-bootstrap-tpls');
 require('ui-bootstrap');
 require('ui-utils');
 require('ngStorage');
+
+// Third-party share button directive
+// @see https://github.com/720kb/angular-socialshare
+require('./lib/angular-socialshare.js');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);

@@ -24,6 +24,6 @@
     "angular-sanitize": "~1.2.17",
     "angular-ui-utils": "~0.1.1",
     "bootstrap-sass-official": "~3.1.1+2",
-    "angular-bootstrap": "~0.11.0"
+    "angular-bootstrap": "~0.12.0"
   }
 }

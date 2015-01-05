@@ -286,3 +286,13 @@ sgf.fill {
 		bottom: 20px;
 	}
 }
+
+.icon-reference {
+	background: $flat-blue-4;
+	color: $flat-clouds;
+	font-size: 24px;
+
+	span {
+		padding: 0.5em;
+	}
+}

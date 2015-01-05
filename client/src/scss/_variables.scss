@@ -18,3 +18,12 @@ $headings-font-family: Righteous, fantasy;
 $headings-color: $brand-primary;
 
 /*$navbar-default-bg: $flat-clouds;*/
+
+// Buttons
+$btn-font-size-base: 16px;
+$btn-font-weight: 1000;
+
+$btn-default-color: transparentize($flat-clouds, 0.5) !default;
+$btn-default-bg: $brand-primary !default;
+$btn-hover-bg: lighten($brand-primary, 2.5%) !default;
+$btn-active-bg: darken($brand-primary, 5%) !default;
