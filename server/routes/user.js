@@ -31,7 +31,6 @@ router.get('/:user/kifu', function (req, res) {
 		};
 
 		if (search) {
-			console.log('searching for...', search);
 			search = new RegExp(search, 'gi');
 			criteria['game.sgf'] = search;
 		}

@@ -11,16 +11,30 @@ var Comment = require('../models/comment').Comment;
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
+	var search = req.query.search || '';
 
-	// Get the total count of kifu
-	Kifu.count({
+	var criteria = {
 		public: true,
 		deleted: false
-	}, function (error, count) {
-		// Get the requested subset
-		Kifu
-			.where('public').equals(true)
-			.where('deleted').equals(false)
+	};
+
+	if (search) {
+		search = new RegExp(search, 'gi');
+		criteria['game.sgf'] = search;
+	}
+
+	// Get the total count of kifu
+	Kifu.count(criteria, function (error, count) {
+		var kifuList = Kifu
+      .where('public').equals(true)
+      .where('deleted').equals(false);
+
+		if (search) {
+			kifuList = kifuList
+				.where('game.sgf').equals(search);
+		}
+
+		kifuList
 			.sort({ uploaded: -1 })
 			.skip(offset)
 			.limit(limit)
