@@ -6,8 +6,8 @@
 	.row(ng-show='currentUser')
 		.col-md-12
 			.btn-group.bottom-buffer
-				label.btn.btn-primary(btn-radio='\'owned\'' ng-model='$storage.kifuToggle') Just Yours
-				label.btn.btn-primary(btn-radio='\'public\'' ng-model='$storage.kifuToggle') Everybody&rsquo;s
+				label.btn.btn-default(btn-radio='\'owned\'' ng-model='$storage.kifuToggle') Just Yours
+				label.btn.btn-default(btn-radio='\'public\'' ng-model='$storage.kifuToggle') Everybody&rsquo;s
 
 	.row
 		.col-md-12
@@ -78,7 +78,7 @@
 							p(ng-if='item.owner.username') Uploaded by {{ item.owner.username }}
 
 			p
-				button.btn.btn-primary.btn-lg(
+				button.btn.btn-default.btn-lg(
 					ng-show='(kifu.length + index) < total'
 					ng-click='moreKifu()'
 				)
