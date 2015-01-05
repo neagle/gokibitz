@@ -78,8 +78,8 @@ angular.module('gokibitz.controllers')
 				//console.log('player.kifu.info', player.kifu.info);
 				player.setCoordinates(true);
 				$scope.player = player;
-				//window.player = player;
-				//window.$scope = $scope;
+				window.player = player;
+				window.$scope = $scope;
 
 				$scope.$on('$routeUpdate', function () {
 					var path = $location.search().path;
