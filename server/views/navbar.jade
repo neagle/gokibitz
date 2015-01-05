@@ -41,13 +41,17 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					//-a(href='/signup') Sign Up
 					a(ng-click='signupModal()') Sign Up
 
-			ul.nav.navbar-nav.navbar-right.ng-cloak(ng-show='currentUser')
+			ul.nav.navbar-nav.navbar-right.ng-cloak(
+				dropdown
+				ng-show='currentUser'
+			)
 				li.dropdown
-					a.dropdown-toggle Welcome, {{ currentUser.username }}
+					a.dropdown-toggle(dropdown-toggle) Welcome, {{ currentUser.username }}
 						=' '
 						b.caret
-					ul.dropdown-menu
-						//-li
-							//-a(href='/profile') Profile
-						li
-							a(ng-click='logout()') Log Out
+
+				ul.dropdown-menu(role='menu')
+					//-li
+						//-a(href='/profile') Profile
+					li
+						a(ng-click='logout()') Log Out
