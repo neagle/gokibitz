@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../config/auth');
 var Kifu = require('../models/kifu').Kifu;
-//var User = require('../models/user').User;
+var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
@@ -42,6 +42,50 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 	});
 });
 
+// Get a list of comments in reverse cron
+router.get('/', function (req, res) {
+	var offset = req.query.offset || 0;
+	var limit = Math.min(req.query.limit, 100) || 20;
+	var username = req.query.username || '';
+
+	var comments = Comment.find()
+		.sort('-date')
+		.skip(offset)
+		.limit(limit);
+
+	if (username) {
+		User.findOne({ username: username })
+			.exec(function (error, user) {
+				if (!error) {
+          comments
+            .where('user').equals(user._id)
+            .populate('user', 'username email gravatar')
+            .populate('kifu', 'shortid game')
+            .exec(function (error, comments) {
+              if (!error) {
+                res.json('200', comments);
+              } else {
+                res.json('500', { message: error });
+              }
+            });
+        } else {
+					res.json('500', { message: error });
+				}
+			});
+	} else {
+		comments
+			.populate('user', 'username email gravatar')
+			.populate('kifu', 'shortid game')
+			.exec(function (error, comments) {
+				if (!error) {
+					res.json('200', comments);
+				}	 else {
+					res.json('500', { message: error });
+				}
+			});
+	}
+});
+
 router.get('/:id', function (req, res) {
 	var id = req.params.id;
 
@@ -68,7 +112,6 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 		.exec(function (error, comment) {
 
 			if (!error && comment) {
-				//console.log('hi!', comment.isOwner(req.user));
 				if (!comment.isOwner(req.user) && !req.user.admin) {
 					res.json(550, { message: 'You can\'t delete another user\'s comment.' });
 				} else {
