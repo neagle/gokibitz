@@ -1,8 +1,25 @@
 .btn {
+	font-weight: 700;
 }
 
 .btn-group > .btn,
 .btn-group > .dropdown-menu,
 .btn-group > .popover {
 	font-weight: 700;
+}
+
+.btn-primary {
+	@include button-variant($btn-default-color, darken($brand-secondary, 0%), $btn-primary-hover-bg, $btn-primary-active-bg);
+}
+.btn-info    {
+	@include button-variant($btn-default-color, $brand-info, $btn-info-hover-bg, $btn-info-active-bg);
+}
+.btn-danger  {
+	@include button-variant($btn-default-color, $brand-danger, $btn-danger-hover-bg, $btn-danger-active-bg);
+}
+.btn-success {
+	@include button-variant($btn-default-color, $brand-success, $btn-success-hover-bg, $btn-success-active-bg);
+}
+.btn-warning {
+	@include button-variant($btn-default-color, $brand-warning, $btn-warning-hover-bg, $btn-warning-active-bg);
 }

@@ -10,7 +10,6 @@
 				restrict: 'A',
 				link: function linkingFunction ($scope, element, attr) {
 
-					console.log('attr.socialshareText', attr.socialshareText);
 					var data = {};
 					var propDefaults = {
 						url: 	'',

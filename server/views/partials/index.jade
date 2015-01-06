@@ -40,9 +40,9 @@
 			div(ng-if='!currentUser')
 				h3 Sign Up
 				p You&rsquo;ll need an account to upload kifu or leave comments on games. GoKibitz is completely free.
-				button.btn.btn-primary(ng-click='LoginSignup.loginModal()') Log In
+				button.btn.btn-default(ng-click='LoginSignup.loginModal()') Log In
 				= ' '
-				button.btn.btn-primary(ng-click='LoginSignup.signupModal()') Sign Up
+				button.btn.btn-default(ng-click='LoginSignup.signupModal()') Sign Up
 	//-h2(ng-if='currentUser') Welcome, {{ currentUser.username }}
 
 	//-div(ng-if='isAuthorized(userRoles.admin)') You're an admin.

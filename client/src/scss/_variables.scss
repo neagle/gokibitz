@@ -19,11 +19,37 @@ $headings-color: $brand-primary;
 
 /*$navbar-default-bg: $flat-clouds;*/
 
+// Modals
+$modal-backdrop-opacity:      .75 !default;
+//$modal-footer-bg: mix($brand-primary, white, 100%) !default;
+//$modal-content-border-color:  mix($brand-primary, white, 100%) !default;
+//$modal-content-border-radius: 20px !default;
+
 // Buttons
 $btn-font-size-base: 16px;
 $btn-font-weight: 1000;
 
-$btn-default-color: transparentize($flat-clouds, 0.5) !default;
+$btn-default-color: transparentize($flat-clouds, 0) !default;
 $btn-default-bg: $brand-primary !default;
 $btn-hover-bg: lighten($brand-primary, 2.5%) !default;
 $btn-active-bg: darken($brand-primary, 5%) !default;
+
+$btn-primary-hover-bg:       mix($brand-secondary, white, 80%) !default;
+$btn-primary-active-bg:      mix($brand-secondary, black, 85%) !default;
+
+//$btn-info-hover-bg:          mix($brand-info, white, 80%) !default;
+//$btn-info-active-bg:         mix($brand-info, black, 85%) !default;
+//
+//$btn-success-hover-bg:       mix($brand-success, white, 80%) !default;
+//$btn-success-active-bg:      mix($brand-success, black, 85%) !default;
+//
+//$btn-danger-hover-bg:        mix($brand-danger, white, 80%) !default;
+//$btn-danger-active-bg:       mix($brand-danger, black, 85%) !default;
+//
+//$btn-warning-hover-bg:       overlay($brand-warning, darken(white, 37.5%)) !default;
+//$btn-warning-active-bg:      mix($brand-warning, black, 85%) !default;
+//
+//$btn-inverse-hover-bg:       overlay($brand-primary, darken(white, 37.5%)) !default;
+//$btn-inverse-active-bg:      mix($brand-primary, black, 85%) !default;
+//
+//$btn-link-disabled-color:    $gray-light !default;
