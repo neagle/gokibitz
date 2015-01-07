@@ -19,6 +19,10 @@ router.post('/auth/session', session.login);
 router.delete('/auth/session', session.logout);
 
 // Serve up partials for Angular routes
+router.get('/partials/directives/:name', function (req, res) {
+	res.render('partials/directives/' + req.params.name);
+});
+
 router.get('/partials/:name', function (req, res) {
 	res.render('partials/' + req.params.name);
 });

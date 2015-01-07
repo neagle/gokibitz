@@ -73,8 +73,15 @@
 }
 
 sgf.media-object {
-		width: 100px;
+	display: block;
+	height: 100px;
+  width: 100px;
+
+	@media (max-width: $screen-xs-max) {
+		height: 50px;
+		width: 50px;
 	}
+}
 
 .wgo-move-link {
 		cursor: help;
@@ -281,6 +288,12 @@ sgf.fill {
 	color: $flat-gray-4;
 }
 
+.top-buffer {
+	margin: {
+		top: 20px;
+	}
+}
+
 .bottom-buffer {
 	margin: {
 		bottom: 20px;
@@ -295,4 +308,13 @@ sgf.fill {
 	span {
 		padding: 0.5em;
 	}
+}
+
+p.compact {
+	line-height: 1.4;
+}
+
+// @see https://github.com/twbs/bootstrap/issues/14990#issuecomment-67341988
+.media .media-body {
+	width: 10000px;
 }

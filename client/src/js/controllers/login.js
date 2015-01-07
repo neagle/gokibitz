@@ -33,7 +33,6 @@ angular.module('gokibitz.controllers')
 		$scope.cancel = function (callback) {
 			$modalInstance.dismiss('cancel');
 
-			console.log('firing callback...', callback);
 			if (typeof callback === 'function') {
 				callback();
 			}

@@ -1,6 +1,5 @@
 angular.module('gokibitz.directives')
-.directive('gkReallyClick', [
-	'$modal',
+.directive('gkReallyClick',
 	function ($modal) {
 		var ModalInstanceCtrl = function($scope, $modalInstance) {
 			$scope.ok = function() {
@@ -45,4 +44,4 @@ angular.module('gokibitz.directives')
 			}
 		};
 	}
-]);
+);

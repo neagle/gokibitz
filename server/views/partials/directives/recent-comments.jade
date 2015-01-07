@@ -1,0 +1,44 @@
+div.panel.panel-default
+	div.panel-heading
+		span.fui-chat
+		= ' '
+		| Recent Comments
+	div.panel-body
+		p(ng-if='!comments.length') &hellip;
+		ul.media-list
+			li.media(
+				ng-repeat='comment in comments track by comment._id'
+			)
+				.media-left
+					img.media-object(
+						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						style='width: 24px; height: 24px'
+					)
+				//a.media-left(href='/users/{{ comment.user.username }}')
+				.media-body
+					p.media-heading.compact {{ comment.user.username }} commented on
+						= ' '
+						a(
+							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
+						) move {{ comment.path }}
+						= ' '
+						| of
+						br
+						a(
+							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
+						)
+							span.name {{ comment.kifu.game.info.white.name }}
+							= ' '
+							span.rank {{ comment.kifu.game.info.white.rank }}
+							= ' '
+							| vs.
+							= ' '
+							span.name {{ comment.kifu.game.info.black.name }}
+							= ' '
+							span.rank {{ comment.kifu.game.info.black.rank }}
+						br
+						time.relative.small(
+							datetime='{{ comment.date }}'
+						) {{ comment.relativeDate | verboseNumbers }}
+
+		//{{ comments }}

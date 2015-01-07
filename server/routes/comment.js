@@ -47,20 +47,31 @@ router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var username = req.query.username || '';
+	var since = req.query.since || null;
+
+	// Turn the since param into a date object
+	if (since) {
+		since = new Date(since);
+	}
 
 	var comments = Comment.find()
 		.sort('-date')
 		.skip(offset)
 		.limit(limit);
 
+	if (since) {
+		comments = comments.where('date').gt(since);
+	}
+
 	if (username) {
 		User.findOne({ username: username })
 			.exec(function (error, user) {
-				if (!error) {
+				if (!error && user) {
           comments
             .where('user').equals(user._id)
             .populate('user', 'username email gravatar')
             .populate('kifu', 'shortid game')
+						.select('-kifu.game')
             .exec(function (error, comments) {
               if (!error) {
                 res.json('200', comments);
@@ -69,7 +80,11 @@ router.get('/', function (req, res) {
               }
             });
         } else {
-					res.json('500', { message: error });
+					if (error) {
+						res.json('500', { message: error });
+					} else if (!user) {
+						res.json('500', { message: 'That username does not exist.' });
+					}
 				}
 			});
 	} else {

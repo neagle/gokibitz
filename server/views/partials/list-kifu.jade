@@ -1,87 +1,93 @@
 .container-fluid
 	.row
-		.col-md-12
-			h2 Kifu
+		.col-md-8
+			.row
+				.col-md-12
+					h2 Kifu
 
-	.row(ng-show='currentUser')
-		.col-md-12
-			.btn-group.bottom-buffer
-				label.btn.btn-default(btn-radio='\'owned\'' ng-model='$storage.kifuToggle') Just Yours
-				label.btn.btn-default(btn-radio='\'public\'' ng-model='$storage.kifuToggle') Everybody&rsquo;s
+			.row(ng-show='currentUser')
+				.col-md-12
+					.btn-group.bottom-buffer
+						label.btn.btn-default(btn-radio='\'owned\'' ng-model='$storage.kifuToggle') Just Yours
+						label.btn.btn-default(btn-radio='\'public\'' ng-model='$storage.kifuToggle') Everybody&rsquo;s
 
-	.row
-		.col-md-12
-			.form-group(
-				style='max-width: 400px'
-			)
-				.input-group.input-group-hg.input-group-rounded(
-					ng-class='{ focus: focused }'
-				)
-					span.input-group-btn
-						button.btn(type='submit')
-							span.fui-search
-					input.form-control(
-						type='text'
-						placeholder='Search'
-						ng-model='search'
-						ng-init='focused = false'
-						ng-keyup='searchKifu()'
+			.row
+				.col-md-12
+					.form-group(
+						style='max-width: 400px'
 					)
-
-			p.copy(ng-show='noKifu')
-				| No kifu found.
-
-			.list-kifu.list-group
-				.kifu.list-group-item(
-					ng-repeat='item in kifu'
-				)
-					.media
-						.pull-left
-							sgf.media-object(
-								src='item.game.sgf'
+						.input-group.input-group-hg.input-group-rounded(
+							ng-class='{ focus: focused }'
+						)
+							span.input-group-btn
+								button.btn(type='submit')
+									span.fui-search
+							input.form-control(
+								type='text'
+								placeholder='Search'
+								ng-model='search'
+								ng-init='focused = false'
+								ng-keyup='searchKifu()'
 							)
-						.media-body
-							.pull-right(
-								ng-hide='!currentUser || (item.owner !== currentUser._id)'
-							)
-								button.btn.btn-danger(
-									gk-really-message='Are you sure you want to delete this kifu?'
-									gk-really-click='deleteKifu(item)'
-									gk-really-class='btn-danger'
-									gk-really-verb='Delete'
-								)
-									.fui-trash
-							h5.media-heading
-								a(
-									href='/kifu/{{ item.shortid }}'
-								)
-									span.name {{ item.game.info.white.name || 'Anonymous' }}&nbsp;
-									span.rank {{ item.game.info.white.rank }}
-									= ' '
-									| vs.
-									= ' '
-									span.name {{ item.game.info.black.name || 'Anonymous' }}&nbsp;
-									span.rank {{ item.game.info.black.rank }}
-									= ' '
-									span(ng-if='item.game.info.result') ({{ item.game.info.result }})
-									= ' '
-									.label.label-info(ng-if='item.comments.length > 0') {{ item.comments.length }}
-										= ' '
-										ng-pluralize(
-											count='item.comments.length'
-											when='{ "one": "Comment", "other": "Comments" }'
+
+					p.copy(ng-show='noKifu')
+						| No kifu found.
+
+					.list-kifu.list-group
+						.kifu.list-group-item(
+							ng-repeat='item in kifu'
+						)
+							.media
+								.media-left
+									sgf.media-object.thumb(
+										src='item.game.sgf'
+									)
+								.media-body
+									.pull-right(
+										ng-hide='!currentUser || (item.owner !== currentUser._id)'
+									)
+										button.btn.btn-danger(
+											gk-really-message='Are you sure you want to delete this kifu?'
+											gk-really-click='deleteKifu(item)'
+											gk-really-class='btn-danger'
+											gk-really-verb='Delete'
 										)
-							= ' '
-							time(
-								datetime='{{ item.game.info.date }}'
-							) {{ item.game.info.date | date: 'longDate' }}
-							p(ng-if='item.owner.username') Uploaded by {{ item.owner.username }}
+											.fui-trash
+									h5.media-heading
+										a(
+											href='/kifu/{{ item.shortid }}'
+										)
+											span.name {{ item.game.info.white.name || 'Anonymous' }}&nbsp;
+											span.rank {{ item.game.info.white.rank }}
+											= ' '
+											| vs.
+											= ' '
+											span.name {{ item.game.info.black.name || 'Anonymous' }}&nbsp;
+											span.rank {{ item.game.info.black.rank }}
+											= ' '
+											span(ng-if='item.game.info.result') ({{ item.game.info.result }})
+											= ' '
+											.label.label-info(ng-if='item.comments.length > 0') {{ item.comments.length }}
+												= ' '
+												ng-pluralize(
+													count='item.comments.length'
+													when='{ "one": "Comment", "other": "Comments" }'
+												)
+									= ' '
+									time(
+										datetime='{{ item.game.info.date }}'
+									) {{ item.game.info.date | date: 'longDate' }}
+									p(ng-if='item.owner.username') Uploaded by {{ item.owner.username }}
 
-			p
-				button.btn.btn-default.btn-lg(
-					ng-show='(kifu.length + index) < total'
-					ng-click='moreKifu()'
-				)
-					span.fui-plus-inverted
-					= ' '
-					| More
+					p
+						button.btn.btn-default.btn-lg(
+							ng-show='(kifu.length + index) < total'
+							ng-click='moreKifu()'
+						)
+							span.fui-plus-inverted
+							= ' '
+							| More
+		.col-md-4
+			.row
+				.col-md-12
+					recent-comments.top-buffer
