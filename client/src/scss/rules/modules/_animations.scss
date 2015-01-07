@@ -1,0 +1,17 @@
+// Simple fade in and fade out
+.fade-in-fade-out {
+	&.ng-enter,
+	&.ng-leave {
+		transition: all 0.5s;
+	}
+
+	&.ng-leave.ng-leave-active,
+	&.ng-enter {
+		opacity: 0;
+	}
+
+	&.ng-enter.ng-enter-active,
+	&.ng-leave	{
+		opacity: 1;
+	}
+}

@@ -6,7 +6,7 @@ div.panel.panel-default
 	div.panel-body
 		p(ng-if='!comments.length') &hellip;
 		ul.media-list
-			li.media(
+			li.media.fade-in-fade-out(
 				ng-repeat='comment in comments track by comment._id'
 			)
 				.media-left

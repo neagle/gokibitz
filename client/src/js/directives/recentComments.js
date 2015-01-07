@@ -12,7 +12,18 @@ angular.module('gokibitz.directives')
   )
 	.controller('RecentCommentsCtrl',
 		function ($scope, $http) {
+			var moment = require('moment');
 			var since;
+
+			// Update the timestamps on the comments
+			var refreshTimes = function () {
+				$scope.comments.forEach(function (comment, i) {
+					var relativeDate = moment(comment.date).fromNow();
+					if (comment.relativeDate !== relativeDate) {
+						$scope.comments[i].relativeDate = relativeDate;
+					}
+				});
+			};
 
 			$http.get('/api/comment')
 				.then(function (response) {
@@ -21,6 +32,9 @@ angular.module('gokibitz.directives')
 				});
 
 			var commentPoll = setInterval(function () {
+
+				refreshTimes();
+
 				$http.get('/api/comment', {
 					params: { since: since }
 				})
