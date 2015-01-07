@@ -1,5 +1,40 @@
 # Changelog
 
+## 3.3.1.0
+
+* Variables override template at templates/project/_bootstrap-variables.sass
+* Readme: Bower + Rails configuration
+
+## 3.3.0.1
+
+* Fix loading issue with the ruby gem version
+
+## 3.3.0
+
+* Improve libsass compatibility
+* Support using Bower package with Rails
+
+## 3.2.0.2
+
+Main bootstrap file is now a partial (_bootstrap.scss), for compatibility with Compass 1+.
+
+Fixed a number of bugs. [Issues closed in v3.2.0.2](https://github.com/twbs/bootstrap-sass/issues?q=is%3Aissue+is%3Aclosed+milestone%3Av3.2.0.2).
+
+## 3.2.0.1
+
+Fixed a number of bugs: [Issues closed in v3.2.0.1](https://github.com/twbs/bootstrap-sass/issues?q=is%3Aissue+is%3Aclosed+milestone%3Av3.2.0.1).
+
+## 3.2.0.0
+
+- Assets (Sass, JS, fonts) moved from `vendor/assets` to `assets`. `bootstrap.js` now contains concatenated JS.
+- Compass generator now copies JS and fonts, and provides a better default `styles.sass`.
+- Compass, Sprockets, and Mincer asset path helpers are now provided in pure Sass: `bootstrap-compass`, `bootstrap-sprockets`, and `bootstrap-mincer`.
+Asset path helpers must be imported before `bootstrap`, more in Readme.
+- Sprockets / Mincer JS manifest has been moved to `bootstrap-sprockets.js`.
+It can be required without adding Bootstrap JS directory to load path, as it now uses relative paths.
+- Sprockets: `depend_on_asset` (`glyphicons.scss`) has been changed to `depend_on` to work around an issue with `depend_on_asset`.
+[More information](https://github.com/twbs/bootstrap-sass/issues/592#issuecomment-46570286).
+
 ## 3.1.1.0
 
 - Updated Bower docs
