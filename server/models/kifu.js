@@ -28,7 +28,7 @@ var kifuSchema = new Schema({
 		default: Date.now
 	},
 	owner: {
-		type: Schema.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: 'User'
 	},
 	public: {
@@ -36,6 +36,10 @@ var kifuSchema = new Schema({
 		default: true
 	},
 	deleted: {
+		type: Boolean,
+		default: false
+	},
+	muted: {
 		type: Boolean,
 		default: false
 	}

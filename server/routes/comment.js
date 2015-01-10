@@ -3,6 +3,7 @@ var router = express.Router();
 var auth = require('../config/auth');
 var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
+var Notification = require('../models/notification').Notification;
 var Comment = require('../models/comment').Comment;
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
@@ -10,6 +11,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 		_id: req.body._id
 	}, function (error, kifu) {
 		if (!error && kifu) {
+
 			var comment = new Comment();
 
 			comment.kifu = kifu;
@@ -23,6 +25,23 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 					kifu.save(function (error) {
 						if (!error) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
+
+							// Send notifications
+							comment.getRecipients(function (recipients) {
+								console.log('recipients', recipients);
+								recipients.forEach(function (recipient) {
+									// Send a notification to the kifu owner
+									var notification = new Notification();
+									notification.to = recipient;
+									notification.from = comment.user;
+									notification.kifu = comment.kifu;
+									notification.path = comment.path;
+									notification.comment = comment._id;
+
+									notification.save();
+								});
+							});
+
 						} else {
 							res.json(500, {
 								message: 'Error pushing reference to parent kifu. Error: ' + error
@@ -69,7 +88,7 @@ router.get('/', function (req, res) {
 				if (!error && user) {
           comments
             .where('user').equals(user._id)
-            .populate('user', 'username email gravatar')
+            .populate('user', 'username email gravatar rank')
             .populate('kifu', 'shortid game')
 						.select('-kifu.game')
             .exec(function (error, comments) {
@@ -89,7 +108,7 @@ router.get('/', function (req, res) {
 			});
 	} else {
 		comments
-			.populate('user', 'username email gravatar')
+			.populate('user', 'username email gravatar rank')
 			.populate('kifu', 'shortid game')
 			.exec(function (error, comments) {
 				if (!error) {
@@ -141,6 +160,19 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 					});
 					comment.remove();
 					res.json(200, { message: 'Comment removed.' });
+
+					// Remove any notifications for this comment
+					Notification.find()
+						.where('comment', comment)
+						.exec(function (error, notifications) {
+							if (!error) {
+								for (var i = notifications.length - 1; i >= 0; i -= 1) {
+									notifications[i].remove();
+								}
+							} else {
+								console.log('Could not delete notifications for this comment', error);
+							}
+						});
 				}
 			} else if (!error) {
 				res.json(404, { message: 'Could not find comment.' });
@@ -170,7 +202,7 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 								comment: comment
 							});
 						} else {
-							res.json(500, { message: 'Could not update comment.' + error });
+							res.json(500, { message: 'Could not update comment. ' + error });
 						}
 					});
 				}
