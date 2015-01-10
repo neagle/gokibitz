@@ -9,7 +9,7 @@
 }
 
 .btn-primary {
-	@include button-variant($btn-default-color, darken($brand-secondary, 0%), $btn-primary-hover-bg, $btn-primary-active-bg);
+	@include button-variant($btn-default-color, darken($flat-carrot, 10%), $flat-carrot, $btn-primary-active-bg);
 }
 .btn-info    {
 	@include button-variant($btn-default-color, $brand-info, $btn-info-hover-bg, $btn-info-active-bg);

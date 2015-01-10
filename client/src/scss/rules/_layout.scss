@@ -318,3 +318,139 @@ p.compact {
 .media .media-body {
 	width: 10000px;
 }
+
+.stretch {
+	width: 100%;
+}
+
+h1 .rank {
+	opacity: 0.5;
+}
+
+
+.dark-background {
+	p {
+		color: $flat-clouds;
+		font-size: 18px;
+	}
+
+	a {
+		color: white;
+		&:hover {
+			color: mix(white, $flat-green-sea, 60%);
+		}
+		border-bottom: 1px solid $flat-clouds;
+		&.btn, &.no-underline {
+			border-bottom: 0;
+		}
+	}
+
+	.help-block {
+		color: $flat-clouds;
+		font-size: 12px;
+		opacity: 0.8;
+	}
+
+	.form-group {
+		label {
+			color: $flat-green-sea;
+			font: {
+				family: $headings-font-family;
+				size: 18px;
+			}
+			line-height: 1;
+			margin: {
+				bottom: 0;
+				top: 10px;
+			}
+		}
+
+		&.has-error {
+			.form-control {
+				border: {
+					color: $flat-red-2;
+				}
+			}
+		}
+
+	}
+
+	.form-control {
+		background: {
+			color: $flat-green-sea;
+		}
+		border: {
+			$width: 3px;
+			color: $flat-green-sea;
+			radius: 0;
+//			radius: 0 0 0 $width * 2;
+//			width: $width;
+			width: 0;
+		}
+		color: $flat-clouds;
+
+		@include placeholder($flat-sunflower);
+
+		&:focus {
+			background: transparentize($flat-clouds, 0.2);
+			border: {
+//				color: $brand-secondary;
+			}
+			color: $flat-gray-4;
+			@include placeholder($flat-green-sea);
+		}
+
+	}
+
+	.table-display {
+		th {
+			color: $flat-clouds;
+		}
+	}
+}
+
+.align-sm-right {
+	@media (min-width: $screen-sm-min) {
+		text-align: right;
+	}
+	@media (max-width: $screen-xs-max) {
+		text-align: left;
+	}
+}
+
+.align-md-right {
+	@media (min-width: $screen-md-min) {
+		text-align: right;
+	}
+	@media (max-width: $screen-sm-max) {
+		text-align: left;
+	}
+}
+
+.table-display {
+	color: $flat-clouds;
+	tbody {
+		tr {
+			th, td {
+				border: 0;
+				line-height: 2;
+				padding: 2px;
+			}
+		}
+	}
+	th {
+		width: 20%;
+	}
+	td {
+		width: 80%;
+	}
+}
+
+.form-control {
+	&.short {
+		width: 100px;
+	}
+	&.medium {
+		width: 200px;
+	}
+}

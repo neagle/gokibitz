@@ -1,0 +1,49 @@
+// Override default flat-ui color
+$color: $flat-midnight-blue;
+.tooltip {
+	font-size: ceil($component-font-size-base); // ~14px
+	line-height: 1.286; // 18px
+
+	&.bottom .tooltip-arrow {
+		border-bottom-color: $color;
+	}
+	&.left .tooltip-arrow {
+		border-left-color: $color;
+	}
+	&.right .tooltip-arrow {
+		border-right-color: $color;
+	}
+	&.top .tooltip-arrow {
+		border-top-color: $color;
+	}
+	.tooltip-inner {
+		background-color: $color;
+		color: mix(white, $color, 50%);
+		width: auto;
+		// Flat UI set width to 183px. Why? They designed with the heart, I guess.
+		min-width: 183px;
+		max-width: 300px;
+		text-align: left;
+	}
+
+	&.bottom {
+		.tooltip-inner {
+			text-align: center;
+		}
+	}
+	&.left {
+		.tooltip-inner {
+			text-align: right;
+		}
+	}
+	&.right {
+		.tooltip-inner {
+			text-align: left;
+		}
+	}
+	&.top {
+		.tooltip-inner {
+			text-align: center;
+		}
+	}
+}

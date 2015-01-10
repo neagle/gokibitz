@@ -108,7 +108,7 @@ router.get('/:shortid/sgf', function (req, res) {
 			User.findOne({
 				_id: kifu.owner
 			}, function (error, owner) {
-				console.log(kifu, owner);
+				//console.log(kifu, owner);
 				var filename = owner.username + '--' +
 					kifu.game.info.black.name +
 					'-vs-' +
@@ -151,7 +151,7 @@ router.get('/:id/comments/:path?', function (req, res) {
 					// For path-specific comments, use chron
 					date: (findOptions.path) ? 'asc' : 'desc'
 				})
-				.populate('user', 'username email gravatar')
+				.populate('user', 'username email gravatar rank')
 				.exec(function (error, comments) {
 					if (error) {
 						res.json(500, { message: 'Error loading comments. ' + error });

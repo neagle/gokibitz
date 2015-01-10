@@ -113,6 +113,16 @@ gokibitz.config([
 				controller: 'KifuController',
 				reloadOnSearch: false
 			})
+			.when('/user/:username', {
+				templateUrl: '/partials/user',
+				controller: 'UserController',
+				resolve: {
+					user: function ($http, $route) {
+						var username = $route.current.params.username;
+						return $http.get('/api/user/' + username);
+					}
+				}
+			})
 			.otherwise({
 				redirectTo: '/'
 			});
@@ -149,12 +159,11 @@ gokibitz.run([
 			//console.log('$location.path()', $location.path());
 			var path = $location.path().split('/');
 			path = '/' +  path[1];
-			console.log('path', path);
+			//console.log('path', path);
 			if (
 				!currentUser &&
 				!~['/', '/login', '/logout', '/signup', '/kifu'].indexOf(path)
 			) {
-				console.log('redirect to auth!');
 				Auth.currentUser();
 			}
 		});

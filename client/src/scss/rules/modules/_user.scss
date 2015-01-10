@@ -1,0 +1,55 @@
+.user-profile {
+
+	.profile-container {
+		position: relative;
+	}
+
+	.display, .edit {
+		left: 0;
+		right: 0;
+		top: 0;
+	}
+
+	.username {
+		line-height: 0.8;
+		margin: 0;
+	}
+	.teacher {
+		p {
+			//
+			color: transparentize($flat-clouds, 0.5);
+		}
+	}
+
+	.real-name, .location {
+		color: $flat-clouds;
+		font-size: 14px;
+		opacity: 0.8;
+		text-transform: uppercase;
+	}
+
+	.real-name {
+		font-weight: 700;
+	}
+
+	.location {
+		font-weight: normal;
+	}
+}
+
+p.gravatar-help {
+	font-size: 12px;
+	margin: 1em 1em 0;
+	text-align: left;
+}
+
+.display {
+//	@extend .debug;
+	@extend .fade-in;
+}
+
+.edit {
+//	@extend .debug;
+	@extend .fade-in;
+	//foo
+}

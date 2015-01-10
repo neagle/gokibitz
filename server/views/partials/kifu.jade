@@ -121,7 +121,11 @@
 										href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
 										ng-click='kifu.path = comment.path'
 									)
-										| {{ comment.user.username }} commented on move {{ comment.path.m }} <br>
+										| {{ comment.user.username }}
+										= ' '
+										span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
+										= ' '
+										| commented on move {{ comment.path.m }} <br>
 									time.relative.small(
 										datetime='{{ comment.date }}'
 									) {{ comment.relativeDate | verboseNumbers }}
@@ -172,6 +176,8 @@
 											i.fui-trash
 
 									strong {{ comment.user.username }}
+									= ' '
+									span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
 									= ' '
 									time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
 

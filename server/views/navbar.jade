@@ -51,7 +51,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 						b.caret
 
 				ul.dropdown-menu(role='menu')
-					//-li
-						//-a(href='/profile') Profile
+					li
+						a(href='/user/{{ currentUser.username }}') Profile
 					li
 						a(ng-click='logout()') Log Out

@@ -34,8 +34,8 @@
 						| No kifu found.
 
 					.list-kifu.list-group
-						.kifu.list-group-item(
-							ng-repeat='item in kifu'
+						.kifu.list-group-item.fade-in-fade-out(
+							ng-repeat='item in kifu track by item._id'
 						)
 							.media
 								.media-left
@@ -58,12 +58,12 @@
 											href='/kifu/{{ item.shortid }}'
 										)
 											span.name {{ item.game.info.white.name || 'Anonymous' }}&nbsp;
-											span.rank {{ item.game.info.white.rank }}
+											span.rank [{{ item.game.info.white.rank }}]
 											= ' '
 											| vs.
 											= ' '
 											span.name {{ item.game.info.black.name || 'Anonymous' }}&nbsp;
-											span.rank {{ item.game.info.black.rank }}
+											span.rank [{{ item.game.info.black.rank }}]
 											= ' '
 											span(ng-if='item.game.info.result') ({{ item.game.info.result }})
 											= ' '

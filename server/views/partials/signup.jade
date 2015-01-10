@@ -38,10 +38,13 @@
 					type='text'
 					name='username'
 					ng-model='user.username'
+					ng-pattern='/^[a-zA-Z0-9-_]+$/'
 					required
 					unique-username
 					mongoose-error
 				)
+				p.help-block(ng-show='form.username.$error.pattern && form.username')
+					| Usernames can only be made up of upper and lowercase letters, numbers, hyphens, and underscores.
 				p.help-block(ng-show='form.username.$error.unique && form.username')
 					| That username is already taken.
 				p.help-block(ng-show='form.password.$error.mongoose')

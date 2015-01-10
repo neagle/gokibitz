@@ -19,7 +19,35 @@ var UserSchema = new Schema({
 	name: String,
 	admin: Boolean,
 	guest: Boolean,
-	provider: String
+	provider: String,
+	realName: String,
+	location: String,
+	bio: String,
+	rank: String,
+	twitter: String,
+	teacher: {
+		name: String,
+		url: String
+	},
+	favorite: {
+		professional: String,
+		stones: String,
+		opening: String
+	},
+	externalGoUsernames: {
+		kgs: String,
+		ogs: String,
+		dgs: String,
+		tygem: String,
+		wbaduk: String
+	}
+}, {
+	toJSON: {
+		virtuals: true
+	},
+	toObject: {
+		virtuals: true
+	}
 });
 
 /**
@@ -75,6 +103,11 @@ UserSchema.path('email').validate(function (value, respond) {
 		respond(true);
 	});
 }, 'The specified email address is already in use.');
+
+UserSchema.path('username').validate(function (username) {
+	var usernameRegex = /^[a-zA-Z0-9-_]+$/;
+	return usernameRegex.test(username);
+}, 'Usernames can only be made up of upper and lowercase letters, numbers, hyphens, and underscores.');
 
 UserSchema.path('username').validate(function (value, respond) {
 	mongoose.models.User.findOne({ username: value }, function(err, user) {

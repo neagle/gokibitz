@@ -9,14 +9,38 @@ div.panel.panel-default
 			li.media.fade-in-fade-out(
 				ng-repeat='comment in comments track by comment._id'
 			)
-				.media-left
+				a.media-left(
+					ng-if='!noCommenterLink'
+					href='/user/{{ comment.user.username }}'
+				)
 					img.media-object(
 						src='{{ comment.user.gravatar }}?s=24&d=retro'
 						style='width: 24px; height: 24px'
 					)
-				//a.media-left(href='/users/{{ comment.user.username }}')
+				.media-left(
+					ng-if='noCommenterLink'
+				)
+					img.media-object(
+						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						style='width: 24px; height: 24px'
+					)
 				.media-body
-					p.media-heading.compact {{ comment.user.username }} commented on
+					p.media-heading.compact
+						a(
+							href='/user/{{ comment.user.username }}'
+							ng-if='!noCommenterLink'
+						) {{ comment.user.username }}
+							= ' '
+							span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
+
+						span(
+							ng-if='noCommenterLink'
+						) {{ comment.user.username }}
+							= ' '
+							span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
+
+						= ' '
+						| commented on
 						= ' '
 						a(
 							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
@@ -29,13 +53,13 @@ div.panel.panel-default
 						)
 							span.name {{ comment.kifu.game.info.white.name }}
 							= ' '
-							span.rank {{ comment.kifu.game.info.white.rank }}
+							span.rank [{{ comment.kifu.game.info.white.rank }}]
 							= ' '
 							| vs.
 							= ' '
 							span.name {{ comment.kifu.game.info.black.name }}
 							= ' '
-							span.rank {{ comment.kifu.game.info.black.rank }}
+							span.rank [{{ comment.kifu.game.info.black.rank }}]
 						br
 						time.relative.small(
 							datetime='{{ comment.date }}'

@@ -85,7 +85,12 @@ gulp.task('sass', ['sass-includes'], function () {
 		includePaths: bourbon.includePaths,
 		errLogToConsole: true
 	}))
-	.pipe(autoprefix())
+	.pipe(autoprefix()
+			.on('error', notify.onError({
+				title: 'Autoprefix Error',
+				messgae: '<%= error.message %>'
+			}))
+		)
 	.pipe(gulp.dest('./client/public/css'));
 });
 

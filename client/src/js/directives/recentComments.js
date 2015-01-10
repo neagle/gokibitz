@@ -2,7 +2,10 @@ angular.module('gokibitz.directives')
 	.directive('recentComments',
     function () {
 			return {
-				scope: true,
+				scope: {
+					username: '@',
+					noCommenterLink: '@'
+				},
 				templateUrl: '/partials/directives/recent-comments',
 				replace: true,
 				controller: 'RecentCommentsCtrl',
@@ -25,7 +28,13 @@ angular.module('gokibitz.directives')
 				});
 			};
 
-			$http.get('/api/comment')
+			var params = {};
+
+			if ($scope.username) {
+				params.username = $scope.username;
+			}
+
+			$http.get('/api/comment', { params: params })
 				.then(function (response) {
 					$scope.comments = response.data;
 					since = new Date();
@@ -35,9 +44,8 @@ angular.module('gokibitz.directives')
 
 				refreshTimes();
 
-				$http.get('/api/comment', {
-					params: { since: since }
-				})
+				params.since = since;
+				$http.get('/api/comment', { params:  params })
 					.then(function (response) {
 						var newComments = response.data;
 						if (newComments.length) {

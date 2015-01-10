@@ -1,0 +1,320 @@
+.container-fluid.user-profile
+	.row.top-buffer
+		.col-sm-2.dark-background
+			.row
+				.col-md-12
+					// Show the image with a link to Gravatar if this is a user's own profile
+					a(
+						ng-if='isMine'
+						href='http://gravatar.com'
+					)
+						img.stretch(
+							src='{{ user.gravatar }}?s=500&d=retro'
+							style='max-width: 500px'
+							tooltip-placement='bottom'
+							tooltip='Manage the profile image for {{ user.email }} with Gravatar'
+						)
+
+					// Otherwise just show the image
+					img.stretch(
+						ng-if='!isMine'
+						src='{{ user.gravatar }}?s=200&d=retro'
+						style='max-width: 200px'
+					)
+
+			.row
+				.col-md-12(ng-hide='!user.realName && !user.location')
+					p
+						.real-name.align-sm-right(ng-if='user.realName') {{ user.realName }}
+						.location.align-sm-right(ng-if='user.location') {{ user.location }}
+
+			.row.top-buffer.bottom-buffer.align-sm-right(
+				ng-show='isMine'
+			)
+				.col-md-12(ng-hide='edit')
+					button.btn.btn-primary(ng-click='edit = !edit') Edit
+				.col-md-12(ng-show='edit')
+					button.btn.btn-primary(
+						ng-click='save()'
+						ng-disabled='form.$invalid'
+					) Save
+					= ' '
+					button.btn.btn-default(ng-click='cancel()') Cancel
+
+		.col-sm-6.dark-background
+			.profile-container
+				// PROFILE DISPLAY
+				.display.animate-fade(ng-hide='edit')
+					.row
+						.col-md-12()
+							h1.username {{ user.username }}
+								span.rank {{ user.rank }}
+
+					.row
+						.col-md-12.teacher(ng-hide='!user.teacher.name')
+							p
+								strong student of
+									= ' '
+									a.teacher-name(
+										ng-if='user.teacher.url'
+										href='user.teacher.url'
+									) {{ user.teacher.name }}
+
+									span.teacher-name(
+										ng-if='!user.teacher.url'
+									) {{ user.teacher.name }}
+
+					.row
+						.col-md-12(ng-hide='!user.bio')
+							p {{ user.bio }}
+
+					.row(ng-show='profile.favorite')
+						.col-md-12
+							h3 Favorite
+							table.table.table-condensed.table-display
+								tbody
+									tr(ng-show='profile.favorite.professional')
+										th
+											| Professional
+										td
+											| {{ profile.favorite.professional }}
+									tr(ng-show-'profile.favorite.stones')
+										th
+											| Stones
+										td
+											| {{ profile.favorite.stones }}
+									tr(ng-show='profile.favorite.opening')
+										th
+											| Opening
+										td
+											| {{ profile.favorite.opening }}
+
+					.row(ng-hide='!user.twitter')
+						.col-md-12
+							a.btn.btn-default(href='https://twitter.com/{{ user.twitter }}')
+								span.fui-twitter
+								= ' '
+								| @{{ user.twitter }}
+
+					.row(ng-if='user.externalGoUsernames')
+						.col-md-12
+							h3 Go Servers
+							table.table.table-condensed.table-display
+								tbody
+									tr(ng-show='user.externalGoUsernames.kgs || edit')
+										th
+											a(href='http://www.gokgs.com/') KGS
+										td
+											a(
+												href='http://www.gokgs.com/gameArchives.jsp?user={{ user.externalGoUsernames.kgs }}'
+											) {{ user.externalGoUsernames.kgs }}
+									tr(ng-show='user.externalGoUsernames.ogs || edit')
+										th
+											a(href='https://online-go.com') OGS
+										td
+											| {{ user.externalGoUsernames.ogs }}
+									tr(ng-show='user.externalGoUsernames.dgs || edit')
+										th
+											a(href='http://www.dragongoserver.net/') Dragon Go Server
+										td {{ user.externalGoUsernames.dgs }}
+									tr(ng-show='user.externalGoUsernames.tygem || edit')
+										th
+											a(href='http://www.tygemgo.com/') Tygem
+										td
+											| {{ user.externalGoUsernames.tygem }}
+									tr(ng-show='user.externalGoUsernames.wbaduk || edit')
+										th
+											a(href='http://www.wbaduk.com/') WBaduk
+										td
+											| {{ user.externalGoUsernames.wbaduk }}
+
+				// PROFILE EDIT
+				.edit.animate-fade(ng-hide='!edit')
+					form(
+						name='form'
+						role='form'
+					)
+						.row
+							.col-md-12
+								.form-group(
+									ng-class='{ \'has-warning\': form.rank.$dirty, \'has-success\': form.rank.$valid && form.rank.$dirty && !form.rank.$error.mongoose, \'has-error\': form.rank.$invalid && form.rank.$dirty || form.rank.$error.mongoose }'
+								)
+									h1.username {{ user.username }}
+									label.top-buffer(for='rankEdit') Rank
+									input.short.form-control(
+										aria-describedby='rankHelpBlock'
+										type='text'
+										id='rankEdit'
+										ng-model='profile.rank'
+										ui-validate='{ legit: "isValidRank($value)" }'
+										name='rank'
+									)
+									span#rankHelpBlock.help-block
+										| How strong are you?
+									span.error.help-block(ng-show='form.rank.$error.legit && form.rank')
+										| A valid rank is 30 - 1k, 1-9d, or 1-9p.
+
+						// Name and Location
+						.row
+							.col-md-12()
+								.form-group
+									label(for='realNameEdit') Real Name
+									input.form-control.medium(
+										aria-describedby='realNameHelpBlock'
+										type='text'
+										id='realNameEdit'
+										ng-model='profile.realName'
+									)
+									span#realNameHelpBlock.help-block
+										| If you feel like saying.
+
+									label(for='locationEdit') Location
+									input.form-control.medium(
+										aria-describedby='locationHelpBlock'
+										type='text'
+										id='locationEdit'
+										ng-model='profile.location'
+									)
+									span#locationHelpBlock.help-block
+										| Where do you hail from?
+						// TEACHER
+						.row
+							.col-md-12()
+								.form-group
+									label(for='teacherNameEdit') Teacher
+									input.form-control.medium(
+										aria-describedby='teacherNameHelpBlock'
+										type='text'
+										id='teacherNameEdit'
+										ng-model='profile.teacher.name'
+									)
+									span#teacherNameHelpBlock.help-block
+										| Do you call anyone &ldquo;Shifu&rdquo; or &ldquo;Sensei&rdquo;?
+
+									label(for='teacherUrlEdit') Teacher&rsquo;s URL
+									input.form-control.medium(
+										aria-describedby='teacherUrlHelpBlock'
+										type='text'
+										id='teacherUrlEdit'
+										ng-model='profile.teacher.url'
+									)
+									span#teacherUrlHelpBlock.help-block
+										| Does your teacher have a website?
+						//.row
+						//	.col-md-12(ng-hide='edit || !isMine')
+						//		h2 {{ user.email }}
+
+						// BIO
+						.row
+							.col-md-12
+								.form-group
+									label(for='bioEdit') Bio
+									textarea.form-control(
+										aria-describedby='bioHelpBlock'
+										id='bioEdit'
+										ng-model='profile.bio'
+										rows='4'
+									)
+									span#bioHelpBlock.help-block
+										| Tell us about yourself.
+
+						.row
+							.col-md-12
+								h3 Favorite
+								table.table.table-condensed.table-display
+									tbody
+										tr
+											th
+												| Professional
+											td
+												input.medium.form-control.input-sm(
+													id='favoriteProfessionalEdit'
+													ng-model='profile.favorite.professional'
+												)
+										tr
+											th
+												| Stones
+											td
+												input.medium.form-control.input-sm(
+													id='favoriteStonesEdit'
+													ng-model='profile.favorite.stones'
+												)
+										tr
+											th
+												| Opening
+											td
+												input.medium.form-control.input-sm(
+													id='favoriteOpeningEdit'
+													ng-model='profile.favorite.opening'
+												)
+
+
+						// TWITTER
+						.row
+							.col-md-12(ng-show='edit')
+								.form-group
+									label(for='twitterEdit') Twitter Username
+									input.form-control.medium(
+										type='text'
+										id='twitterEdit'
+										placeholder='username'
+										ng-model='profile.twitter'
+									)
+
+						.row
+							.col-md-12
+								h3 Go Servers
+								table.table.table-condensed.table-display
+									tbody
+										tr
+											th
+												a(tabindex='-1' href='http://www.gokgs.com/') KGS
+											td
+												input.short.form-control.input-sm(
+													id='kgsEdit'
+													ng-model='profile.externalGoUsernames.kgs'
+													placeholder='username'
+												)
+										tr
+											th
+												a(tabindex='-1' href='https://online-go.com') OGS
+											td
+												input.short.form-control.input-sm(
+													id='kgsEdit'
+													ng-model='profile.externalGoUsernames.ogs'
+													placeholder='username'
+												)
+										tr
+											th
+												a(tabindex='-1' href='http://www.dragongoserver.net/') Dragon Go Server
+											td
+												input.short.form-control.input-sm(
+													id='kgsEdit'
+													ng-model='profile.externalGoUsernames.dgs'
+													placeholder='username'
+												)
+										tr
+											th
+												a(tabindex='-1' href='http://www.tygemgo.com/') Tygem
+											td
+												input.short.form-control.input-sm(
+													id='kgsEdit'
+													ng-model='profile.externalGoUsernames.tygem'
+													placeholder='username'
+												)
+										tr
+											th
+												a(tabindex='-1' href='http://www.wbaduk.com/') WBaduk
+											td
+												input.short.form-control.input-sm(
+													id='kgsEdit'
+													ng-model='profile.externalGoUsernames.wbaduk'
+													placeholder='username'
+												)
+
+
+		.col-sm-4
+			recent-comments(
+				username='{{ user.username }}'
+				no-commenter-link
+			)
