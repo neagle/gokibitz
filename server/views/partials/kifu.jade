@@ -111,7 +111,7 @@
 							li.comment.media(
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/users/{{ comment.user.username }}')
+								a.pull-left(href='/user/{{ comment.user.username }}')
 									img.media-object(
 										src='{{ comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
@@ -155,7 +155,7 @@
 								ng-class="{ false: 'animate', true: 'loading' }[loading]"
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/users/{{ comment.user.username }}')
+								a.pull-left(href='/user/{{ comment.user.username }}')
 									img.media-object(
 										src='{{ comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
