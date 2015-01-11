@@ -37,7 +37,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 				li.notifications.dropdown(
 					dropdown
 					on-toggle='notificationToggle(open)'
-					ng-show='currentUser'
+					ng-if='currentUser'
 				)
 					a.dropdown-toggle(
 						dropdown-toggle
