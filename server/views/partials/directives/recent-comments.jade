@@ -14,14 +14,14 @@ div.panel.panel-default
 					href='/user/{{ comment.user.username }}'
 				)
 					img.media-object(
-						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						ng-src='{{ comment.user.gravatar }}?s=24&d=retro'
 						style='width: 24px; height: 24px'
 					)
 				.media-left(
 					ng-if='noCommenterLink'
 				)
 					img.media-object(
-						src='{{ comment.user.gravatar }}?s=24&d=retro'
+						ng-src='{{ comment.user.gravatar }}?s=24&d=retro'
 						style='width: 24px; height: 24px'
 					)
 				.media-body

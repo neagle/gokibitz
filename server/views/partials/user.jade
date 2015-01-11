@@ -9,7 +9,7 @@
 						href='http://gravatar.com'
 					)
 						img.stretch(
-							src='{{ user.gravatar }}?s=500&d=retro'
+							ng-src='{{ user.gravatar }}?s=500&d=retro'
 							style='max-width: 500px'
 							tooltip-placement='bottom'
 							tooltip='Manage the profile image for {{ user.email }} with Gravatar'
@@ -18,7 +18,7 @@
 					// Otherwise just show the image
 					img.stretch(
 						ng-if='!isMine'
-						src='{{ user.gravatar }}?s=200&d=retro'
+						ng-src='{{ user.gravatar }}?s=200&d=retro'
 						style='max-width: 200px'
 					)
 
