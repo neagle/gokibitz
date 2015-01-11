@@ -32,9 +32,15 @@ angular.module('gokibitz.controllers')
 				var number = Number(rankArr[0]);
 				var suffix = suffixes[i];
 
+				// first part has to be a number
 				if (isNaN(number)) {
 					return false;
 				};
+
+				// k, d, or p, not kyu, dan, or pro
+				if (rankArr[1].length) {
+					return false;
+				}
 
 				if (suffix === 'k') {
 					if (number > 30 || number < 1) {
