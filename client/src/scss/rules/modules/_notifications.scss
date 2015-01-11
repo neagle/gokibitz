@@ -1,0 +1,84 @@
+.notifications.dropdown {
+	.badge {
+		background-color: $flat-alizarin;
+		color: $flat-clouds;
+		font: {
+			size: 14px;
+		}
+		padding: 0 8px;
+		position: absolute;
+		left: 45px;
+		top: 5px;
+	}
+
+	.dropdown-menu {
+		background: {
+			color: $flat-wet-asphalt !important;
+		}
+		border: 0;
+		max-height: 300px;
+		overflow-y: scroll;
+		width: 400px;
+
+		> li {
+		}
+
+		.divider {
+
+		}
+
+		.media {
+			margin: {
+				top: 0;
+			}
+		}
+
+		a {
+//			background: {
+//				color: $flat-wet-asphalt;
+//			}
+			display: block;
+			margin: {
+				bottom: 0;
+			}
+			padding: 5px;
+
+			&:hover {
+				background: {
+					color: $flat-green-sea;
+				}
+			}
+		}
+
+		.media-heading {
+			color: $flat-clouds;
+			font: {
+				family: $font-body;
+				size: 12px;
+				weight: normal;
+			}
+			line-height: 1;
+			margin: {
+				bottom: 0;
+				top: 0;
+			}
+		}
+
+		time {
+			margin: 0;
+		}
+	}
+}
+
+.notifications {
+	.unread {
+		background: {
+			color: transparentize($flat-green-sea, 0.8);
+		}
+//		border: 10px solid red;
+	}
+	.read {
+		opacity: 0.5;
+//		border: 10px solid green;
+	}
+}

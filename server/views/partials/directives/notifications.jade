@@ -1,0 +1,43 @@
+ui.notifications.media-list
+	li.media.fade-in-fade-out(
+		ng-if='notifications && !notifications.length'
+	)
+		.media-body
+			p No notifications.
+
+	li.media.fade-in-fade-out(
+		ng-if='notifications.length'
+		ng-repeat='notification in notifications track by notification._id'
+		ng-init='info=notification.kifu.game.info'
+		ng-class='{ read: notification.read, unread: !notification.read }'
+	)
+		a(
+			ng-click='clickNotification($event, notification)'
+			ng-href='/kifu/{{ notification.kifu.shortid }}?path={{ notification.path }}'
+		)
+			.media-left(href='/user/{{ notification.from.username}}')
+				img(
+					src='{{ notification.from.gravatar }}?s=24&d=retro'
+					style='width: 24px; height: 24px'
+				)
+			.media-body
+				h4.media-heading(ng-if='notification.comment')
+					| {{ notification.from.username }}
+					span.rank(ng-if='notification.from.rank')
+						| &nbsp;[{{ notification.from.rank }}]
+					= ' '
+					| commented on move {{ notification.path }} of
+					= ' '
+					| {{ info.white.name }}
+					span.rank(ng-if='info.white.rank')
+						| &nbsp;{{ info.white.rank }}
+					= ' '
+					| vs.
+					= ' '
+					| {{ info.black.name }}
+					span.rank(ng-if='info.black.rank')
+						| &nbsp;{{ info.black.rank }}
+
+				time.relative.small(
+					datetime='{{ notification.date }}'
+				) {{ notification.relativeDate | verboseNumbers }}

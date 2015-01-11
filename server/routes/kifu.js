@@ -7,6 +7,7 @@ var fs = require('fs');
 var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
+var Notification = require('../models/notification').Notification;
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -69,6 +70,19 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 							res.json(200, {
 								message: 'Kifu deleted.'
 							});
+
+							// Remove any notifications for this kifu
+							Notification.find()
+								.where('kifu', kifu)
+								.exec(function (error, notifications) {
+									if (!error) {
+										for (var i = notifications.length - 1; i >= 0; i -= 1) {
+											notifications[i].remove();
+										}
+									} else {
+										console.log('Could not delete notifications for this kifu', error);
+									}
+								});
 						} else {
 							res.json(500, { message: 'Could not delete kifu.' + error });
 						}

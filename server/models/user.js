@@ -73,8 +73,12 @@ UserSchema
 UserSchema
 	.virtual('gravatar')
 	.get(function () {
-		var hash = md5(this.email.trim().toLowerCase());
-		return 'http://www.gravatar.com/avatar/' + hash;
+		if (this.email) {
+      var hash = md5(this.email.trim().toLowerCase());
+      return 'http://www.gravatar.com/avatar/' + hash;
+    } else {
+			return '';
+		}
 	});
 
 /**

@@ -33,7 +33,8 @@ var gokibitz = angular.module('gokibitz', [
 	'angularFileUpload',
 	'ui.utils',
 	'ngStorage',
-	'720kb.socialshare'
+	'720kb.socialshare',
+	'flatui.directives'
 ]);
 
 require('angular-ui-router');
@@ -53,6 +54,9 @@ require('ngStorage');
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare
 require('./lib/angular-socialshare.js');
+
+// @see https://gist.github.com/cirqueit/b668f464a80ad5c8ca0b
+require('./lib/flatui.directives.js');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);
@@ -92,9 +96,9 @@ gokibitz.config([
 				//templateUrl: '/partials/signup',
 				//controller: 'SignupController'
 			//})
-			.when('/profile', {
-				templateUrl: '/partials/profile',
-				controller: 'ProfileController'
+			.when('/notifications', {
+				templateUrl: '/partials/notifications',
+				controller: 'NotificationsController'
 			})
 			.when('/admin', {
 				templateUrl: '/partials/admin',

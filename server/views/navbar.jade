@@ -25,6 +25,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					ng-class='{ active: $uiRoute }'
 				)
 					a(href='/{{ item.link }}') {{ item.title }}
+
 				li(
 					ng-repeat='item in authMenu'
 					ng-show='currentUser'
@@ -32,6 +33,37 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					ng-class='{ active: $uiRoute }'
 				)
 					a(href='/{{ item.link }}') {{ item.title }}
+
+				li.notifications.dropdown(
+					dropdown
+					on-toggle='notificationToggle(open)'
+					ng-show='currentUser'
+				)
+					a.dropdown-toggle(
+						dropdown-toggle
+					)
+						span.fui-chat
+						= ' '
+						span.badge.fade-in-fade-out(
+							ng-show='unseenCount'
+						) {{ unseenCount }}
+					ul.dropdown-menu(role='menu')
+						li
+							notifications(
+								unread-count='unreadCount'
+								unseen-count='unseenCount'
+								count='count'
+								unread='false'
+								username='{{ currentUser.username }}'
+								most-recent='mostRecentNotification'
+								last-seen='$storage.lastSeenNotification'
+							)
+						//
+							li.divider
+							li
+								a(
+									ng-href='/notifications'
+								) See all
 
 			ul.nav.navbar-nav.navbar-right(ng-hide='currentUser')
 				li

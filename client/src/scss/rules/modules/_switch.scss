@@ -1,0 +1,4 @@
+.has-switch {
+	@include mask(url(if($flat-ui-sass-asset-helper, flat-ui-image-path("images/flat-ui/switch/mask.png"), "images/flat-ui/switch/mask.png")) 0 0 no-repeat);
+}
+

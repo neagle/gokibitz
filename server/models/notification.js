@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var moment = require('moment');
 var Schema = mongoose.Schema;
 
 var notificationSchema = new Schema({
@@ -20,8 +21,8 @@ var notificationSchema = new Schema({
 		default: Date.now
 	},
 	content: {
-    type: String,
-    required: false
+		type: String,
+		required: false
 	},
 	kifu: {
 		type: Schema.ObjectId,
@@ -36,7 +37,19 @@ var notificationSchema = new Schema({
 		type: Boolean,
 		default: false
 	}
+}, {
+	toJSON: {
+		virtuals: true
+	},
+	toObject: {
+		virtuals: true
+	}
 });
+
+notificationSchema.virtual('relativeDate')
+	.get(function () {
+		return moment(this.date).fromNow();
+	});
 
 var notification = mongoose.model('Notification', notificationSchema);
 

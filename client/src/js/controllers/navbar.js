@@ -1,6 +1,7 @@
 angular.module('gokibitz.controllers')
-.controller('NavbarController', function ($rootScope, $scope, Auth, $location, $modal) {
+.controller('NavbarController', function ($rootScope, $scope, Auth, $location, $modal, $localStorage) {
 	$scope.isCollapsed = true;
+	$scope.$storage = $localStorage;
 
 	$scope.menu = [{
 		'title': 'Kifu',
@@ -37,4 +38,23 @@ angular.module('gokibitz.controllers')
 			}
 		});
 	};
+
+	$scope.notificationToggle = function (isOpen) {
+		if (isOpen) {
+      $scope.$storage.lastSeenNotification = $scope.mostRecentNotification;
+		}
+	};
+
+	$scope.$watch('mostRecentNotification', function () {
+		if ($scope.mostRecentNotification && $scope.$storage.lastSeenNotification) {
+			if ($scope.mostRecentNotification.date > $scope.$storage.lastSeenNotification.date) {
+				$scope.showNotificationsCount = true;
+			} else {
+				$scope.showNotificationsCount = false;
+			}
+		} else {
+			$scope.showNotificationsCount = true;
+		}
+	});
+
 });
