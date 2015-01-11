@@ -17,7 +17,7 @@ ui.notifications.media-list
 		)
 			.media-left(href='/user/{{ notification.from.username}}')
 				img(
-					src='{{ notification.from.gravatar }}?s=24&d=retro'
+					ng-src='{{ notification.from.gravatar }}?s=24&d=retro'
 					style='width: 24px; height: 24px'
 				)
 			.media-body
