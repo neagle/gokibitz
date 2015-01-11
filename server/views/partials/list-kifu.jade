@@ -57,13 +57,13 @@
 										a(
 											href='/kifu/{{ item.shortid }}'
 										)
-											span.name {{ item.game.info.white.name || 'Anonymous' }}&nbsp;
-											span.rank(ng-if='item.game.info.white.rank') {{ item.game.info.white.rank }}
+											span.name {{ item.game.info.white.name || 'Anonymous' }}
+											span.rank(ng-if='item.game.info.white.rank')&nbsp;{{ item.game.info.white.rank }}
 											= ' '
 											| vs.
 											= ' '
-											span.name {{ item.game.info.black.name || 'Anonymous' }}&nbsp;
-											span.rank(ng-if='item.game.info.black.rank') {{ item.game.info.black.rank }}
+											span.name {{ item.game.info.black.name || 'Anonymous' }}
+											span.rank(ng-if='item.game.info.black.rank')&nbsp;{{ item.game.info.black.rank }}
 											= ' '
 											span(ng-if='item.game.info.result') ({{ item.game.info.result }})
 											= ' '
