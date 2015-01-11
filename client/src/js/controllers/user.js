@@ -12,7 +12,15 @@ angular.module('gokibitz.controllers')
 
 			$scope.edit = false;
 
-			$scope.isMine = $scope.user.username === $scope.currentUser.username;
+			if (!$scope.currentUser) {
+				$scope.isMine = false;
+			} else {
+				if ($scope.user.username === $scope.currentUser.username)	{
+					$scope.isMine = true;
+				} else {
+					$scope.isMine = false;
+				}
+			}
 
 			// Valid ranks are 30-1k, 1-9d, and 1-9p
 			$scope.isValidRank = function (rank) {
