@@ -2,8 +2,9 @@ var _ = require('lodash');
 
 angular.module('gokibitz.controllers')
 	.controller('UserController',
-		function ($scope, $routeParams, user, $http) {
+		function ($rootScope, $scope, $routeParams, user, $http) {
 			$scope.user = user.data;
+			$rootScope.pageTitle = $scope.user.username + ' – GoKibitz';
 
 			$scope.edit = false;
 

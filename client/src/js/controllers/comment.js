@@ -103,6 +103,7 @@ angular.module('gokibitz.controllers')
 					});
 
 					$scope.$watch('kifu.path', function () {
+						//console.log('path changed, load new comments');
 						$scope.loading = true;
 						$scope.comments = null;
 						$scope.listComments();

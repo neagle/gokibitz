@@ -4,7 +4,7 @@ html(lang='en', ng-app='gokibitz')
 		base(href='/')
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
-		title= title
+		title(ng-bind='$root.pageTitle') GoKibitz: Move-by-move commentary on go games.
 		link(rel='stylesheet', href='/css/app.css')
 		style .ng-cloak { display:none; }
 		script(src='/js/modernizr.js')

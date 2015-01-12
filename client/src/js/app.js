@@ -69,9 +69,7 @@ bulk(__dirname, [
 	'./filters/**/*.js'
 ]);
 
-gokibitz.config([
-	'$routeProvider',
-	'$locationProvider',
+gokibitz.config(
 	function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
@@ -133,7 +131,7 @@ gokibitz.config([
 
 		$locationProvider.html5Mode(true);
 	}
-]);
+);
 
 //gokibitz.config([
 	//'$httpProvider',
@@ -147,29 +145,32 @@ gokibitz.config([
 	//}
 //]);
 
-gokibitz.run([
-	'$rootScope',
-	'$location',
-	'Auth',
-	function ($rootScope, $location, Auth) {
+gokibitz.run(
+	function ($rootScope, $location, Auth, $route) {
 
 		//console.log('resizing from run');
 		//resize();
+
+		$rootScope.$on('$routeChangeSuccess', function () {
+			// Reset the page's title on ever route change
+			// Better to the title blank than wrong
+			$rootScope.pageTitle = '';
+		});
 
 		//watching the value of the currentUser variable.
 		$rootScope.$watch('currentUser', function(currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
-			//console.log('$location.path()', $location.path());
 			var path = $location.path().split('/');
 			path = '/' +  path[1];
-			//console.log('path', path);
+
 			if (
 				!currentUser &&
 				!~['/', '/login', '/logout', '/signup', '/kifu', '/user'].indexOf(path)
 			) {
 				Auth.currentUser();
 			}
+
 		});
 
 		// On catching 401 errors, redirect to the login page.
@@ -178,4 +179,4 @@ gokibitz.run([
 			return false;
 		});
 	}
-]);
+);

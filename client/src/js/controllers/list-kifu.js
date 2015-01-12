@@ -1,5 +1,6 @@
 angular.module('gokibitz.controllers')
-	.controller('ListKifuController', function ($scope, $http, $location, $localStorage) {
+	.controller('ListKifuController', function ($rootScope, $scope, $http, $location, $localStorage) {
+		$rootScope.pageTitle = 'Kifu – GoKibitz';
 		$scope.index = 0;
 		$scope.kifu = [];
 
