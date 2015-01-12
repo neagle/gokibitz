@@ -92,6 +92,7 @@ router.get('/', auth.ensureAuthenticated, function (req, res) {
 
 	router.get('/read/:id', auth.ensureAuthenticated, function (req, res) {
 		var id = req.params.id;
+		var user = req.user;
 
 		Notification
 			.findById(id)

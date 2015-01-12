@@ -1,18 +1,21 @@
 ui.notifications.media-list
+
+	// No notifications
 	li.media.fade-in-fade-out(
-		ng-if='notifications && !notifications.length'
+		ng-if='ctrl.notifications && !ctrl.notifications.length'
 	)
 		.media-body
 			p No notifications.
 
+	// Notifications
 	li.media.fade-in-fade-out(
-		ng-if='notifications.length'
-		ng-repeat='notification in notifications track by notification._id'
+		ng-if='ctrl.notifications.length'
+		ng-repeat='notification in ctrl.notifications track by notification._id'
 		ng-init='info=notification.kifu.game.info'
 		ng-class='{ read: notification.read, unread: !notification.read }'
 	)
 		a(
-			ng-click='clickNotification($event, notification)'
+			ng-click='ctrl.clickNotification($event, notification)'
 			ng-href='/kifu/{{ notification.kifu.shortid }}?path={{ notification.path }}'
 		)
 			.media-left(href='/user/{{ notification.from.username}}')

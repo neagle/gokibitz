@@ -3,12 +3,7 @@ var _ = require('lodash');
 angular.module('gokibitz.controllers')
 	.controller('UserController',
 		function ($scope, $routeParams, user, $http) {
-      console.log('user control', $routeParams, user);
 			$scope.user = user.data;
-			//console.log('$scope.user', $scope.user);
-			//var username = $scope.user.username;
-			//console.log('username', username);
-			//$scope.username = $routeParams.username;
 
 			$scope.edit = false;
 
@@ -87,11 +82,8 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.save = function () {
-				console.log('$scope.profile', $scope.profile);
-				console.log('_.pick($scope.profile, _.identity)', _.pick($scope.profile, _.identity));
 				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
 					.success(function (data, status, headers, config) {
-						console.log('data.user', data.user);
 						$scope.user = data.user;
             $scope.edit = false;
 					})
@@ -100,12 +92,5 @@ angular.module('gokibitz.controllers')
 					})
 			};
 
-			$scope.ping = function () {
-				console.log('ping');
-				$http.put('/api/user/' + $scope.user.username, {
-					twitter: 'neagle',
-					rubbish: 'blabh'
-				})
-			};
     }
   );

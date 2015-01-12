@@ -1,6 +1,6 @@
 nav.navbar.navbar-inverse.navbar-fixed-top(
 	role='navigation'
-	ng-controller='NavbarController'
+	ng-controller='NavbarController as nav'
 )
 	.container-fluid
 
@@ -45,18 +45,19 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 						span.fui-chat
 						= ' '
 						span.badge.fade-in-fade-out(
-							ng-show='unseenCount'
-						) {{ unseenCount }}
+							ng-show='nav.unseenCount'
+						) {{ nav.unseenCount }}
 					ul.dropdown-menu(role='menu')
 						li
 							notifications(
-								unread-count='unreadCount'
-								unseen-count='unseenCount'
-								count='count'
-								unread='false'
-								username='{{ currentUser.username }}'
-								most-recent='mostRecentNotification'
-								last-seen='$storage.lastSeenNotification'
+								unread-count='nav.unreadCount'
+								unseen-count='nav.unseenCount'
+								count='nav.notificationCount'
+								//unread='false'
+								//username='currentUser.username'
+								most-recent='nav.mostRecentNotification'
+								last-seen='nav.$storage.lastSeenNotification'
+								limit='50'
 							)
 						//
 							li.divider

@@ -166,7 +166,7 @@ gokibitz.run([
 			//console.log('path', path);
 			if (
 				!currentUser &&
-				!~['/', '/login', '/logout', '/signup', '/kifu'].indexOf(path)
+				!~['/', '/login', '/logout', '/signup', '/kifu', '/user'].indexOf(path)
 			) {
 				Auth.currentUser();
 			}
