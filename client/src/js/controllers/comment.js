@@ -4,16 +4,19 @@ angular.module('gokibitz.controllers')
 			$scope.formData = {};
 
 			var addCommentsTimer;
+			var pollComments;
 
-			$scope.listComments = function () {
+			$scope.listComments = function (alreadyRendered) {
 				var path;
 
 				// Turn off animation
 				$scope.loading = true;
 
-				// Clear existing comments
-				$scope.comments = [];
-				$scope.numComments = null;
+				if (!alreadyRendered) {
+					// Clear existing comments
+					$scope.comments = [];
+					$scope.numComments = null;
+				}
 
 				// Cancel the addCommentsTimer, in case it's still running
 				// on a particularly long set of comments
@@ -39,34 +42,44 @@ angular.module('gokibitz.controllers')
 						// Use this value instead of $scope.comments.length in the template
 						$scope.numComments = data.length;
 
-						// Avoid causing massive delays in rendering with long lists
-						// by rendering the first 10, then progressively rendering rest
-						// It'd be great, obviously, to figure out how to get ng-repeat
-						// to be more performant, but to be fair to it, the DOM for these
-						// items is relatively complicated.
+						if (!alreadyRendered) {
+							// Avoid causing massive delays in rendering with long lists
+							// by rendering the first 10, then progressively rendering rest
+							// It'd be great, obviously, to figure out how to get ng-repeat
+							// to be more performant, but to be fair to it, the DOM for these
+							// items is relatively complicated.
 
-						// Add an initial chunk of comments
-						$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							// Add an initial chunk of comments
+							$scope.comments = $scope.comments.concat(data.splice(0, 10));
 
-						// ...then add the rest iteratively
-						var delay = 50;
-						var rate = 1;
-						function addCommentsToScope(data) {
-							$scope.comments = $scope.comments.concat(data.splice(0, rate));
+							// ...then add the rest iteratively
+							var delay = 50;
+							var rate = 1;
 
-							if (data.length) {
-								addCommentsTimer = $timeout(function () {
-									// Recurse!
-									addCommentsToScope(data);
-								}, delay);
-							} else {
-								$timeout(function () {
-									$scope.loading = false;
-								}, 0);
+							function addCommentsToScope(data) {
+								$scope.comments = $scope.comments.concat(data.splice(0, rate));
+
+								if (data.length) {
+									addCommentsTimer = $timeout(function () {
+										// Recurse!
+										addCommentsToScope(data);
+									}, delay);
+								} else {
+									$timeout(function () {
+										$scope.loading = false;
+
+										// Start polling comments
+										pollComments = setInterval(function () {
+											$scope.listComments(true);
+										}, 3000);
+									}, 0);
+								}
 							}
-						}
 
-						addCommentsToScope(data);
+							addCommentsToScope(data);
+						} else {
+							$scope.comments = data;
+						}
 
 					})
 					.error(function (data) {
@@ -83,7 +96,7 @@ angular.module('gokibitz.controllers')
 				var newComment = new Comment(data);
 				newComment.$save(function (response) {
 					$scope.formData = {};
-					$scope.listComments();
+					$scope.listComments(true);
 				});
 			};
 
@@ -116,22 +129,13 @@ angular.module('gokibitz.controllers')
 			$scope.deleteComment = function (comment) {
 				$http.delete('/api/comment/' + comment._id)
 					.success(function () {
-						$scope.listComments();
+						$scope.listComments(true);
 					})
 					.error(function (data) {
 						console.log('Error: ' + data);
 					});
 
 			};
-
-			// Load Comments
-			//$scope.loading = true;
-			//$scope.listComments();
-
-			// Poll Comments
-			//var pollComments = setInterval(function () {
-			//	$scope.listComments();
-			//}, 3000);
 
 			$scope.$on('$routeChangeStart', function (next, current) {
 				clearInterval(pollComments);

@@ -28,7 +28,6 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 
 							// Send notifications
 							comment.getRecipients(function (recipients) {
-								console.log('recipients', recipients);
 								recipients.forEach(function (recipient) {
 									// Send a notification to the kifu owner
 									var notification = new Notification();
