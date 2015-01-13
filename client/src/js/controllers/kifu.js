@@ -87,6 +87,11 @@ angular.module('gokibitz.controllers')
 
       var player = initializePlayer();
 
+			// Make the player object globally accessible
+			// Necessary for move labels
+			// TODO: See if there's a way to eliminate this requirement
+			window.player = player;
+
 			$scope.swipeLeft = function (event) {
 				player.next();
 			};
