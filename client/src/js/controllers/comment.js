@@ -1,10 +1,11 @@
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q) {
 			$scope.formData = {};
 
 			var addCommentsTimer;
 			var pollComments;
+			var canceler;
 
 			$scope.listComments = function (alreadyRendered) {
 				var path;
@@ -24,6 +25,11 @@ angular.module('gokibitz.controllers')
 					$timeout.cancel(addCommentsTimer);
 				}
 
+				// Cancel any previous listComments calls
+				if (canceler) {
+					canceler.resolve();
+				}
+
 				if ($scope.kifu.path.m === 0) {
 					path = '';
 				} else {
@@ -31,9 +37,10 @@ angular.module('gokibitz.controllers')
 				}
 				//console.log('path', path);
 
-				$http.get('/api/kifu/' +
-					$scope.kifu._id + '/comments/' + path
-				)
+				canceler = $q.defer();
+				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
+					timeout: canceler.promise
+        })
 					.success(function (data) {
 						data.forEach(function (comment) {
 							comment.pathObject = pathFilter(comment.path, 'object');
@@ -67,11 +74,16 @@ angular.module('gokibitz.controllers')
 								} else {
 									$timeout(function () {
 										$scope.loading = false;
-
 										// Start polling comments
-										pollComments = setInterval(function () {
-											$scope.listComments(true);
-										}, 3000);
+										//if (pollComments) {
+										//}
+                    //$interval.clear(pollComments);
+                    //console.log('setting comments poll');
+                    //pollComments = $interval(function () {
+											//console.log('poll comments');
+											//$scope.listComments(true);
+                    //}, 3000);
+                    //console.log('pollComments?', pollComments);
 									}, 0);
 								}
 							}
@@ -138,11 +150,12 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.$on('$routeChangeStart', function (next, current) {
-				clearInterval(pollComments);
+				//console.log('clearing poll comments');
+				//$interval.clear(pollComments);
 			});
 
 			$scope.$on('$destroy', function () {
-				clearInterval(pollComments);
+				//$interval.clear(pollComments);
 			});
 
 			$scope.$watch('kifu.path', function () {
