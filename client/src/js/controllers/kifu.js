@@ -87,6 +87,15 @@ angular.module('gokibitz.controllers')
 
       var player = initializePlayer();
 
+			$scope.swipeLeft = function (event) {
+				player.previous();
+			};
+
+			$scope.swipeRight = function (event) {
+				player.next();
+			}
+
+
       // Make kifu info available to $scope
       $scope.info = player.kifu.info;
 
