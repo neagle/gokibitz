@@ -88,11 +88,11 @@ angular.module('gokibitz.controllers')
       var player = initializePlayer();
 
 			$scope.swipeLeft = function (event) {
-				player.previous();
+				player.next();
 			};
 
 			$scope.swipeRight = function (event) {
-				player.next();
+				player.previous();
 			}
 
 

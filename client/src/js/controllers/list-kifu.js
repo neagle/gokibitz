@@ -104,6 +104,4 @@ angular.module('gokibitz.controllers')
 		$scope.$watch('$storage.kifuToggle', function () {
 			$scope.listKifu(true);
 		});
-
-		$scope.listKifu();
 	});
