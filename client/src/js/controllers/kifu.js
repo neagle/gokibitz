@@ -10,7 +10,8 @@ angular.module('gokibitz.controllers')
       $location,
       pathFilter,
       LoginSignup,
-      kifu
+      kifu,
+			$interpolate
     ) {
       // Make the login/signup modal avaialble
       $scope.LoginSignup = LoginSignup;
@@ -90,16 +91,10 @@ angular.module('gokibitz.controllers')
       $scope.info = player.kifu.info;
 
       // Set the page title
-      var pageTitle = $scope.info.white.name;
-      if ($scope.info.white.rank) {
-        pageTitle += ' ' + $scope.info.white.rank;
-      }
-      $rootScope.pageTitle += ' vs. ' + player.kifu.info.black.name;
-      if ($scope.info.black.rank) {
-        pageTitle += ' ' + $scope.info.black.rank;
-      }
-      pageTitle += ' – GoKibitz';
-
+      var titleTemplate = $interpolate(
+				'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
+      );
+			var pageTitle = titleTemplate($scope.info);
       $rootScope.pageTitle = pageTitle;
 
       // Turn on coordinates
