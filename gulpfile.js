@@ -177,7 +177,7 @@ gulp.task('lint-server-js', function () {
 gulp.task('default', [
 	'lint-server-js',
 	'sass',
-	'browserify',
+	'uglify',
 	'fonts',
 	'js-assets',
 	'images',
