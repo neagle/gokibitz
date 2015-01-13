@@ -56,7 +56,7 @@ angular.module('gokibitz.filters')
 
 			var path = input.split('-');
 			output = {
-				m: path.shift()
+				m: Number(path.shift())
 			};
 
 			if (path.length) {

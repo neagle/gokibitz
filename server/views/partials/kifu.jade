@@ -92,16 +92,16 @@
 			//- All-kifu comment list -//
 			//-------------------------//
 			.comments(
-				ng-show='kifu.path.m === 0'
+				ng-if='kifu.path.m === 0'
 			)
 				.panel.panel-default
 					.panel-heading
 						span.fui-chat
 						= ' '
-						| Kibitz: {{ comments.length }}
+						| Kibitz: {{ numComments }}
 						= ' '
 						ng-pluralize(
-							count='comments.length'
+							count='numComments'
 							when='{ "one": "Comment", "other": "Comments" }'
 						)
 
@@ -111,31 +111,30 @@
 							li.comment.media(
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/user/{{ comment.user.username }}')
+								a.pull-left(href='/user/{{:: comment.user.username }}')
 									img.media-object(
-										src='{{ comment.user.gravatar }}?s=24&d=retro'
+										src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
 									)
 								.comment-media-body
 									a(
-										href='/kifu/{{ kifu.shortid }}?path={{ comment.path | path:string }}'
-										ng-click='kifu.path = comment.path'
+										href='/kifu/{{:: kifu.shortid }}?path={{:: comment.path }}'
 									)
-										| {{ comment.user.username }}
+										| {{:: comment.user.username }}
 										= ' '
-										span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
+										span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
 										= ' '
-										| commented on move {{ comment.path.m }} <br>
+										| commented on move {{:: comment.pathObject.m }} <br>
 									time.relative.small(
-										datetime='{{ comment.date }}'
-									) {{ comment.relativeDate | verboseNumbers }}
+										datetime='{{:: comment.date }}'
+									) {{:: comment.relativeDate | verboseNumbers }}
 
 
 			//----------------------------------//
 			//- List comments on a single move -//
 			//----------------------------------//
 			.comments(
-				ng-show='kifu.path.m !== 0'
+				ng-if='kifu.path.m !== 0'
 			)
 				.panel.panel-default
 					.panel-heading
@@ -143,21 +142,21 @@
 						= ' '
 						| Kibitz
 					.panel-body(
-						ng-if='comments.length'
+						ng-if='numComments'
 					)
 						//-div(ng-if='!comments.length') &hellip;
 						//div(ng-show='loading') Throbber
 
 						ul.media-list(
-							ng-show='comments.length'
+							ng-show='numComments'
 						)
 							li.comment.media.col-md-12(
 								ng-class="{ false: 'animate', true: 'loading' }[loading]"
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/user/{{ comment.user.username }}')
+								a.pull-left(href='/user/{{:: comment.user.username }}')
 									img.media-object(
-										src='{{ comment.user.gravatar }}?s=24&d=retro'
+										src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
 									)
 								.comment.media-body(ng-hide='edit')
@@ -175,9 +174,9 @@
 										)
 											i.fui-trash
 
-									strong {{ comment.user.username }}
+									strong {{:: comment.user.username }}
 									= ' '
-									span.rank(ng-if='comment.user.rank') [{{ comment.user.rank }}]
+									span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
 									= ' '
 									time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
 

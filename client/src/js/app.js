@@ -86,14 +86,6 @@ gokibitz.config(
 					//}
 				}
 			})
-			//.when('/login', {
-				//templateUrl: '/partials/login',
-				//controller: 'LoginController'
-			//})
-			//.when('/signup', {
-				//templateUrl: '/partials/signup',
-				//controller: 'SignupController'
-			//})
 			.when('/notifications', {
 				templateUrl: '/partials/notifications',
 				controller: 'NotificationsController'
@@ -113,7 +105,13 @@ gokibitz.config(
 			.when('/kifu/:shortid', {
 				templateUrl: '/partials/kifu',
 				controller: 'KifuController',
-				reloadOnSearch: false
+				reloadOnSearch: false,
+				resolve: {
+					kifu: function ($http, $route) {
+						var shortid = $route.current.params.shortid;
+						return $http.get('/api/kifu/' + shortid);
+          }
+				}
 			})
 			.when('/user/:username', {
 				templateUrl: '/partials/user',

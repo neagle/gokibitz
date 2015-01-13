@@ -1,114 +1,117 @@
 /*jshint browser:true*/
 angular.module('gokibitz.controllers')
-	.controller('KifuController',  function (
-		$rootScope,
-		$scope,
-		$http,
-		$routeParams,
-		$location,
-		pathFilter,
-		LoginSignup
-	) {
-		// Make the login/signup modal avaialble
-		$scope.LoginSignup = LoginSignup;
+	.controller('KifuController',
+		function (
+      $rootScope,
+      $scope,
+      $http,
+      $timeout,
+      $routeParams,
+      $location,
+      pathFilter,
+      LoginSignup,
+      kifu
+    ) {
+      // Make the login/signup modal avaialble
+      $scope.LoginSignup = LoginSignup;
 
-		var comments = require('../helpers/comments.js');
+      var comments = require('../helpers/comments.js');
 
-		$http.get('/api/kifu/' + $routeParams.shortid)
-			.success(function (data) {
-				//console.log('data', data);
-				$scope.kifu = data;
-				//console.log('scope kifu', $scope.kifu);
+      $scope.sgfLink = '/api/kifu/' + $routeParams.shortid + '/sgf';
 
-				// Get the initial path from the URL
-				var initialPath = $location.search().path;
-				initialPath = pathFilter(initialPath, 'object');
-				$scope.kifu.path = initialPath;
+      $scope.kifu = kifu.data;
 
-				var elem = document.getElementById('player');
+      // Get the initial path from the URL
+      var initialPath = $location.search().path;
+      initialPath = pathFilter(initialPath, 'object');
+      $scope.kifu.path = initialPath;
 
-				// Initialize the player
-				var player = new window.WGo.BasicPlayer(elem, {
-					sgf: data.game.sgf,
-					board: {
-						//background: '/images/kaya/kaya-texA3.jpg',
-						stoneHandler: window.WGo.Board.drawHandlers.FLAT,
-						font: 'Righteous',
-						theme: {
-							gridLinesColor: 'hsl(50, 50%, 30%)',
-							gridLinesWidth: function(board) {
-								return board.stoneRadius/15;
-							},
-							starColor: 'hsl(50, 50%, 30%)',
-						}
-					},
-					layout: [
-						// Default
-						{
-							className: 'wgo-onecol wgo-xsmall',
-							layout: {
-								bottom: ['Control']
-							}
-						}
-					],
-					move: initialPath,
-					enableWheel: false,
-					formatMoves: true,
-					update: function (event) {
-						//console.log('update event yo', event);
-						//console.log(event.node.children.length);
-						// TODO: Is this a reasonable way of creating one situation where
-						// an update to the $scope.kifu.path variable shouldn't update
-						// the player object?
-						$scope.captures = event.position.capCount;
-						//$scope.info.black.captures = event.position.capCount.black;
-						//$scope.info.white.captures = event.position.capCount.white;
-						$scope.updating = true;
-						if (!$scope.$$phase) {
-							$scope.$apply(function () {
-								$scope.kifu.path = event.path;
-							});
-						}
-						$scope.updating = false;
+      function initializePlayer() {
+        var elem = document.getElementById('player');
 
-						$scope.sgfComment = comments.format(event.node.comment);
-					}
-				});
-				$scope.info = player.kifu.info;
-				//console.log('player.kifu.info', player.kifu.info);
-				player.setCoordinates(true);
-				$scope.player = player;
-				window.player = player;
-				window.$scope = $scope;
+        // Initialize the player
+        // TODO: This config should be abstracted somewhere
+        return new window.WGo.BasicPlayer(elem, {
+          sgf: kifu.data.game.sgf,
+          board: {
+            stoneHandler: window.WGo.Board.drawHandlers.FLAT,
+            font: 'Righteous',
+            theme: {
+              gridLinesColor: 'hsl(50, 50%, 30%)',
+              gridLinesWidth: function(board) {
+                return board.stoneRadius/15;
+              },
+              starColor: 'hsl(50, 50%, 30%)',
+            }
+          },
+          layout: [
+            // Default
+            {
+              className: 'wgo-onecol wgo-xsmall',
+              layout: {
+                bottom: ['Control']
+              }
+            }
+          ],
+          move: initialPath,
+          enableWheel: false,
+          formatMoves: true,
+          update: playerUpdate
+        });
+      }
 
-				$scope.$on('$routeUpdate', function () {
-					var path = $location.search().path;
-					if (path) {
-						var newPath = pathFilter(path);
-						$scope.kifu.path = newPath;
-					}
-				});
+      // Fired every time the player updates
+      function playerUpdate(event) {
+        if (event.op === 'init') {
+          return;
+        }
 
-				$scope.$watch('kifu.path', function (newValue, oldValue) {
-					//console.log('watching the path', newValue, oldValue);
-					if (newValue) {
-						if (newValue.m > 0) {
-							$location.search('path', pathFilter(newValue, 'string'));
-						} else {
-							$location.search('path', null);
-						}
+        $timeout(function () {
+          $scope.kifu.path = event.path;
 
-						// If the change comes from a player update,
-						// don't goTo the new path.
-						if (!$scope.updating) {
-							player.goTo(newValue);
-						}
-					}
-				}, true);
+          $scope.captures = event.position.capCount;
 
-			})
-			.error(function (data) {
-				console.log('Error:', data);
-			});
+          var move = $scope.kifu.path.m;
+
+          if (move > 0) {
+            $location.search('path', pathFilter($scope.kifu.path, 'string'));
+          } else {
+            $location.search('path', null);
+          }
+
+					// Format game comments
+          $scope.sgfComment = comments.format(event.node.comment);
+        });
+      }
+
+      var player = initializePlayer();
+
+      // Make kifu info available to $scope
+      $scope.info = player.kifu.info;
+
+      // Set the page title
+      var pageTitle = $scope.info.white.name;
+      if ($scope.info.white.rank) {
+        pageTitle += ' ' + $scope.info.white.rank;
+      }
+      $rootScope.pageTitle += ' vs. ' + player.kifu.info.black.name;
+      if ($scope.info.black.rank) {
+        pageTitle += ' ' + $scope.info.black.rank;
+      }
+      pageTitle += ' – GoKibitz';
+
+      $rootScope.pageTitle = pageTitle;
+
+      // Turn on coordinates
+      player.setCoordinates(true);
+
+      $scope.$on('$routeUpdate', function () {
+        var path = $location.search().path;
+        var newPath = pathFilter(path);
+
+        if (!angular.equals(newPath, $scope.kifu.path)) {
+          player.goTo(newPath);
+        }
+      });
 		}
 	);

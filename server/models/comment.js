@@ -57,7 +57,6 @@ commentSchema.methods.getRecipients = function (callback) {
 	var newComment = this;
   var recipients = [];
 
-	console.log('async...');
 	return async.series({
 		populate: function (callback) {
 			// Populate the kifu
