@@ -18,6 +18,7 @@ angular.module('gokibitz.directives')
 			//console.log('attributes', attributes);
 			var themes = {
 				default: {
+					background: '',
 					stoneHandler: window.WGo.Board.drawHandlers.FLAT,
 					theme: {
 						gridLinesColor: 'hsl(50, 50%, 30%)',
@@ -28,6 +29,7 @@ angular.module('gokibitz.directives')
 					}
 				},
 				background: {
+					background: '',
 					stoneHandler: window.WGo.Board.drawHandlers.FLAT,
 					theme: {
 						gridLinesColor: 'hsla(50, 50%, 30%, 0.1)',
