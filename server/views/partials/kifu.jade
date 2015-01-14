@@ -113,7 +113,7 @@
 							)
 								a.pull-left(href='/user/{{:: comment.user.username }}')
 									img.media-object(
-										src='{{:: comment.user.gravatar }}?s=24&d=retro'
+										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
 									)
 								.comment-media-body
@@ -156,7 +156,7 @@
 							)
 								a.pull-left(href='/user/{{:: comment.user.username }}')
 									img.media-object(
-										src='{{:: comment.user.gravatar }}?s=24&d=retro'
+										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
 									)
 								.comment.media-body(ng-hide='edit')
