@@ -29,6 +29,7 @@ var gokibitz = angular.module('gokibitz', [
 	'ngRoute',
 	'ngAnimate',
 	'ngTouch',
+	'ngWebSocket',
 	'http-auth-interceptor',
 	'angularFileUpload',
 	'ui.utils',
@@ -45,6 +46,7 @@ require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
 require('angular-touch');
+require('angular-websocket');
 require('http-auth-interceptor');
 require('ui-bootstrap-tpls');
 require('ui-bootstrap');
@@ -144,10 +146,10 @@ gokibitz.config(
 //]);
 
 gokibitz.run(
-	function ($rootScope, $location, Auth, $route) {
+	function ($rootScope, $location, Auth, $route, $window) {
 
-		//console.log('resizing from run');
-		//resize();
+		// Check to see if we're in an iframe
+		$rootScope.iframed = ($window.self !== $window.top);
 
 		$rootScope.$on('$routeChangeSuccess', function () {
 			// Reset the page's title on ever route change

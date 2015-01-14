@@ -28,7 +28,7 @@
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {
-    "angular": "^1.3.5",
+    "angular": "^1.3.8",
     "angular-animate": "^1.3.5",
     "angular-cookies": "^1.3.5",
     "angular-resource": "^1.3.5",
@@ -84,6 +84,7 @@
     "angular-route": "./node_modules/angular-route/angular-route.min.js",
     "angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
     "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
+    "angular-websocket": "./node_modules/angular-websocket/angular-websocket.min.js",
     "ngStorage": "./node_modules/ng-storage/ngStorage.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
     "ui-bootstrap": "./client/src/bower_components/angular-bootstrap/ui-bootstrap.js",
@@ -153,6 +154,11 @@
       ]
     },
     "ngStorage": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-websocket": {
       "depends": [
         "angular"
       ]

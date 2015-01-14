@@ -1,5 +1,5 @@
 doctype html
-html(lang='en', ng-app='gokibitz')
+html(lang='en', ng-app='gokibitz' iframe-resizer)
 	head
 		base(href='/')
 		meta(charset='utf-8')
@@ -9,19 +9,14 @@ html(lang='en', ng-app='gokibitz')
 		style .ng-cloak { display:none; }
 		script(src='/js/modernizr.js')
 		include favicon
-		//script.
-		//	function resize() {
-		//		var height = document.getElementsByTagName('html')[0].scrollHeight;
-		//		console.log('resize', height);
-		//		window.parent.postMessage(['setHeight', height], '*');
-		//	}
 
 	body
 		include navbar
 
 		block header
 
-		block content
+		div#container
+			block content
 
 		include footer
 

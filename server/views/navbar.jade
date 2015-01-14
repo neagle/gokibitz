@@ -12,7 +12,11 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 				.icon-bar
 				.icon-bar
 				.icon-bar
-			a.navbar-brand(href='/' name='top') go<b>kibitz</b>
+			a.navbar-brand(
+				href='/'
+				name='top'
+				target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+			) go<b>kibitz</b>
 				span.release alpha
 
 		.collapse.navbar-collapse(

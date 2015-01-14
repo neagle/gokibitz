@@ -6,15 +6,20 @@ angular.module('gokibitz.controllers')
     $scope.isCollapsed = true;
     nav.$storage = $localStorage;
 
-    $scope.menu = [{
-      'title': 'Kifu',
-      'link': 'kifu'
-    }];
+		$scope.menu = [];
+		$scope.authMenu = [];
 
-    $scope.authMenu = [{
-      'title': 'Upload',
-      'link': 'upload'
-    }];
+		if (!$rootScope.iframed) {
+			$scope.menu.push({
+				'title': 'Kifu',
+				'link': 'kifu'
+			});
+
+			$scope.authMenu.push({
+				'title': 'Upload',
+				'link': 'upload'
+			});
+		}
 
     $scope.loginModal = function () {
       $modal.open({

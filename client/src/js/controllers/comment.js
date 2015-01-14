@@ -160,10 +160,6 @@ angular.module('gokibitz.controllers')
 
 			$scope.$watch('kifu.path', function () {
 				$scope.listComments();
-
-				// Resize the iframe
-				//console.log('resize from comments controller');
-				//resize();
 			}, true);
 		}
 	);
