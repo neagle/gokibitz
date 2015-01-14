@@ -35,6 +35,7 @@ angular.module('gokibitz.controllers')
         return new window.WGo.BasicPlayer(elem, {
           sgf: kifu.data.game.sgf,
           board: {
+						background: '',
             stoneHandler: window.WGo.Board.drawHandlers.FLAT,
             font: 'Righteous',
             theme: {
