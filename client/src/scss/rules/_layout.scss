@@ -113,7 +113,7 @@ sgf.media-object {
 
 		@media (max-width: $screen-xs-max) {
 			font: {
-				size: 5em;
+				size: 4.2em;
 			}
 		}
 
@@ -165,7 +165,7 @@ sgf.media-object {
 
 		@media (max-width: $screen-xs-max) {
 			left: calc(50% - 6em);
-			top: -15px;
+			top: -30px;
 			width: 12em;
 		}
 	}
@@ -178,6 +178,7 @@ sgf.media-object {
 			size: 48px;
 			weight: bold;
 		}
+		line-height: 1;
 
 		@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
 			font: {
@@ -194,7 +195,10 @@ sgf.media-object {
 		@media (max-width: $screen-xs-max) {
 			color: darken($flat-green-2, 10%);
 			font: {
-				size: 12px;
+				size: 14px;
+			}
+			margin: {
+				bottom: 0;
 			}
 		}
 

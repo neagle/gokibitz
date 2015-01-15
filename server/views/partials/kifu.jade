@@ -56,8 +56,8 @@
 					div(ng-bind-html='sgfComment')
 					div(ng-if='!sgfComment') &hellip;
 
-			.bottom-buffer.clearfix
-				.btn-group.pull-right(
+			.btn-group.pull-right
+				.btn-group(
 					dropdown
 				)
 					button.btn.btn-default.dropdown-toggle(
@@ -85,6 +85,32 @@
 								socialshare
 								socialshare-provider='facebook'
 							) Facebook
+
+				.btn-group(
+					dropdown
+				)
+					button.btn.btn-default.dropdown-toggle(
+						type='button'
+						dropdown-toggle
+					) SGF
+						span.fa.icon-share
+						= ' '
+						span.caret
+
+					ul.dropdown-menu(
+						role='menu'
+					)
+						li
+							a(
+								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
+								target='_self'
+							) Without comments
+						li
+							a(
+								disabled
+							) With comments (coming soon!)
+
+
 
 		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
 

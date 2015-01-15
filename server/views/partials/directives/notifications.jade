@@ -17,6 +17,7 @@ ui.notifications.media-list
 		a(
 			ng-click='ctrl.clickNotification($event, notification)'
 			ng-href='/kifu/{{ notification.kifu.shortid }}?path={{ notification.path }}'
+			target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
 		)
 			.media-left(href='/user/{{ notification.from.username}}')
 				img(
