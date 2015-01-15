@@ -11,7 +11,8 @@ angular.module('gokibitz.controllers')
       pathFilter,
       LoginSignup,
       kifu,
-			$interpolate
+			$interpolate,
+			$document
     ) {
       // Make the login/signup modal avaialble
       $scope.LoginSignup = LoginSignup;
@@ -86,7 +87,23 @@ angular.module('gokibitz.controllers')
         });
       }
 
-      var player = initializePlayer();
+			var player;
+			$document.ready(function () {
+				player = initializePlayer();
+
+				// Make kifu info available to $scope
+				$scope.info = player.kifu.info;
+
+				// Set the page title
+				var titleTemplate = $interpolate(
+					'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
+				);
+				var pageTitle = titleTemplate($scope.info);
+				$rootScope.pageTitle = pageTitle;
+
+				// Turn on coordinates
+				player.setCoordinates(true);
+			});
 
 			// Make the player object globally accessible
 			// Necessary for move labels
@@ -100,20 +117,6 @@ angular.module('gokibitz.controllers')
 			$scope.swipeRight = function (event) {
 				player.previous();
 			}
-
-
-      // Make kifu info available to $scope
-      $scope.info = player.kifu.info;
-
-      // Set the page title
-      var titleTemplate = $interpolate(
-				'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
-      );
-			var pageTitle = titleTemplate($scope.info);
-      $rootScope.pageTitle = pageTitle;
-
-      // Turn on coordinates
-      player.setCoordinates(true);
 
       $scope.$on('$routeUpdate', function () {
         var path = $location.search().path;
