@@ -103,12 +103,12 @@ angular.module('gokibitz.controllers')
 
 				// Turn on coordinates
 				player.setCoordinates(true);
-			});
 
-			// Make the player object globally accessible
-			// Necessary for move labels
-			// TODO: See if there's a way to eliminate this requirement
-			window.player = player;
+				// Make the player object globally accessible
+				// Necessary for move labels
+				// TODO: See if there's a way to eliminate this requirement
+				window.player = player;
+			});
 
 			$scope.swipeLeft = function (event) {
 				player.next();
