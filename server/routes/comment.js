@@ -119,6 +119,72 @@ router.get('/', function (req, res) {
 	}
 });
 
+router.put('/star/:id', function (req, res) {
+	var id = req.params.id;
+
+	Comment
+		.findById(id)
+		.populate('user', 'username email gravatar')
+		.exec(function (error, comment) {
+			if (!error && comment) {
+				if (comment.isOwner(req.user)) {
+					res.json(550, { message: 'You can\'t star your own comment.' });
+				} else {
+					if (comment.stars.indexOf(req.user._id) !== -1) {
+						res.json(500, { message: 'You\'ve already starred this comment.' });
+					} else {
+						comment.stars.push(req.user._id);
+						comment.save(function (error) {
+							if (!error) {
+								res.json(200, { message: 'You starred comment ' + id + '.' });
+							} else {
+								res.json(500, { message: 'Could not star comment. ' + error });
+							}
+						});
+					}
+				}
+			} else if (!error) {
+				res.json(404, { message: 'Could not find comment.' });
+			} else {
+				res.json(403, { message: 'Could not star comment. ' + error });
+			}
+		});
+});
+
+router.delete('/unstar/:id', function (req, res) {
+	var id = req.params.id;
+
+	Comment
+		.findById(id)
+		.populate('user', 'username email gravatar')
+		.exec(function (error, comment) {
+			if (!error && comment) {
+				if (comment.isOwner(req.user)) {
+					res.json(550, { message: 'You can\'t unstar your own comment, since you shouldn\'t have been' +
+					'able to star it in the first place.' });
+				} else {
+					var index = comment.stars.indexOf(req.user._id);
+					if (index === -1) {
+						res.json(500, { message: 'You haven\'t starred this comment.' });
+					} else {
+						comment.stars.splice(index, 1);
+						comment.save(function (error) {
+							if (!error) {
+								res.json(200, { message: 'You unstarred comment ' + id + '.' });
+							} else {
+								res.json(500, { message: 'Could not unstar comment. ' + error });
+							}
+						});
+					}
+				}
+			} else if (!error) {
+				res.json(404, { message: 'Could not find comment.' });
+			} else {
+				res.json(403, { message: 'Could not star comment. ' + error });
+			}
+		});
+});
+
 router.get('/:id', function (req, res) {
 	var id = req.params.id;
 

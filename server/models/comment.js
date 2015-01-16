@@ -28,7 +28,11 @@ var commentSchema = new Schema({
 			type: String,
 			required: true
 		}
-	}
+	},
+	stars: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}]
 }, {
 	toJSON: {
 		virtuals: true
