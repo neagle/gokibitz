@@ -3,7 +3,16 @@
 html {
 	position: relative;
 	min-height: 100%;
+
+	&.is-iframed {
+		body {
+			margin: {
+				bottom: 0;
+			}
+		}
+	}
 }
+
 body {
 	/* Margin bottom by footer height */
 	margin-bottom: 60px;
@@ -12,6 +21,4 @@ body {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	/* Set the fixed height of the footer here */
-	height: 60px;
 }
