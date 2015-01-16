@@ -56,7 +56,27 @@
 					div(ng-bind-html='sgfComment')
 					div(ng-if='!sgfComment') &hellip;
 
-			.btn-group.pull-right
+			.btn-group.bottom-buffer.pull-right
+				.btn-group(
+					dropdown
+				)
+					button.btn.btn-default.dropdown-toggle(
+						type='button'
+						dropdown-toggle
+					) SGF
+						span.fa.icon-share
+						= ' '
+						span.caret
+
+					ul.dropdown-menu.pull-right(
+						role='menu'
+					)
+						li
+							a(
+								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
+								target='_self'
+							) Without comments
+
 				.btn-group(
 					dropdown
 				)
@@ -68,7 +88,7 @@
 						= ' '
 						span.caret
 
-					ul.dropdown-menu(
+					ul.dropdown-menu.pull-right(
 						role='menu'
 					)
 						li
@@ -86,29 +106,6 @@
 								socialshare-provider='facebook'
 							) Facebook
 
-				.btn-group(
-					dropdown
-				)
-					button.btn.btn-default.dropdown-toggle(
-						type='button'
-						dropdown-toggle
-					) SGF
-						span.fa.icon-share
-						= ' '
-						span.caret
-
-					ul.dropdown-menu(
-						role='menu'
-					)
-						li
-							a(
-								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
-								target='_self'
-							) Without comments
-						li
-							a(
-								disabled
-							) With comments (coming soon!)
 
 
 
@@ -137,7 +134,10 @@
 							li.comment.media(
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/user/{{:: comment.user.username }}')
+								a.pull-left(
+									href='/user/{{:: comment.user.username }}'
+									target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+								)
 									img.media-object(
 										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
@@ -180,7 +180,10 @@
 								ng-class="{ false: 'animate', true: 'loading' }[loading]"
 								ng-repeat='comment in comments track by comment._id'
 							)
-								a.pull-left(href='/user/{{:: comment.user.username }}')
+								a.pull-left(
+									ng-href='/user/{{:: comment.user.username }}'
+									target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+								)
 									img.media-object(
 										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'

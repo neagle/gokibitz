@@ -1,6 +1,7 @@
 nav.navbar.navbar-inverse.navbar-fixed-top(
 	role='navigation'
 	ng-controller='NavbarController as nav'
+	ng-if='!iframed'
 )
 	.container-fluid
 
@@ -27,8 +28,9 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					ng-repeat='item in menu'
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
+					ng-click='isCollapsed = true'
 				)
-					a(href='/{{ item.link }}') {{ item.title }}
+					a(ng-href='/{{ item.link }}') {{ item.title }}
 
 				li(
 					ng-repeat='item in authMenu'
@@ -36,7 +38,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
 				)
-					a(href='/{{ item.link }}') {{ item.title }}
+					a(ng-href='/{{ item.link }}') {{ item.title }}
 
 				li.notifications.dropdown(
 					dropdown

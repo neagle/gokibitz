@@ -12,6 +12,7 @@ div.panel.panel-default
 				a.media-left(
 					ng-if='!noCommenterLink'
 					href='/user/{{ comment.user.username }}'
+					target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
 				)
 					img.media-object(
 						ng-src='{{ comment.user.gravatar }}?s=24&d=retro'
