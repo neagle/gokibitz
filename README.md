@@ -84,6 +84,14 @@ $ gulp watch
 
 (Port named after the traditional alternating komoku opening.)
 
+#### 9. Create a new branch, and start working
+
+```sh
+$ git checkout -B my-bug
+```
+
+When you're done, just submit a pull request.
+
 - - -
 
 If you have any issues following these instructions, please let me know so that I can make the road smoother for others. Thanks!
