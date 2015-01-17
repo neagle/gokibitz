@@ -30,4 +30,67 @@ There are two ways you can support development of GoKibitz:
 1. [Feedback](mailto:nate@nateeagle.com)! I wrote this to help go players. If you use GoKibitz and tell me so, it's great encouragement to keep plugging away at features and bugs.
 2. [Pull Requests](https://github.com/neagle/gokibitz/pulls): it's asking a lot to ask other developers to dive into your code and contribute, but if anyone feels especially generous, I'd welcome collaboration.
 
-(If you'd like to contribute, let me know: I can put together contribution guidelines to help you get set up to develop locally.)
+Development Setup
+=================
+
+If you like GoKibitz enough to feel motivated to fix a bug or implement a new feature, I'd like to give you a virtual hug right now.
+
+First, fork this repo on Github. Once you've got it cloned, Here's how to get set up:
+
+Warning: I've only tested this on OS X and Ubuntu.
+
+#### 1. Install [Node](http://nodejs.org/) and [MongoDB](http://www.mongodb.com/h/a)
+#### 2. Install gulp globally:
+
+```sh
+$ npm install --global gulp
+```
+
+### 3. Initialize git submodules:
+
+```sh
+(project directory)
+$ git submodule update --init --recursive
+```
+
+#### 4. Install the project's npm packages:
+
+```sh
+(project directory)
+$ npm install
+```
+
+#### 5. Start up MongoDB:
+
+```sh
+$ mongod
+```
+
+### 6. Run gulp to build your files:
+
+```sh
+(project directory)
+$ gulp
+```
+
+#### 7. Start up a local node server and gulp watcher:
+
+```sh
+(project directory)
+$ gulp watch
+```
+
+#### 8. Open your local GoKibitz at http://localhost:3434
+
+(Port named after the traditional alternating komoku opening.)
+
+- - -
+
+If you have any issues following these instructions, please let me know so that I can make the road smoother for others. Thanks!
+
+Development Notes
+-----------------
+
+If you're fixing a bug, do me a solid and [create an issue](https://github.com/neagle/gokibitz/issues/new) and assign it to yourself. That way I won't try to fix it while you're working.
+
+If you're working on a feature, feel free to work on it and then unveil it to see what I think, but I'm also happy to give you feedback beforehand via an issue.
