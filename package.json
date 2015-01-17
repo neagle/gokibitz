@@ -34,6 +34,7 @@
     "angular-resource": "^1.3.5",
     "angular-route": "^1.3.5",
     "angular-sanitize": "^1.3.5",
+    "angular-scroll": "^0.6.4",
     "angular-touch": "^1.3.8",
     "angular-ui-router": "^0.2.11",
     "angular-websocket": "^1.0.6",
@@ -90,7 +91,8 @@
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
     "ui-bootstrap": "./client/src/bower_components/angular-bootstrap/ui-bootstrap.js",
     "ui-bootstrap-tpls": "./client/src/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
-    "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js"
+    "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
+    "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js"
   },
   "browserify-shim": {
     "angular": "angular",
@@ -160,6 +162,11 @@
       ]
     },
     "angular-websocket": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-scroll": {
       "depends": [
         "angular"
       ]

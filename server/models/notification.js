@@ -7,32 +7,46 @@ var notificationSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+
 	from: {
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+
+	cause: {
+		type: String,
+		default: 'new comment',
+		required: true
+	},
+
 	comment: {
 		type: Schema.ObjectId,
 		ref: 'Comment'
 	},
+
 	date: {
 		type: Date,
 		required: true,
 		default: Date.now
 	},
+
 	content: {
 		type: String,
 		required: false
 	},
+
 	kifu: {
 		type: Schema.ObjectId,
 		ref: 'Kifu'
 	},
+
 	path: {
 		type: String,
 		required: true,
 		trim: true
 	},
+
+	// Past tense. Rhymes with red.
 	read: {
 		type: Boolean,
 		default: false

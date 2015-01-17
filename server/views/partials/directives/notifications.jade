@@ -30,7 +30,14 @@ ui.notifications.media-list
 					span.rank(ng-if='notification.from.rank')
 						| &nbsp;[{{ notification.from.rank }}]
 					= ' '
-					| commented on move {{ notification.path }} of
+
+					span(ng-if='!notification.cause || notification.cause === "new comment"')
+						| commented
+					span(ng-if='notification.cause === "star"')
+						| starred your comment
+
+					= ' '
+					| on move {{ notification.path }} of
 					= ' '
 					| {{ info.white.name }}
 					span.rank(ng-if='info.white.rank')

@@ -35,7 +35,8 @@ var gokibitz = angular.module('gokibitz', [
 	'ui.utils',
 	'ngStorage',
 	'720kb.socialshare',
-	'flatui.directives'
+	'flatui.directives',
+	'duScroll'
 ]);
 
 require('angular-ui-router');
@@ -52,6 +53,7 @@ require('ui-bootstrap-tpls');
 require('ui-bootstrap');
 require('ui-utils');
 require('ngStorage');
+require('angular-scroll');
 
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare

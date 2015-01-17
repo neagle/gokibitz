@@ -1,7 +1,9 @@
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document) {
 			$scope.formData = {};
+
+			$scope.highlightedComment = $location.search().comment;
 
 			var addCommentsTimer;
 			var pollComments;
@@ -42,9 +44,28 @@ angular.module('gokibitz.controllers')
 					timeout: canceler.promise
         })
 					.success(function (data) {
+						var highlightedComment = $location.search().comment;
+						var highlightedCommentPresent = false;
+
 						data.forEach(function (comment) {
+
+							// Create a path object {{ m: 0 }} out of the path strings on the comment
 							comment.pathObject = pathFilter(comment.path, 'object');
+
+							// Set a flag on comments starred by the current user
+							comment.starredByMe = (comment.stars.indexOf($scope.currentUser._id) !== -1);
+
+							if (comment._id === highlightedComment) {
+								highlightedCommentPresent = true;
+							}
 						});
+
+						// If the highlighted comment isn't present on this move, remove it from the
+						// query string
+						if (!highlightedCommentPresent && $scope.highlightedComment) {
+							$scope.highlightedComment = null;
+							$location.search('comment', null);
+						}
 
 						// Use this value instead of $scope.comments.length in the template
 						$scope.numComments = data.length;
@@ -58,6 +79,7 @@ angular.module('gokibitz.controllers')
 
 							// Add an initial chunk of comments
 							$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							//console.log('$scope.comments', $scope.comments);
 
 							// ...then add the rest iteratively
 							var delay = 50;
@@ -74,6 +96,11 @@ angular.module('gokibitz.controllers')
 								} else {
 									$timeout(function () {
 										$scope.loading = false;
+
+										if ($scope.highlightedComment) {
+											$scope.goToComment($scope.highlightedComment);
+										}
+
 										// Start polling comments
 										//if (pollComments) {
 										//}
@@ -149,6 +176,43 @@ angular.module('gokibitz.controllers')
 
 			};
 
+			$scope.toggleStar = function (comment) {
+				var userId = $scope.currentUser._id;
+				var index = comment.stars.indexOf(userId);
+
+				if (index === -1) {
+					$http.patch('/api/comment/' + comment._id + '/star')
+						.success(function () {
+							comment.stars.push($scope.currentUser._id);
+							comment.starredByMe = true;
+							console.log('comment.stars after push', comment.stars);
+						})
+						.error(function (data) {
+							console.log('Error: ' + data);
+						});
+				} else {
+					$http.patch('/api/comment/' + comment._id + '/unstar')
+						.success(function () {
+							comment.stars.splice(index, 1);
+							comment.starredByMe = false;
+							console.log('comment.stars after splice', comment.stars);
+						})
+						.error(function (data) {
+							console.log('Error: ' + data);
+						});
+				}
+			}
+
+			$scope.goToComment = function (commentId) {
+				var elem = angular.element($document[0].getElementById('comment-' + commentId));
+				var navbar = angular.element($document[0].getElementById('gk-navbar'));
+				var padding = 20;
+
+				if (elem.length) {
+					$document.scrollTo(elem, navbar.outerHeight(true) + padding, 1000);
+				}
+			};
+
 			$scope.$on('$routeChangeStart', function (next, current) {
 				//console.log('clearing poll comments');
 				//$interval.clear(pollComments);
@@ -161,5 +225,14 @@ angular.module('gokibitz.controllers')
 			$scope.$watch('kifu.path', function () {
 				$scope.listComments();
 			}, true);
+
+			$scope.$on('$routeUpdate', function () {
+				var comment = $location.search().comment;
+				if (comment && comment !== $scope.highlightedComment) {
+					$scope.highlightedComment = comment;
+					$scope.goToComment(comment);
+				}
+			});
+
 		}
 	);

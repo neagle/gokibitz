@@ -5,9 +5,22 @@
 .comments {
 
 	.comment {
+
+		// Readjust the spacing on .media so that it looks better
+		// with a background (for highlighting)
+		&.media {
+			margin: {
+				top: 0;
+			}
+			padding: {
+				top: 15px;
+			}
+		}
+
 		/*background: {*/
 			/*color: $flat-clouds;*/
 		/*}*/
+
 		.btn-group {
 			opacity: 0;
 			transition: opacity 0.2s;
@@ -15,6 +28,29 @@
 		&:hover {
 			.btn-group {
 				opacity: 1;
+			}
+		}
+
+		.star {
+			clear: left;
+			line-height: 1.2;
+			padding: {
+				top: 5px;
+			}
+			text: {
+				align: right;
+			}
+			width: 34px;
+
+			a {
+				color: $flat-gray-2;
+
+				&.starred {
+					color: $flat-sunflower;
+				}
+
+				.wrapper {
+				}
 			}
 		}
 	}

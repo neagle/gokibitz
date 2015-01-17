@@ -129,7 +129,7 @@
 						)
 
 					.panel-body
-						p(ng-if='!comments.length') &hellip;
+						p(ng-if='!comments.length') No comments so far.
 						ul.media-list
 							li.comment.media(
 								ng-repeat='comment in comments track by comment._id'
@@ -177,8 +177,9 @@
 							ng-show='numComments'
 						)
 							li.comment.media.col-md-12(
-								ng-class="{ false: 'animate', true: 'loading' }[loading]"
+								ng-class='{ animate: !loading, loading: loading, highlight: highlightedComment === comment._id }'
 								ng-repeat='comment in comments track by comment._id'
+								id='comment-{{ comment._id }}'
 							)
 								a.pull-left(
 									ng-href='/user/{{:: comment.user.username }}'
@@ -188,7 +189,33 @@
 										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
 										style='width: 24px; height: 24px'
 									)
+								.star.pull-left(
+								)
+									// Other users' comments
+									a(
+										ng-if='comment.user.username !== currentUser.username'
+										ng-click='toggleStar(comment)'
+										ng-class='{ true: "starred", false: "unstarred" }[comment.starredByMe]'
+									)
+										.wrapper.pull-right
+											span.fui-star-2
+											= ' '
+											span(
+												ng-show='comment.stars.length > 0'
+											) {{ comment.stars.length }}
+
+									// Your own comments
+									span(
+										ng-if='comment.user.username === currentUser.username'
+										ng-show='comment.stars.length > 0'
+									)
+										.wrapper.pull-right
+											span.fui-star-2
+											= ' '
+											span {{ comment.stars.length }}
+
 								.comment.media-body(ng-hide='edit')
+
 									.btn-group.btn-group-xs.pull-right(
 										ng-hide='comment.user.username !== currentUser.username'
 									)

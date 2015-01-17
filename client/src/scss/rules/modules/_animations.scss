@@ -80,3 +80,22 @@
 
 }
 
+@keyframes highlight {
+	0% {
+		background: {
+			color: $flat-sunflower;
+		}
+	}
+	100% {
+		background: {
+			color: transparent;
+		}
+	}
+}
+
+.highlight {
+	animation: {
+		name: highlight;
+		duration: 3s;
+	}
+}

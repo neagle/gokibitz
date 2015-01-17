@@ -85,7 +85,10 @@ angular.module('gokibitz.directives')
 				ctrl.countNotifications();
 				$http.get('/api/notification/read/' + notification._id)
 					.then(function (response) {
-						$location.path('/kifu/' + notification.kifu.shortid).search({ path: notification.path });
+						$location.path('/kifu/' + notification.kifu.shortid).search({
+							path: notification.path,
+							comment: notification.comment._id
+						});
 					});
 				$event.preventDefault();
 			};

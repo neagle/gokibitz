@@ -31,6 +31,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 								recipients.forEach(function (recipient) {
 									// Send a notification to the kifu owner
 									var notification = new Notification();
+									notification.cause = 'new comment';
 									notification.to = recipient;
 									notification.from = comment.user;
 									notification.kifu = comment.kifu;
@@ -119,7 +120,7 @@ router.get('/', function (req, res) {
 	}
 });
 
-router.put('/star/:id', function (req, res) {
+router.patch('/:id/star', function (req, res) {
 	var id = req.params.id;
 
 	Comment
@@ -137,6 +138,17 @@ router.put('/star/:id', function (req, res) {
 						comment.save(function (error) {
 							if (!error) {
 								res.json(200, { message: 'You starred comment ' + id + '.' });
+
+								// Send notification to the starred commenter
+								var notification = new Notification();
+								notification.cause = 'star';
+								notification.to = comment.user;
+								notification.from = req.user;
+								notification.kifu = comment.kifu;
+								notification.path = comment.path;
+								notification.comment = comment._id;
+
+								notification.save();
 							} else {
 								res.json(500, { message: 'Could not star comment. ' + error });
 							}
@@ -151,7 +163,7 @@ router.put('/star/:id', function (req, res) {
 		});
 });
 
-router.delete('/unstar/:id', function (req, res) {
+router.patch('/:id/unstar', function (req, res) {
 	var id = req.params.id;
 
 	Comment
@@ -171,6 +183,22 @@ router.delete('/unstar/:id', function (req, res) {
 						comment.save(function (error) {
 							if (!error) {
 								res.json(200, { message: 'You unstarred comment ' + id + '.' });
+
+								// Remove the notification for this star
+								Notification.find()
+									.where('comment', comment)
+									.where('cause').equals('star')
+									.where('from').equals(req.user)
+									.exec(function (error, notifications) {
+										if (!error) {
+											console.log('Removing notification', notifications);
+											for (var i = notifications.length - 1; i >= 0; i -= 1) {
+												notifications[i].remove();
+											}
+										} else {
+											console.log('Could not delete notifications for this comment', error);
+										}
+									});
 							} else {
 								res.json(500, { message: 'Could not unstar comment. ' + error });
 							}
@@ -180,7 +208,7 @@ router.delete('/unstar/:id', function (req, res) {
 			} else if (!error) {
 				res.json(404, { message: 'Could not find comment.' });
 			} else {
-				res.json(403, { message: 'Could not star comment. ' + error });
+				res.json(403, { message: 'Could not unstar comment. ' + error });
 			}
 		});
 });
