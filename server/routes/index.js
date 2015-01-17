@@ -18,6 +18,22 @@ router.get('/auth/session', auth.ensureAuthenticated, session.session);
 router.post('/auth/session', session.login);
 router.delete('/auth/session', session.logout);
 
+router.get('/embed/:id', function (req, res) {
+	res.set('Content-Type', 'text/javascript');
+	var file='(function () {' +
+		'"use strict";' +
+		'var method = window.addEventListener ? "addEventListener" : "attachEvent";' +
+		'var eventListener = window[method];' +
+		'var eventMessage = method == "attachEvent" ? "onmessage" : "message";' +
+		'eventListener(eventMessage, function (e) {' +
+		'if (e.data === parseInt(e.data)) {' +
+		'document.getElementById("gokibitz-' + req.params.id + '").height = e.data + "px";' +
+		'}' +
+		'}, false);' +
+		'}());';
+	res.send(file);
+});
+
 // Serve up partials for Angular routes
 router.get('/partials/directives/:name', function (req, res) {
 	res.render('partials/directives/' + req.params.name);

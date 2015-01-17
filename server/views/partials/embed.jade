@@ -1,0 +1,13 @@
+.modal-header
+	h3.modal-title Embed
+
+.modal-body
+	p You can embed a GoKibitz game onto a webpage, using the iframe and script below.
+		= ' '
+		a Live Demo
+	textarea.form-control(rows=3)
+		| <iframe id="gokibitz-{{ id }}" src="http://localhost:3434/kifu/{{ id }}" style="width: 100%; display: block; border: 10px solid snow;"></iframe>
+		<script src="http://localhost:3434/embed/{{ id }}"></script>
+
+.modal-footer
+	button.btn.btn-default(ng-click='cancel()') Done

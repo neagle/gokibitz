@@ -12,7 +12,8 @@ angular.module('gokibitz.controllers')
       LoginSignup,
       kifu,
 			$interpolate,
-			$document
+			$document,
+			$modal
     ) {
       // Make the login/signup modal avaialble
       $scope.LoginSignup = LoginSignup;
@@ -126,5 +127,17 @@ angular.module('gokibitz.controllers')
           player.goTo(newPath);
         }
       });
+
+			$scope.embed = function (id) {
+				$modal.open({
+					templateUrl: '/partials/embed',
+					controller: 'EmbedController',
+					resolve: {
+						id: function () {
+							return $routeParams.shortid;
+						}
+					}
+				});
+			}
 		}
 	);
