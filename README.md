@@ -9,7 +9,7 @@ GoKibitz solves the per-move comment issue pretty well, but it doesn't yet solve
 
 License
 =======
-GoKibitz is free to all users, and its code is [open source](blob/master/LICENSE).
+GoKibitz is free to all users, and its code is [open source](https://github.com/neagle/gokibitz/blob/master/LICENSE).
 
 Feature Requests
 ================
