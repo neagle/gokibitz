@@ -53,7 +53,9 @@ angular.module('gokibitz.controllers')
 							comment.pathObject = pathFilter(comment.path, 'object');
 
 							// Set a flag on comments starred by the current user
-							comment.starredByMe = (comment.stars.indexOf($scope.currentUser._id) !== -1);
+							if ($scope.currentUser) {
+								comment.starredByMe = (comment.stars.indexOf($scope.currentUser._id) !== -1);
+							}
 
 							if (comment._id === highlightedComment) {
 								highlightedCommentPresent = true;
