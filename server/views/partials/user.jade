@@ -63,6 +63,7 @@
 									span.teacher-name(
 										ng-if='!user.teacher.url'
 									) {{ user.teacher.name }}
+						.col-md-12.spacer(ng-if='!user.teacher.name')
 
 					.row
 						.col-md-12(ng-hide='!user.bio')
