@@ -46,45 +46,38 @@ Warning: I've only tested this on OS X and Ubuntu.
 $ npm install --global gulp
 ```
 
-### 3. Initialize git submodules:
-
-```sh
-(project directory)
-$ git submodule update --init --recursive
-```
-
-#### 4. Install the project's npm packages:
+#### 3. Install the project's npm packages:
 
 ```sh
 (project directory)
 $ npm install
 ```
 
-#### 5. Start up MongoDB:
+#### 4. Start up MongoDB:
 
 ```sh
 $ mongod
 ```
 
-### 6. Run gulp to build your files:
+#### 5. Run gulp to build your files:
 
 ```sh
 (project directory)
 $ gulp
 ```
 
-#### 7. Start up a local node server and gulp watcher:
+#### 6. Start up a local node server and gulp watcher:
 
 ```sh
 (project directory)
 $ gulp watch
 ```
 
-#### 8. Open your local GoKibitz at http://localhost:3434
+#### 7. Open your local GoKibitz at http://localhost:3434
 
 (Port named after the traditional alternating komoku opening.)
 
-#### 9. Create a new branch, and start working
+#### 8. Create a new branch, and start working
 
 ```sh
 $ git checkout -B my-bug

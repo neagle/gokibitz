@@ -1,3 +1,0 @@
-[submodule "client/src/submodules/wgo.js"]
-	path = client/src/submodules/wgo.js
-	url = git@github.com:neagle/wgo.js.git
