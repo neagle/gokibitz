@@ -23,13 +23,16 @@
 		.star {
 			clear: left;
 			line-height: 1.2;
+			margin: {
+				left: -15px;
+			}
 			padding: {
 				top: 5px;
 			}
 			text: {
 				align: right;
 			}
-			width: 34px;
+			width: 49px;
 
 			a {
 				color: $flat-gray-2;
