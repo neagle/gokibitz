@@ -64,6 +64,7 @@
     "ng-storage": "^0.3.1",
     "node-bourbon": "^1.2.3",
     "pretty-hrtime": "^1.0.0",
+    "rimraf": "^2.2.8",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",

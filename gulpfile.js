@@ -1,17 +1,11 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var debug = require('gulp-debug');
-//var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var bourbon = require('node-bourbon');
 var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
-var browserify = require('browserify');
-var watchify = require('watchify');
-var source = require('vinyl-source-stream');
-var transform = require('vinyl-transform');
-var buffer = require('vinyl-buffer');
 var nodemon = require('gulp-nodemon');
 var livereload = require('gulp-livereload');
 var notify = require('gulp-notify');
@@ -20,6 +14,15 @@ var newer = require('gulp-newer');
 var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
+var rimraf = require('rimraf');
+
+// A build config not added to the git repo for
+// developer-specific configuration
+var buildConfigFile = './_build.config.js';
+var buildConfig;
+fs.existsSync(buildConfigFile, function () {
+	buildConfig = require(buildConfigFile);
+});
 
 gulp.task('bootstrap-assets', function () {
 	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
@@ -44,6 +47,40 @@ gulp.task('images', function () {
 		.pipe(newer(imageDest))
 		.pipe(imagemin())
 		.pipe(gulp.dest(imageDest));
+});
+
+// Turn the version of WGo.js installed in node_modules
+// into a symlink pointing elsewhere, for development.
+// Obliterated every time `npm install` is run.
+//
+// This is so that we can make changes to WGo.js in a
+// separate git repo.
+//
+// Its location is set in ./_build.config.js, which isn't
+// part of the repo, since it's developer-specific.
+//
+// Yours should look something like this:
+// module.exports = {
+//     wgoPath: '/Users/nateeagle5/Projects/personal/wgo.js/'
+// };
+gulp.task('link-wgo', function (callback) {
+	if (!buildConfig) {
+		console.log('Error: Missing ' + buildConfigFile);
+		callback();
+	} else if (!buildConfig.wgoPath) {
+		console.log('Error: Missing wgoPath in buildConfig');
+		callback();
+	} else {
+		// rm -rf
+		rimraf('./node_modules/wgo.js', function () {
+			fs.symlinkSync(
+				buildConfig.wgoPath, // source path
+				'./node_modules/wgo.js', // destination path
+				'dir'
+			);
+			callback();
+		});
+	}
 });
 
 // Hack the ability to import directories in Sass
@@ -88,80 +125,11 @@ gulp.task('sass', ['sass-includes'], function () {
 	.pipe(autoprefix()
 			.on('error', notify.onError({
 				title: 'Autoprefix Error',
-				messgae: '<%= error.message %>'
+				message: '<%= error.message %>'
 			}))
 		)
 	.pipe(gulp.dest('./client/public/css'));
 });
-
-function scripts(watch) {
-	var bundler, rebundle;
-	watch = watch || false;
-
-	bundler = browserify('./client/src/js/app.js', {
-		//basedir: __dirname,
-		cache: {},
-		packageCache: {},
-		fullPaths: watch
-	});
-
-	if (watch) {
-		console.log('watchifying!');
-		bundler = watchify(bundler);
-	}
-
-	rebundle = function () {
-		console.log('starting to rebundle');
-		var stream = bundler.bundle();
-		stream.on('error', notify.onError({
-			title: 'Browserify Error',
-			message: '<%= error.message %>'
-		}));
-
-		stream = stream.pipe(source('app.js'));
-		return stream.pipe(gulp.dest('./client/public/js'));
-	};
-
-	bundler.on('update', function () {
-		console.log('update!');
-		rebundle();
-	});
-	return rebundle();
-}
-
-//gulp.task('browserify', function () {
-	//return scripts(true);
-	/*
-	var bundler = browserify({
-		// Required watchify args
-		cache: {}, packageCache: {}, fullPaths: true,
-		entries: './client/src/js/app.js'
-	});
-
-	var bundle = function () {
-		return bundler
-			.bundle()
-			// Report compile errors
-			.on('error', notify.onError({
-				title: 'Browserify Error',
-				message: '<%= error.message %>'
-			}))
-			// Use vinyl-source-stream to make the
-			// stream gulp compatible. Specify the
-			// desired output filename here
-			.pipe(source('app.js'))
-			.pipe(buffer())
-			.pipe(uglify())
-			// Specify the output destination
-			.pipe(gulp.dest('./client/public/js/'));
-	};
-
-	bundler = watchify(bundler);
-	bundler.on('update', bundle);
-
-	return bundle();
-	*/
-//});
 
 require('./gulp/tasks/browserify');
 require('./gulp/tasks/watchify');
