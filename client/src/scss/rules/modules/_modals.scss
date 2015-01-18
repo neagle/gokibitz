@@ -4,3 +4,8 @@
 }
 .modal-footer {
 }
+
+// Why was this broken? God only knows.
+.modal-backdrop {
+	bottom: 0;
+}
