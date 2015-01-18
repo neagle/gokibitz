@@ -29,43 +29,8 @@ angular.module('gokibitz.controllers')
       initialPath = pathFilter(initialPath, 'object');
       $scope.kifu.path = initialPath;
 
-      function initializePlayer() {
-        var elem = document.getElementById('player');
-
-        // Initialize the player
-        // TODO: This config should be abstracted somewhere
-        return new window.WGo.BasicPlayer(elem, {
-          sgf: kifu.data.game.sgf,
-          board: {
-						background: '',
-            stoneHandler: window.WGo.Board.drawHandlers.FLAT,
-            font: 'Righteous',
-            theme: {
-              gridLinesColor: 'hsl(50, 50%, 30%)',
-              gridLinesWidth: function(board) {
-                return board.stoneRadius/15;
-              },
-              starColor: 'hsl(50, 50%, 30%)',
-            }
-          },
-          layout: [
-            // Default
-            {
-              className: 'wgo-onecol wgo-xsmall',
-              layout: {
-                bottom: ['Control']
-              }
-            }
-          ],
-          move: initialPath,
-          enableWheel: false,
-          formatMoves: true,
-          update: playerUpdate
-        });
-      }
-
       // Fired every time the player updates
-      function playerUpdate(event) {
+      $scope.playerUpdate = function (event) {
         if (event.op === 'init') {
           return;
         }
@@ -86,37 +51,31 @@ angular.module('gokibitz.controllers')
 					// Format game comments
           $scope.sgfComment = comments.format(event.node.comment);
         });
-      }
+      };
 
-			var player;
-			$document.ready(function () {
-				player = initializePlayer();
-
-				// Make kifu info available to $scope
-				$scope.info = player.kifu.info;
-
-				// Set the page title
-				var titleTemplate = $interpolate(
-					'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
-				);
-				var pageTitle = titleTemplate($scope.info);
-				$rootScope.pageTitle = pageTitle;
-
-				// Turn on coordinates
-				player.setCoordinates(true);
-
-				// Make the player object globally accessible
-				// Necessary for move labels
-				// TODO: See if there's a way to eliminate this requirement
-				window.player = player;
+			// Set the page title
+			var titleTemplate = $interpolate(
+				'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
+			);
+			$scope.$watch('info', function () {
+				if ($scope.info) {
+					var pageTitle = titleTemplate($scope.info);
+					$rootScope.pageTitle = pageTitle;
+				}
 			});
 
+			$scope.toggleEditMode = function () {
+				$scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
+				$scope._editable.set(!$scope._editable.editMode);
+				console.log('$scope._editable.editMode', $scope._editable.editMode);
+			};
+
 			$scope.swipeLeft = function (event) {
-				player.next();
+				$scope.player.next();
 			};
 
 			$scope.swipeRight = function (event) {
-				player.previous();
+				$scope.player.previous();
 			}
 
       $scope.$on('$routeUpdate', function () {
@@ -124,7 +83,7 @@ angular.module('gokibitz.controllers')
         var newPath = pathFilter(path);
 
         if (!angular.equals(newPath, $scope.kifu.path)) {
-          player.goTo(newPath);
+          $scope.player.goTo(newPath);
         }
       });
 

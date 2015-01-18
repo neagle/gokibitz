@@ -1,67 +1,78 @@
 angular.module('gokibitz.directives')
-.directive('sgf', function () {
+.directive('sgf', function ($window) {
 	return {
 		restrict: 'E',
 		scope: {
-			src: '='
+			// The SGF's source data
+			src: '=',
+
+			// Set the board's coordinate markers' (on the sides) visibility
+			coordinates: '=?',
+
+			// The directive will make game info available here
+			info: '=?',
+
+			// What move to start at
+			start: '=?',
+
+			// This function will be called on player updates
+			update: '&?',
+
+			// WGo.js board object
+			board: '=?',
+
+			// WGo.js layout object
+			layout: '=?',
+
+			player: '=?'
 		},
 		template: '<div></div>',
 		link: function ($scope, element, attributes) {
-			//console.log('I am an sgf', arguments);
-			//console.log('scope', $scope);
-			//console.log(window.WGo.BasicPlayer);
+			if (!$scope.src) {
+				return;
+			}
+
 			var div = element.children()[0];
 
-			var startAt = { m: '100' };
-
-			//console.log('theme', $scope.theme);
-			//console.log('attributes', attributes);
-			var themes = {
-				default: {
-					background: '',
-					stoneHandler: window.WGo.Board.drawHandlers.FLAT,
-					theme: {
-						gridLinesColor: 'hsl(50, 50%, 30%)',
-						gridLinesWidth: function(board) {
-							return board.stoneRadius/15;
-						},
-						starColor: 'hsl(50, 50%, 30%)',
-					}
-				},
-				background: {
-					background: '',
-					stoneHandler: window.WGo.Board.drawHandlers.FLAT,
-					theme: {
-						gridLinesColor: 'hsla(50, 50%, 30%, 0.1)',
-						gridLinesWidth: function(board) {
-							return board.stoneRadius/15;
-						},
-						starColor: 'hsl(50, 50%, 30%)',
-					}
+			$scope.board = $scope.board ||  {
+				background: '',
+				stoneHandler: window.WGo.Board.drawHandlers.FLAT,
+				font: 'Righteous',
+				theme: {
+					gridLinesColor: 'hsl(50, 50%, 30%)',
+					gridLinesWidth: function(board) {
+						return board.stoneRadius/15;
+					},
+					starColor: 'hsl(50, 50%, 30%)',
 				}
 			};
 
-			var player = new window.WGo.BasicPlayer(div, {
-				board: themes[attributes.theme] || themes.default,
-				move: startAt,
+			$scope.layout = $scope.layout || [
+				// Default
+				{
+					className: 'wgo-onecol wgo-xsmall',
+					layout: {
+						bottom: ['Control']
+					}
+				}
+			];
+
+			$scope.player = new $window.WGo.BasicPlayer(div, {
+				board: $scope.board,
+				move: $scope.start || 0,
 				sgf: $scope.src,
 				enableWheel: false,
-				layout: {},
+				layout: $scope.layout,
 				update: function (event) {
-					// This was here to restart the game if it hits the end, when the record is animated.
-					// However, it caused a bug on records that aren't as long as the startAt value.
-					//if (event.node.children.length === 0) {
-					//	player.goTo({ m: startAt });
-					//}
+					$scope.update({ event: event });
 				}
 			});
 
-			//window.pl = player;
-			if (attributes.animated) {
-				var animate = setInterval(function () {
-					player.next();
-				}, 1000);
-			}
+			// Make kifu info available to the outside world
+			$scope.info = $scope.player.kifu.info;
+
+			// Set coordinates on or off
+			$scope.player.setCoordinates('coordinates' in attributes);
 		}
 	};
 });

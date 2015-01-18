@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var markdown = require('markdown').markdown;
+var marked = require('marked');
 var moment = require('moment');
 var async = require('async');
+var parseLabels = require('../utils/parseLabels.js');
 
 var commentSchema = new Schema({
 	kifu: {
@@ -44,7 +45,7 @@ var commentSchema = new Schema({
 
 commentSchema.virtual('content.html')
 	.get(function () {
-		return markdown.toHTML(this.content.markdown);
+		return marked(parseLabels(this.content.markdown));
 	});
 
 commentSchema.virtual('relativeDate')
