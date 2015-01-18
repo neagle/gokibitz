@@ -22,8 +22,6 @@ router.get('/:username', function (req, res) {
 
 // Update a user's information
 router.put('/:username', auth.ensureAuthenticated, function (req, res) {
-	var username = req.params.username;
-
 	User.findOne({ username: req.params.username })
 		.exec(function (error, user) {
 			if (!error && user) {
