@@ -9,7 +9,7 @@ require('./lib/wgo/src/player.js');
 require('./lib/wgo/src/basicplayer.js');
 require('./lib/wgo/src/basicplayer.component.js');
 require('./lib/wgo/src/basicplayer.infobox.js');
-require('./lib/wgo/src/basicplayer.commentbox.js');
+//require('./lib/wgo/src/basicplayer.commentbox.js');
 require('./lib/wgo/src/basicplayer.control.js');
 require('./lib/wgo/src/player.editable.js');
 require('./lib/wgo/src/scoremode.js');
@@ -31,7 +31,6 @@ var gokibitz = angular.module('gokibitz', [
 	'ngTouch',
 	'ngWebSocket',
 	'http-auth-interceptor',
-	'angularFileUpload',
 	'ui.utils',
 	'ngStorage',
 	'720kb.socialshare',
@@ -42,7 +41,6 @@ var gokibitz = angular.module('gokibitz', [
 require('angular-ui-router');
 require('angular-animate');
 require('angular-route');
-require('angular-file-upload');
 require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');

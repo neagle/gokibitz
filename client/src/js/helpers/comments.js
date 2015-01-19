@@ -1,6 +1,7 @@
+// Taken from WGo.js's commentbox plugin, since we're injecting comments on our own
 module.exports = {
 	format: function (comment) {
-		// to avoid XSS we must transform < and > to entities, it is highly recomanded not to change it
+		// to avoid XSS we must transform < and > to entities, it is highly recommended not to change it
 		//.replace(/</g,"&lt;").replace(/>/g,"&gt;") : "";
 		if (!comment || typeof comment !== 'string') {
 			return comment;
