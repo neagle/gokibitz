@@ -53,7 +53,7 @@
     "gulp-jshint": "^1.6.1",
     "gulp-livereload": "^1.5.0",
     "gulp-newer": "^0.3.0",
-    "gulp-nodemon": "^1.0.4",
+    "gulp-nodemon": "jedverity/gulp-nodemon",
     "gulp-notify": "^1.2.5",
     "gulp-sass": "^0.7.1",
     "gulp-size": "^1.1.0",
