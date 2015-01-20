@@ -1,6 +1,6 @@
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile) {
 			$scope.formData = {};
 
 			$scope.highlightedComment = $location.search().comment;
@@ -51,6 +51,9 @@ angular.module('gokibitz.controllers')
 
 							// Create a path object {{ m: 0 }} out of the path strings on the comment
 							comment.pathObject = pathFilter(comment.path, 'object');
+
+							// Tell Angular that we trust this HTML so that it doesn't sanitize it
+							comment.content.html = $sce.trustAsHtml(comment.content.html);
 
 							// Set a flag on comments starred by the current user
 							if ($scope.currentUser) {

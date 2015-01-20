@@ -32,6 +32,8 @@
 				coordinates
 			)
 
+			button.btn.btn-default(ng-click='toggleEditMode()') Edit
+
 		.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
 			div.panel.panel-default(
 				ng-hide='kifu.path.m !== 0'
@@ -243,7 +245,7 @@
 									time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
 
 									span.comment-text(
-										ng-bind-html='comment.content.html'
+										dynamic='comment.content.html'
 									)
 
 								.comment.media-body(ng-hide='!edit')
@@ -259,7 +261,7 @@
 									)
 
 									h5(ng-hide='!preview') Preview
-									.preview(ng-bind-html='preview')
+									.preview(dynamic='preview')
 
 									span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
 										| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
@@ -316,7 +318,7 @@
 						.row
 							.col-md-12
 								h5(ng-hide='!preview') Preview
-								.preview(ng-bind-html='preview')
+								.preview(dynamic='preview')
 						.row
 							.col-md-12
 								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit

@@ -95,3 +95,7 @@ Development Notes
 If you're fixing a bug, do me a solid and [create an issue](https://github.com/neagle/gokibitz/issues/new) and assign it to yourself. That way I won't try to fix it while you're working.
 
 If you're working on a feature, feel free to work on it and then unveil it to see what I think, but I'm also happy to give you feedback beforehand via an issue.
+
+### Error: listen EADDRINUSE
+
+If you're like me and you close your laptop without shutting down your `gulp watch` process, sometimes when you come back you'll close your gulp watch, but you'll still be able to access the site locally and if you try to start up `gulp watch` again, you'll get an `EADDRESSINUSE` error. (And you'll still get console output about requests.) Just type `killall node` on a Mac (Command for Windows?) to shut down the node process and you should be able to start `gulp watch` again. If anyone wants to let me know how to fix this, I'd be much obliged.
