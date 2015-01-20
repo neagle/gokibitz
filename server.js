@@ -43,7 +43,9 @@ app.use(session({
 	store: new mongoStore({
 		url: configDB.url,
 		collection: 'sessions'
-	})
+	}),
+	resave: false,
+	saveUninitialized: true
 }));
 
 // use passport session

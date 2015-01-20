@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "export $(cat .env | xargs) && node ./server/bin/www"
+    "start": "node ./server/bin/www"
   },
   "dependencies": {
     "MD5": "^1.2.1",
