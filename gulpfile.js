@@ -134,6 +134,7 @@ gulp.task('sass', ['sass-includes'], function () {
 require('./gulp/tasks/browserify');
 require('./gulp/tasks/watchify');
 require('./gulp/tasks/uglify');
+require('./gulp/tasks/symlink');
 
 // Lint our server-side JS
 gulp.task('lint-server-js', function () {
@@ -143,6 +144,7 @@ gulp.task('lint-server-js', function () {
 });
 
 gulp.task('default', [
+	'symlink',
 	'lint-server-js',
 	'sass',
 	'uglify',

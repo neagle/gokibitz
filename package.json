@@ -43,6 +43,7 @@
     "browserify-shim": "^3.8.2",
     "bulk-require": "^0.2.0",
     "bulkify": "^1.0.1",
+    "chalk": "^0.5.1",
     "folderify": "^0.6.0",
     "glob": "^4.0.0",
     "gulp": "^3.8.0",
@@ -81,7 +82,6 @@
   "browser": {
     "angular": "./node_modules/angular/angular.js",
     "angular-cookies": "./node_modules/angular-cookies/angular-cookies.min.js",
-    "angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
     "angular-sanitize": "./node_modules/angular-sanitize/angular-sanitize.min.js",
     "angular-animate": "./node_modules/angular-animate/angular-animate.min.js",
     "angular-resource": "./node_modules/angular-resource/angular-resource.min.js",
@@ -99,11 +99,6 @@
   "browserify-shim": {
     "angular": "angular",
     "angular-cookies": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-file-upload": {
       "depends": [
         "angular"
       ]
