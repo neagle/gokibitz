@@ -75,8 +75,8 @@ angular.module('gokibitz.directives')
 					$scope.player.board.removeObjectsAt(lastMove.x, lastMove.y);
 				}
 
-				// Use the color whose turn it is next as the default
-				var color = firstMove || lastMove.c * -1;
+				// Use the last move's color as the default
+				var color = firstMove || lastMove.c
 
 				$scope.player.temporarySequence = [];
 				sequence.forEach(function (move, i) {
