@@ -1,6 +1,3 @@
-// Third-party provider of delegate events
-var Delegate = require('dom-delegate').Delegate;
-
 angular.module('gokibitz.directives')
 .directive('sgf', function ($window, $document, $timeout) {
 	return {
