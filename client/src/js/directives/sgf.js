@@ -89,13 +89,13 @@ angular.module('gokibitz.directives')
 
 				var lastMove = $scope.player.kifuReader.node.move;
 
-				if (lastMove.c === firstMove) {
+				// Use the last color played as the default
+				var color = firstMove || lastMove.c;
+
+				if (lastMove.c === color) {
 					$scope.player.board.removeObjectsAt(lastMove.x, lastMove.y);
 					$scope.player.missingMove = lastMove;
 				}
-
-				// Use the last color played as the default
-				var color = firstMove || lastMove.c;
 
 				$scope.player.temporarySequence = [];
 				sequence.forEach(function (move, i) {
