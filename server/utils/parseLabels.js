@@ -3,8 +3,19 @@ module.exports = function (markdown) {
 
 	// Wrap sequences of moves with sequence tags and moves with move tags
 	// @see http://www.regexr.com/3a8ft
+	var parser = RegExp([
+		// Capture the first move color
+		'([wW]hite[\\s]?|[bB]lack[\\s]?|[wWbB][\\s]?)?',
+
+		// Capture a sequence of moves
+		'([a-hj-tA-HJ-T][0-1]?[0-9]\\b[,; ]{0,2}){2,}',
+
+		// Capture individual moves
+		'|(\\b[a-hj-tA-HJ-T][0-1]?[0-9]\\b)',
+	].join(''), 'g');
+
 	output = markdown.replace(
-		/([wW]hite[\s]?|[bB]lack[\s]?|[wWbB][\s]?)?([a-hj-tA-HJ-T][0-1]?[0-9]\b[,; ]{0,2}){2,}|(\b[a-hj-tA-HJ-T][0-1]?[0-9]\b)/g,
+		parser,
 		function (match, color, insideMove, offset, string) {
 			var str = match;
 			var space = '';
