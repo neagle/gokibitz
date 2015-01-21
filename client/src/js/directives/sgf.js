@@ -32,6 +32,8 @@ angular.module('gokibitz.directives')
 				return;
 			}
 
+			window.player = $scope.player;
+
 			var div = element.children()[0];
 
 			$scope.board = $scope.board || {
@@ -195,8 +197,8 @@ angular.module('gokibitz.directives')
 				}
 			};
 
-			$scope.player.addEventListener('update', function () {
-				if ($scope.player.missingMove) {
+			$scope.player.addEventListener('update', function (event) {
+				if ($scope.player.missingMove && event.change.add.length) {
 					$scope.player.board.addObject($scope.player.missingMove);
 					delete $scope.player.missingMove;
 				}
