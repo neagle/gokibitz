@@ -44,7 +44,14 @@ module.exports = function (markdown) {
 			// Normalize the format of the sequence for easy parsing on the client side
 			var sequence = '';
 			if (type === 'sequence') {
-				sequence= ' sequence="' + str.trim().replace(/[,; ]+/g, '-').toUpperCase() + '"';
+				sequence = str.trim().replace(/[,; ]+/g, '-').toUpperCase();
+
+				// Remove any trailing slashes
+				if (sequence.substring(sequence.length - 1) === '-') {
+					sequence = sequence.substring(0, sequence.length - 1);
+				}
+
+				sequence = ' sequence="' + sequence + '"';
 			}
 
 			return '<sgf-label' + firstMove + sequence + '>' + color + str + '</sgf-label>' + space;
