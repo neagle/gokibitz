@@ -4,7 +4,7 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http) {
+.directive('gkCommentBox', function ($http, $q, $document) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -15,14 +15,19 @@ angular.module('gokibitz.directives')
 		},
 		link: function ($scope, element, attributes, ngModel) {
 			var text = element.val();
+			var canceler;
+
+			// Check if the element currently has focus
+			var hasFocus = function () {
+				return $document[0].activeElement === element[0];
+			};
 
 			// Prevent changes in the model that happen elsewhere (ie, a regularly
 			// polling update) from updating more than the initial value of the
 			// comment box
 			if (attributes.gkCommentOneway) {
 				ngModel.$render = function () {
-					var hasFocus = document.activeElement === element[0];
-					if (!hasFocus) {
+					if (!hasFocus()) {
 						element.val(ngModel.$viewValue);
 					} else {
 						ngModel.$setViewValue(element.val());
@@ -35,6 +40,12 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				if (key === 13 && !event.shiftKey) {
 					event.preventDefault();
+
+					// Cancel any outstanding preview calls
+					if (canceler) {
+						canceler.resolve();
+					}
+
 					$scope.submit();
 				}
 			});
@@ -46,10 +57,25 @@ angular.module('gokibitz.directives')
 					$scope.cancel();
 				} else {
 					if (element.val() !== text) {
+
+						// Cancel any previous markdown calls
+						if (canceler) {
+							canceler.resolve();
+						}
+
 						text = element.val();
 
+						// Create a deferred with which to timeout the call,
+						// if need be (for instance, if the comment is submitted
+						// before the preview comes back)
+						canceler = $q.defer();
+
 						// Get an HTML preview of the markdown
-						$http.post('/api/markdown/', {markdown: element.val()})
+						$http.post('/api/markdown/', {
+							markdown: element.val()
+						}, {
+							timeout: canceler.promise
+						})
 							.success(function (data) {
 								$scope.preview = data.markup;
 							});
