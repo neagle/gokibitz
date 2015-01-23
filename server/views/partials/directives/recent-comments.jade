@@ -44,13 +44,46 @@ div.panel.panel-default
 						| commented on
 						= ' '
 						a(
+							ng-if='isString(comment.path)'
 							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
-						) move {{ comment.path }}
+						) move {{ comment.path | verboseNumbers }}
+						span(
+							ng-if='!isString(comment.path)'
+						) moves
+							= ' '
+							span(
+								ng-repeat='path in comment.path track by path._id'
+							)
+								a(
+									href='/kifu/{{ comment.kifu.shortid }}?path={{ path.path | path:"string" }}'
+								) {{ path.path | verboseNumbers }}
+								= ' '
+								span(ng-if='!$last && $first && $index === (comment.path.length - 2)')
+									= ' and '
+								span(ng-if='!$last && !$first && $index === (comment.path.length - 2)')
+									= ', and '
+								span(ng-if='!$last && $index < comment.path.length - 2')
+									= ', '
 						= ' '
 						| of
-						br
+						= ' '
+
+						// TODO: Gah, repeating all the contents of this anchor tag is so
+						// dumb, but I'm too tired to fix it right now!
 						a(
+							ng-if='isString(comment.path)'
 							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
+						)
+							span.name {{ comment.kifu.game.info.white.name }}
+							span.rank(ng-if='comment.kifu.game.info.white.rank') &nbsp;[{{ comment.kifu.game.info.white.rank }}]
+							= ' '
+							| vs.
+							= ' '
+							span.name {{ comment.kifu.game.info.black.name }}
+							span.rank(ng-if='comment.kifu.game.info.black.rank') &nbsp;[{{ comment.kifu.game.info.black.rank }}]
+						a(
+							ng-if='!isString(comment.path)'
+							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path[0].path | path:"string" }}'
 						)
 							span.name {{ comment.kifu.game.info.white.name }}
 							= ' '

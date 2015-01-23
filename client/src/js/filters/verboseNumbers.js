@@ -4,9 +4,7 @@ angular.module('gokibitz.filters')
 	// words. Until then, there are higher-priority items to work on.
 	return function (input) {
 		var numbers = ['one', 'two', 'three', 'four', 'five', 'six', 'seven',
-			'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
-			'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
-			'twenty-one', 'twenty-two', 'twenty-three', 'twenty'];
+			'eight', 'nine'];
 		var output = String(input).replace(/\b[1-9]\b/, function (match) {
 			return numbers[match - 1];
 		});

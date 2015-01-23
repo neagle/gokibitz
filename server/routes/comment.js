@@ -5,6 +5,7 @@ var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Notification = require('../models/notification').Notification;
 var Comment = require('../models/comment').Comment;
+var async = require('async');
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
@@ -65,40 +66,49 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
+	var user;
 	var username = req.query.username || '';
 	var since = req.query.since || null;
+
+	// Bundle successive comments by the same user about the same kifu into a
+	// single comment with an array of paths (moves)
+	//
+	// Helpful for preventing bursts of activity from wiping out everything else
+	// that's interesting from a recent comments feed
+	var chunk = req.query.chunk || false;
+	var chunkedComments = [];
+	var totalComments;
+	var lastUser, lastKifu;
 
 	// Turn the since param into a date object
 	if (since) {
 		since = new Date(since);
 	}
 
-	var comments = Comment.find()
-		.sort('-date')
-		.skip(offset)
-		.limit(limit);
+	function getTotal(callback) {
+		if (totalComments) {
+			callback();
+		} else {
+			var criteria;
 
-	if (since) {
-		comments = comments.where('date').gt(since);
+			if (user) {
+				criteria.user = user;
+			}
+
+			Comment.count(criteria, function (error, count) {
+				totalComments = count;
+				callback();
+			});
+		}
 	}
 
-	if (username) {
+	function getUser(callback) {
 		User.findOne({ username: username })
-			.exec(function (error, user) {
-				if (!error && user) {
-          comments
-            .where('user').equals(user._id)
-            .populate('user', 'username email gravatar rank')
-            .populate('kifu', 'shortid game')
-						.select('-kifu.game')
-            .exec(function (error, comments) {
-              if (!error) {
-                res.json('200', comments);
-              } else {
-                res.json('500', { message: error });
-              }
-            });
-        } else {
+			.exec(function (error, userObject) {
+				if (!error && userObject) {
+					user = userObject;
+					callback();
+				} else {
 					if (error) {
 						res.json('500', { message: error });
 					} else if (!user) {
@@ -106,18 +116,114 @@ router.get('/', function (req, res) {
 					}
 				}
 			});
-	} else {
+	}
+
+	function getComments() {
+		var comments = Comment.find()
+			.sort('-date')
+			.skip(offset)
+			.limit(limit);
+
+		if (since) {
+			comments = comments.where('date').gt(since);
+		}
+
+		if (user) {
+			comments = comments.where('user').equals(user._id);
+		}
+
 		comments
 			.populate('user', 'username email gravatar rank')
 			.populate('kifu', 'shortid game')
+			.select('-kifu.game')
 			.exec(function (error, comments) {
 				if (!error) {
-					res.json('200', comments);
-				}	 else {
+					if (chunk) {
+						// Transform a Mongoose document into a JavaScript object
+						comments = comments.map(function (comment) { return comment.toObject(); });
+						chunkify(comments);
+
+						if (chunkedComments.length >= limit) {
+							res.json('200', chunkedComments);
+						} else {
+							offset += limit;
+							if (offset >= totalComments) {
+								res.json('200', chunkedComments);
+							} else {
+								getComments();
+							}
+						}
+					} else {
+						res.json('200', comments);
+					}
+				} else {
 					res.json('500', { message: error });
 				}
 			});
+		}
+
+		// Turn a flat array of comments into one where comments by the same user
+		// on the same kifu are combined
+		function chunkify(comments) {
+			var lastComment;
+
+			// For each comment...
+			for (
+				var i = 0, length = comments.length;
+				i < length && chunkedComments.length < limit;
+				i += 1
+			) {
+				var comment = comments[i];
+
+				// If this comment has the same user and kifu as the last one...
+				if (
+					lastComment &&
+					lastUser === String(comment.user._id) &&
+					lastKifu === String(comment.kifu._id) &&
+
+					// Discard duplicate comments on the same path
+					lastComment.path !== comment.path
+				) {
+
+					// If the last comment's path isn't already an array, turn it into one
+					if (!Array.isArray(lastComment.path)) {
+						lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
+					}
+
+					var alreadyPresent = lastComment.path.some(function (path) {
+						return path.path === comment.path;
+					});
+
+					if (!alreadyPresent) {
+						// Push the current comment's path to the last object
+						lastComment.path.push({ _id: comment._id, path: comment.path });
+
+						lastComment.path.sort(function (a, b) {
+							return a.path > b.path;
+						});
+					}
+
+				} else {
+					// This comment becomes the last comment
+					lastComment = comment;
+					lastUser = String(comment.user._id);
+					lastKifu = String(comment.kifu._id);
+
+					chunkedComments.push(comment);
+				}
+			}
+		}
+
+	// get the total (so we have a hard stop), then get the user if necessary,
+	// then get comments
+	var funcs = [getTotal];
+
+	if (username) {
+		funcs.push(getUser);
 	}
+
+	funcs.push(getComments);
+	async.series(funcs);
 });
 
 router.patch('/:id/star', function (req, res) {
@@ -191,7 +297,6 @@ router.patch('/:id/unstar', function (req, res) {
 									.where('from').equals(req.user)
 									.exec(function (error, notifications) {
 										if (!error) {
-											console.log('Removing notification', notifications);
 											for (var i = notifications.length - 1; i >= 0; i -= 1) {
 												notifications[i].remove();
 											}

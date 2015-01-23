@@ -18,6 +18,10 @@ angular.module('gokibitz.directives')
 			var moment = require('moment');
 			var since;
 
+			$scope.isString = function (something) {
+				return typeof something === 'string';
+			};
+
 			// Update the timestamps on the comments
 			var refreshTimes = function () {
 				$scope.comments.forEach(function (comment, i) {
@@ -28,7 +32,11 @@ angular.module('gokibitz.directives')
 				});
 			};
 
-			var params = {};
+			var params = {
+				// Bundle successive comments by the same user on the same kifu into
+				// single chunks
+				chunk: true
+			};
 
 			if ($scope.username) {
 				params.username = $scope.username;
