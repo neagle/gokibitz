@@ -199,7 +199,7 @@ router.get('/', function (req, res) {
 						lastComment.path.push({ _id: comment._id, path: comment.path });
 
 						lastComment.path.sort(function (a, b) {
-							return a.path > b.path;
+							return a.path - b.path;
 						});
 					}
 
