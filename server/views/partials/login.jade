@@ -13,22 +13,22 @@
 		p.help-block(ng-show="form.password.$error.mongoose") {{ errors.password }}
 
 		.form-group(ng-class="{'has-error': form.email.$error.mongoose}")
-			label.col-sm-4.control-label(for='email') Email address:
+			label.col-sm-4.control-label(for='login-email') Email address:
 			.col-sm-8
-				input.form-control(
+				input#login-email.form-control(
 					placeholder='Email address'
 					type='text'
 					name='email'
 					ng-model='user.email'
 					required
-					autofocus
 					mongoose-error
 				)
 
 		.form-group(ng-class="{'has-error': form.password.$error.mongoose}")
-			label.col-sm-4.control-label(for='password') Password:
+			label.col-sm-4.control-label(for='login-password') Password:
 			.col-sm-8
-				input.form-control(
+				input#login-password.form-control(
+
 					placeholder='Password'
 					type='password'
 					name='password'

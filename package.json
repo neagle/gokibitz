@@ -92,8 +92,8 @@
     "angular-websocket": "./node_modules/angular-websocket/angular-websocket.min.js",
     "ngStorage": "./node_modules/ng-storage/ngStorage.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
-    "ui-bootstrap": "./client/src/bower_components/angular-bootstrap/ui-bootstrap.js",
-    "ui-bootstrap-tpls": "./client/src/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+    "ui-bootstrap": "./client/src/js/lib/temporary_angular_boostrap/ui-bootstrap-0.13.0-SNAPSHOT.js",
+    "ui-bootstrap-tpls": "./client/src/js/lib/temporary_angular_boostrap/ui-bootstrap-tpls-0.13.0-SNAPSHOT.js",
     "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js"
   },

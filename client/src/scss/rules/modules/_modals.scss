@@ -9,3 +9,20 @@
 .modal-backdrop {
 	bottom: 0;
 }
+
+// I don't understand the Bootstrap style that sets buttons in the modal-footer
+// to display: block for narrower screens, which means maybe someday I'll put
+// it back
+@media (max-width: 767px) {
+	.modal-footer {
+		.btn {
+			display: inline-block;
+			margin-bottom: 0;
+
+			+ .btn {
+				margin-left: 12px;
+			}
+		}
+	}
+
+}
