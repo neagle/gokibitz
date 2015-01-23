@@ -9,6 +9,20 @@ angular.module('gokibitz.controllers')
 			var pollComments;
 			var canceler;
 
+			var stop;
+			$scope.stopPolling = function () {
+				if (angular.isDefined(stop)) {
+					$interval.cancel(stop);
+					stop = undefined;
+				}
+			};
+
+			stop = $interval(function () {
+				if (!$scope.loading) {
+					$scope.listComments(true);
+				}
+			}, 3000);
+
 			$scope.listComments = function (alreadyRendered) {
 				var path;
 
@@ -105,23 +119,13 @@ angular.module('gokibitz.controllers')
 										if ($scope.highlightedComment) {
 											$scope.goToComment($scope.highlightedComment);
 										}
-
-										// Start polling comments
-										//if (pollComments) {
-										//}
-                    //$interval.clear(pollComments);
-                    //console.log('setting comments poll');
-                    //pollComments = $interval(function () {
-											//console.log('poll comments');
-											//$scope.listComments(true);
-                    //}, 3000);
-                    //console.log('pollComments?', pollComments);
 									}, 0);
 								}
 							}
 
 							addCommentsToScope(data);
 						} else {
+							$scope.loading = false;
 							$scope.comments = data;
 						}
 
@@ -219,12 +223,11 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.$on('$routeChangeStart', function (next, current) {
-				//console.log('clearing poll comments');
-				//$interval.clear(pollComments);
+				//$scope.stopPolling();
 			});
 
 			$scope.$on('$destroy', function () {
-				//$interval.clear(pollComments);
+				$scope.stopPolling();
 			});
 
 			$scope.$watch('kifu.path', function () {
