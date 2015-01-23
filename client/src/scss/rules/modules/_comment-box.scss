@@ -1,0 +1,11 @@
+[gk-comment-box] {
+	font: {
+		size: 12px !important;
+	}
+
+	@media (max-width: $screen-md-max) {
+		font: {
+			size: 16px !important;
+		}
+	}
+}
