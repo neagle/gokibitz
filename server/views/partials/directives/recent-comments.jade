@@ -68,11 +68,8 @@ div.panel.panel-default
 						| of
 						= ' '
 
-						// TODO: Gah, repeating all the contents of this anchor tag is so
-						// dumb, but I'm too tired to fix it right now!
 						a(
-							ng-if='isString(comment.path)'
-							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
+							ng-href='/kifu/{{ comment.kifu.shortid }}'
 						)
 							span.name {{ comment.kifu.game.info.white.name }}
 							span.rank(ng-if='comment.kifu.game.info.white.rank') &nbsp;[{{ comment.kifu.game.info.white.rank }}]
@@ -81,22 +78,7 @@ div.panel.panel-default
 							= ' '
 							span.name {{ comment.kifu.game.info.black.name }}
 							span.rank(ng-if='comment.kifu.game.info.black.rank') &nbsp;[{{ comment.kifu.game.info.black.rank }}]
-						a(
-							ng-if='!isString(comment.path)'
-							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path[0].path | path:"string" }}'
-						)
-							span.name {{ comment.kifu.game.info.white.name }}
-							= ' '
-							span.rank(ng-if='comment.kifu.game.info.white.rank') [{{ comment.kifu.game.info.white.rank }}]
-							= ' '
-							| vs.
-							= ' '
-							span.name {{ comment.kifu.game.info.black.name }}
-							= ' '
-							span.rank(ng-if='comment.kifu.game.info.black.rank') [{{ comment.kifu.game.info.black.rank }}]
 						br
 						time.relative.small(
 							datetime='{{ comment.date }}'
 						) {{ comment.relativeDate | verboseNumbers }}
-
-		//{{ comments }}
