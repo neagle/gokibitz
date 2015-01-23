@@ -78,7 +78,7 @@ router.get('/', function (req, res) {
 	var chunk = req.query.chunk || false;
 	var chunkedComments = [];
 	var totalComments;
-	var lastUser, lastKifu;
+	var lastComment, lastUser, lastKifu;
 
 	// Turn the since param into a date object
 	if (since) {
@@ -165,8 +165,6 @@ router.get('/', function (req, res) {
 		// Turn a flat array of comments into one where comments by the same user
 		// on the same kifu are combined
 		function chunkify(comments) {
-			var lastComment;
-
 			// For each comment...
 			for (
 				var i = 0, length = comments.length;
