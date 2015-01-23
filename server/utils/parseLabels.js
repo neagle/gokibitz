@@ -3,7 +3,7 @@ module.exports = function (markdown) {
 
 	// Wrap sequences of moves with sequence tags and moves with move tags
 	// @see http://www.regexr.com/3a93a
-	var parser = RegExp([
+	var parser = new RegExp([
 		// Capture the first move color
 		'([wW]hite[\\s]?|[bB]lack[\\s]?|[wWbB][\\s]?)?',
 
