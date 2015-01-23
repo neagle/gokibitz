@@ -69,7 +69,7 @@ div.panel.panel-default
 						= ' '
 
 						a(
-							ng-href='/kifu/{{ comment.kifu.shortid }}'
+							href='/kifu/{{ comment.kifu.shortid }}'
 						)
 							span.name {{ comment.kifu.game.info.white.name }}
 							span.rank(ng-if='comment.kifu.game.info.white.rank') &nbsp;[{{ comment.kifu.game.info.white.rank }}]
