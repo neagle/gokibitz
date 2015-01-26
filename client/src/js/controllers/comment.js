@@ -17,11 +17,11 @@ angular.module('gokibitz.controllers')
 				}
 			};
 
-			stop = $interval(function () {
-				if (!$scope.loading) {
-					$scope.listComments(true);
-				}
-			}, 3000);
+			//stop = $interval(function () {
+				//if (!$scope.loading) {
+					//$scope.listComments(true);
+				//}
+			//}, 3000);
 
 			$scope.listComments = function (alreadyRendered) {
 				var path;
