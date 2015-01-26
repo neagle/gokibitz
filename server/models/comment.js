@@ -5,6 +5,10 @@ var moment = require('moment');
 var async = require('async');
 var parseLabels = require('../utils/parseLabels.js');
 
+marked.setOptions({
+	smartypants: true
+});
+
 var commentSchema = new Schema({
 	kifu: {
 		type: Schema.ObjectId,

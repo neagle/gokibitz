@@ -4,6 +4,10 @@ var auth = require('../config/auth');
 var marked = require('marked');
 var parseLabels = require('../utils/parseLabels.js');
 
+marked.setOptions({
+	smartypants: true
+});
+
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	var html = marked(parseLabels(req.body.markdown)) || '';
 	res.json({
