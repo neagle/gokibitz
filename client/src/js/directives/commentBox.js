@@ -47,6 +47,7 @@ angular.module('gokibitz.directives')
 					}
 
 					$scope.submit();
+					$scope.preview = '';
 				}
 			});
 

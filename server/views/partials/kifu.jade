@@ -32,7 +32,8 @@
 				coordinates
 			)
 
-			button.btn.btn-default(ng-click='toggleEditMode()') Edit
+			//-button.btn.btn-default(ng-click='toggleEditMode()') Edit
+			//-button.btn.btn-default(ng-click='getSgf()') SGF
 
 		.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
 			div.panel.panel-default(
@@ -251,6 +252,7 @@
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
 										rows='3'
+										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
 										gk-comment-box='updateComment(comment), cancelEdit(comment)'
 										gk-comment-submit='updateComment(comment)'
@@ -309,6 +311,7 @@
 								form(ng-submit='addComment()')
 									label Comment:
 									textarea.form-control(
+										ng-disabled='disableAddComment'
 										ng-model='formData.content'
 										rows=3
 										gk-comment-box
