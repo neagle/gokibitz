@@ -39,8 +39,11 @@ angular.module('gokibitz.directives')
 			$scope.board = $scope.board || {
 				background: '',
 				stoneHandler: window.WGo.Board.drawHandlers.FLAT,
+				// Strangely, this has to be on both the board and its theme. Possibly
+				// inadvertent inconsistency in WGo?
 				font: 'Righteous',
 				theme: {
+					font: 'Righteous',
 					gridLinesColor: 'hsl(50, 50%, 30%)',
 					gridLinesWidth: function(board) {
 						return board.stoneRadius/15;
@@ -109,7 +112,7 @@ angular.module('gokibitz.directives')
 					var label = angular.extend({}, move, {
 						type: 'LB',
 						text: i + 1,
-						c: (color === 1) ? 'white' : 'black'
+						c: (color === 1) ? 'hsl(0, 0%, 90%)' : 'hsl(0, 0%, 30%)'
 					});
 
 					$scope.player.temporarySequence.push(stone);

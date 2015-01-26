@@ -4,7 +4,6 @@ angular.module('gokibitz.controllers')
 		$scope.user = {};
 
 		$scope.login = function (form) {
-			//console.log('login function wat');
 			Auth.login('password', {
 				'email': $scope.user.email,
 				'password': $scope.user.password
@@ -13,7 +12,6 @@ angular.module('gokibitz.controllers')
 				$scope.errors = {};
 
 				if (!err) {
-					//console.log('$scope', $scope);
 					$rootScope.flash = {
 						type: 'success',
 						message: 'Welcome back, ' + $scope.currentUser.username + '!'
