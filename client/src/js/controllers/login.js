@@ -1,7 +1,10 @@
 angular.module('gokibitz.controllers')
-	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location) {
+	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location, $localStorage) {
+		$scope.$storage = $localStorage;
 		$scope.error = {};
-		$scope.user = {};
+		$scope.user = {
+			email: $scope.$storage.email || ''
+		};
 
 		$scope.login = function (form) {
 			Auth.login('password', {
@@ -12,10 +15,7 @@ angular.module('gokibitz.controllers')
 				$scope.errors = {};
 
 				if (!err) {
-					$rootScope.flash = {
-						type: 'success',
-						message: 'Welcome back, ' + $scope.currentUser.username + '!'
-					};
+					$scope.$storage.email = $scope.user.email;
 					$modalInstance.close($scope.user);
 				} else {
 					angular.forEach(err.errors, function (error, field) {
