@@ -59,6 +59,7 @@
 					type='password'
 					name='password'
 					ng-model='user.password'
+					ng-model-options='{ debounce: 750 }'
 					ng-minlength='5'
 					required
 					mongoose-error
@@ -80,6 +81,7 @@
 					type='password'
 					name='confirmPassword'
 					ng-model='user.confirmPassword'
+					ng-model-options='{ debounce: 750 }'
 					compare-to='user.password'
 					ng-minlength='5'
 					required
