@@ -165,6 +165,14 @@ router.get('/', function (req, res) {
 		// Turn a flat array of comments into one where comments by the same user
 		// on the same kifu are combined
 		function chunkify(comments) {
+			function pathPresent(path) {
+				return path.path === comment.path;
+			}
+
+			function pathSorter(a, b) {
+				return a.path - b.path;
+			}
+
 			// For each comment...
 			for (
 				var i = 0, length = comments.length;
@@ -177,28 +185,24 @@ router.get('/', function (req, res) {
 				if (
 					lastComment &&
 					lastUser === String(comment.user._id) &&
-					lastKifu === String(comment.kifu._id) &&
-
-					// Discard duplicate comments on the same path
-					lastComment.path !== comment.path
+					lastKifu === String(comment.kifu._id)
 				) {
 
-					// If the last comment's path isn't already an array, turn it into one
-					if (!Array.isArray(lastComment.path)) {
-						lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
-					}
+					// Don't add multiple notifications for multiple comments on the same move
+					if (lastComment.path !== comment.path) {
+						// If the last comment's path isn't already an array, turn it into one
+						if (!Array.isArray(lastComment.path)) {
+							lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
+						}
 
-					var alreadyPresent = lastComment.path.some(function (path) {
-						return path.path === comment.path;
-					});
+						var alreadyPresent = lastComment.path.some(pathPresent);
 
-					if (!alreadyPresent) {
-						// Push the current comment's path to the last object
-						lastComment.path.push({ _id: comment._id, path: comment.path });
+						if (!alreadyPresent) {
+							// Push the current comment's path to the last object
+							lastComment.path.push({ _id: comment._id, path: comment.path });
 
-						lastComment.path.sort(function (a, b) {
-							return a.path - b.path;
-						});
+							lastComment.path.sort(pathSorter);
+						}
 					}
 
 				} else {
