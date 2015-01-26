@@ -47,23 +47,7 @@ div.panel.panel-default
 							ng-if='isString(comment.path)'
 							href='/kifu/{{ comment.kifu.shortid }}?path={{ comment.path | path:"string" }}'
 						) move {{ comment.path | verboseNumbers }}
-						span(
-							ng-if='!isString(comment.path)'
-						) moves
-							= ' '
-							span(
-								ng-repeat='path in comment.path track by path._id'
-							)
-								a(
-									href='/kifu/{{ comment.kifu.shortid }}?path={{ path.path | path:"string" }}'
-								) {{ path.path | verboseNumbers }}
-								= ' '
-								span(ng-if='!$last && $first && $index === (comment.path.length - 2)')
-									= ' and '
-								span(ng-if='!$last && !$first && $index === (comment.path.length - 2)')
-									= ', and '
-								span(ng-if='!$last && $index < comment.path.length - 2')
-									= ', '
+						span(ng-bind-html='comment.pathString')
 						= ' '
 						| of
 						= ' '

@@ -14,7 +14,7 @@ angular.module('gokibitz.directives')
     }
   )
 	.controller('RecentCommentsCtrl',
-		function ($scope, $http) {
+		function ($scope, $http, $filter, $sce) {
 			var moment = require('moment');
 			var since;
 
@@ -42,9 +42,49 @@ angular.module('gokibitz.directives')
 				params.username = $scope.username;
 			}
 
+			// Turn an array of paths into HTML. Since we're using filters (a
+			// performance bottleneck in ng-repeat), and this goes inside another
+			// ng-repeat, and angular ng-ifs don't really work great for adding
+			// commas and ands to the right place anyway, we're doing this old
+			// school.
+			function serializeMoves(comments) {
+				comments.forEach(function (comment, i) {
+					if (Array.isArray(comment.path)) {
+						var pathString = 'moves ';
+						comment.path.forEach(function (move, j) {
+							var pathArr = [
+								'<a href="/kifu/',
+								comment.kifu.shortid,
+								'?path=',
+								$filter('path')(move.path, 'string'),
+								'">',
+								$filter('verboseNumbers')(move.path)
+							];
+
+							var first = (j === 0);
+							var last = (j === comment.path.length - 1);
+							var penultimate = (j === comment.path.length - 2);
+
+							if (!last && first && penultimate) {
+								pathArr.push('</a> and ');
+							} else if (!last && !first && penultimate) {
+								pathArr.push(',</a> and ');
+							} else if (!last && !penultimate) {
+								pathArr.push(',</a> ');
+							}
+
+							pathString += pathArr.join('');
+							comments[i].pathString = $sce.trustAsHtml(pathString);
+						});
+					}
+				});
+
+				return comments;
+			}
+
 			$http.get('/api/comment', { params: params })
 				.then(function (response) {
-					$scope.comments = response.data;
+					$scope.comments = serializeMoves(response.data);
 					since = new Date();
 				});
 
