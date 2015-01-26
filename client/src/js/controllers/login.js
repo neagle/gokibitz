@@ -20,7 +20,7 @@ angular.module('gokibitz.controllers')
 				} else {
 					angular.forEach(err.errors, function (error, field) {
 						form[field].$setValidity('mongoose', false);
-						$scope.errors[field] = error.type;
+						$scope.errors[field] = error.message;
 					});
 					$scope.error.other = err.message;
 				}

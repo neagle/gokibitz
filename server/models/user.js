@@ -107,7 +107,7 @@ UserSchema.path('email').validate(function (value, respond) {
 
 		respond(true);
 	});
-}, 'The specified email address is already in use.');
+}, 'That email address is already being used.');
 
 UserSchema.path('username').validate(function (username) {
 	var usernameRegex = /^[a-zA-Z0-9-_]+$/;
@@ -126,7 +126,7 @@ UserSchema.path('username').validate(function (value, respond) {
 
 		respond(true);
 	});
-}, 'The specified username is already in use.');
+}, 'That username is already in use.');
 
 /**
  * Pre-save hook

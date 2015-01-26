@@ -15,7 +15,7 @@
 			.col-sm-8
 				input.form-control(
 					placeholder='Email address'
-					type='text'
+					type='email'
 					name='email'
 					ng-model='user.email'
 					required
@@ -54,7 +54,7 @@
 		)
 			label.col-sm-4.control-label(for='password') Password:
 			.col-sm-8
-				input.form-control(
+				input#password.form-control(
 					placeholder='Password'
 					type='password'
 					name='password'
@@ -69,6 +69,27 @@
 					| Password must be at least five characters.
 				p.help-block(ng-show='form.password.$error.mongoose')
 					| {{ errors.password }}
+
+		.form-group(
+			ng-class="{ 'has-warning': form.confirmPassword.$dirty, 'has-success': form.confirmPassword.$valid && form.confirmPassword.$dirty && !form.confirmPassword.$error.mongoose, 'has-error': form.confirmPassword.$invalid && form.confirmPassword.$dirty || form.confirmPassword.$error.mongoose }"
+		)
+			label.col-sm-4.control-label(for='password2') Confirm password:
+			.col-sm-8
+				input#password2.form-control(
+					placeholder='Password x2'
+					type='password'
+					name='confirmPassword'
+					ng-model='user.confirmPassword'
+					compare-to='user.password'
+					ng-minlength='5'
+					required
+					mongoose-error
+				)
+				p.help-block(
+					ng-show='(form.confirmPassword.$error.compareTo) && form.confirmPassword.$dirty && !form.confirmPassword.$error.required'
+				)
+					| Passwords don&rsquo;t match.
+
 
 		button.hidden(type='submit') Log in
 

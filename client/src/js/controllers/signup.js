@@ -1,5 +1,6 @@
 angular.module('gokibitz.controllers')
-.controller('SignupController', function ($rootScope, $scope, $modalInstance, Auth, $location) {
+.controller('SignupController', function ($rootScope, $scope, $modalInstance, Auth, $location, $localStorage) {
+	$scope.$storage = $localStorage;
 	$scope.error = {};
 	$scope.user = {};
 
@@ -14,15 +15,12 @@ angular.module('gokibitz.controllers')
 			$scope.errors = {};
 
 			if (!err) {
-				$rootScope.flash = {
-					type: 'success',
-					message: 'Welcome to GoKibitz, ' + $scope.currentUser.username + '!'
-				};
+				$scope.$storage.email = $scope.user.email;
 				$modalInstance.close($scope.user);
 			} else {
 				angular.forEach(err.errors, function (error, field) {
 					form[field].$setValidity('mongoose', false);
-					$scope.errors[field] = error.type;
+					$scope.errors[field] = error.message;
 				});
 			}
 		});
