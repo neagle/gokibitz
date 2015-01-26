@@ -1,4 +1,5 @@
 /*jshint browser:true*/
+/*global WGo:true*/
 angular.module('gokibitz.controllers')
 	.controller('KifuController',
 		function (
@@ -42,11 +43,14 @@ angular.module('gokibitz.controllers')
 
           var move = $scope.kifu.path.m;
 
-          if (move > 0) {
-            $location.search('path', pathFilter($scope.kifu.path, 'string'));
-          } else {
-            $location.search('path', null);
-          }
+					// If we're not in edit mode, update the URL path
+					if (!$scope.editMode) {
+						if (move > 0) {
+							$location.search('path', pathFilter($scope.kifu.path, 'string'));
+						} else {
+							$location.search('path', null);
+						}
+					}
 
 					// Format game comments
           $scope.sgfComment = comments.format(event.node.comment);
@@ -65,18 +69,25 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.toggleEditMode = function () {
+				var newMode;
+
 				$scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
-				$scope._editable.set(!$scope._editable.editMode);
-				console.log('$scope._editable.editMode', $scope._editable.editMode);
+				newMode = !$scope._editable.editMode;
+				$scope._editable.set(newMode, false);
+				$scope.editMode = newMode;
 			};
 
 			$scope.swipeLeft = function (event) {
 				$scope.player.next();
 			};
 
+			$scope.getSgf = function () {
+				console.log($scope.player.kifuReader.kifu.toSgf());
+			};
+
 			$scope.swipeRight = function (event) {
 				$scope.player.previous();
-			}
+			};
 
       $scope.$on('$routeUpdate', function () {
         var path = $location.search().path;

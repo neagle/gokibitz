@@ -51,7 +51,6 @@ angular.module('gokibitz.controllers')
 				} else {
 					path = pathFilter($scope.kifu.path, 'string');
 				}
-				//console.log('path', path);
 
 				canceler = $q.defer();
 				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
@@ -136,6 +135,7 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.addComment = function () {
+				$scope.disableAddComment = true;
 				var data = $scope.formData;
 				data._id = $scope.kifu._id;
 				data.path = pathFilter($scope.kifu.path, 'string');
@@ -143,20 +143,24 @@ angular.module('gokibitz.controllers')
 
 				var newComment = new Comment(data);
 				newComment.$save(function (response) {
+					$scope.disableAddComment = false;
 					$scope.formData = {};
 					$scope.listComments(true);
 				});
 			};
 
 			$scope.updateComment = function (comment) {
+				$scope.disableUpdateComment = true;
 				var self = this;
 
 				$http.put('/api/comment/' + comment._id, comment)
 					.success(function (data) {
+						$scope.disableUpdateComment = false;
 						angular.extend(comment, data.comment);
 						delete self.edit;
 					})
 					.error(function (data) {
+						$scope.disableUpdateComment = false;
 						console.log('Error: ' + data);
 					});
 			};
@@ -194,7 +198,6 @@ angular.module('gokibitz.controllers')
 						.success(function () {
 							comment.stars.push($scope.currentUser._id);
 							comment.starredByMe = true;
-							console.log('comment.stars after push', comment.stars);
 						})
 						.error(function (data) {
 							console.log('Error: ' + data);
@@ -204,7 +207,6 @@ angular.module('gokibitz.controllers')
 						.success(function () {
 							comment.stars.splice(index, 1);
 							comment.starredByMe = false;
-							console.log('comment.stars after splice', comment.stars);
 						})
 						.error(function (data) {
 							console.log('Error: ' + data);
