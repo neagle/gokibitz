@@ -2,18 +2,21 @@ var bulk = require('bulk-require');
 var angular = require('angular');
 
 // WGo
-require('./lib/wgo/src/wgo.js');
-require('./lib/wgo/src/kifu.js');
-require('./lib/wgo/src/sgfparser.js');
-require('./lib/wgo/src/player.js');
-require('./lib/wgo/src/basicplayer.js');
-require('./lib/wgo/src/basicplayer.component.js');
-require('./lib/wgo/src/basicplayer.infobox.js');
-//require('./lib/wgo/src/basicplayer.commentbox.js');
-require('./lib/wgo/src/basicplayer.control.js');
-require('./lib/wgo/src/player.editable.js');
-require('./lib/wgo/src/scoremode.js');
-require('./lib/wgo/src/player.permalink.js');
+require('./lib/wgo/wgo.js');
+require('./lib/wgo/kifu.js');
+require('./lib/wgo/sgfparser.js');
+require('./lib/wgo/player.js');
+require('./lib/wgo/basicplayer.js');
+require('./lib/wgo/basicplayer.component.js');
+require('./lib/wgo/basicplayer.infobox.js');
+//require('./lib/wgo/basicplayer.commentbox.js');
+require('./lib/wgo/basicplayer.control.js');
+require('./lib/wgo/player.editable.js');
+require('./lib/wgo/scoremode.js');
+require('./lib/wgo/player.permalink.js');
+
+// GoKibitz WGo files
+require('./wgo/gokibitz.wgo.js');
 
 var gokibitz = angular.module('gokibitz', [
 	'gokibitz.controllers',
@@ -31,7 +34,6 @@ var gokibitz = angular.module('gokibitz', [
 	'ngTouch',
 	'ngWebSocket',
 	'http-auth-interceptor',
-	'angularFileUpload',
 	'ui.utils',
 	'ngStorage',
 	'720kb.socialshare',
@@ -42,7 +44,6 @@ var gokibitz = angular.module('gokibitz', [
 require('angular-ui-router');
 require('angular-animate');
 require('angular-route');
-require('angular-file-upload');
 require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');

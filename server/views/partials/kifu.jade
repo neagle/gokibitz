@@ -30,6 +30,7 @@
 				info='info'
 				player='player'
 				coordinates
+				ng-class='{ "variation-mode": variationMode, "edit-mode": editMode }'
 			)
 
 			//-button.btn.btn-default(ng-click='toggleEditMode()') Edit
@@ -309,6 +310,31 @@
 						.row
 							.col-md-12
 								form(ng-submit='addComment()')
+									.sequencer.pull-right.btn-group(
+										role='group'
+									)
+										button.btn-sm.white.btn.btn-default(
+											type='button'
+											ng-click='toggleVariationMode(-1)'
+											ng-class='{ active: variationMode }'
+										)
+											| &nbsp;
+											span
+										button.btn-sm.btn.btn-default.add(
+											ng-show='variationMode'
+											ng-click='endVariationMode($event, true)'
+										) Add
+										button.btn-sm.btn.btn-default.cancel(
+											ng-show='variationMode'
+											ng-click='endVariationMode($event, false)'
+										) Cancel
+										button.btn-sm.black.btn.btn-default(
+											type='button'
+											ng-click='toggleVariationMode(1)'
+											ng-class='{ active: variationMode }'
+										)
+											| &nbsp;
+											span
 									label Comment:
 									textarea.form-control(
 										ng-disabled='disableAddComment'

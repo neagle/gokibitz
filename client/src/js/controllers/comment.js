@@ -212,7 +212,7 @@ angular.module('gokibitz.controllers')
 							console.log('Error: ' + data);
 						});
 				}
-			}
+			};
 
 			$scope.goToComment = function (commentId) {
 				var elem = angular.element($document[0].getElementById('comment-' + commentId));
@@ -243,6 +243,80 @@ angular.module('gokibitz.controllers')
 					$scope.goToComment(comment);
 				}
 			});
+
+			$scope.$watch('scope.player', function () {
+				console.log('hey, player is here');
+				console.log($scope.player.board.size);
+				$scope.player.addEventListener('update', function (event) {
+					console.log('update', event);
+					console.log('change', event.change);
+					if ($scope.variationMode && $scope.player.gkRecordingVariation) {
+						translateMovesToCoordinates(event);
+						$scope.formData = $scope.formData || {};
+						$scope.formData.content = $scope.formData.content || '';
+						console.log('add that content yo', $scope.player.gkVariationArr);
+						console.log('content', $scope.formData.content);
+
+						console.log('typeof $scope.originalComment', typeof $scope.originalComment);
+						if (typeof $scope.originalComment === 'undefined') {
+							$scope.originalComment = $scope.formData.content || '';
+							console.log('...', $scope.originalComment);
+						}
+
+						if ($scope.player.gkVariationArr) {
+							$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
+						}
+					}
+				});
+			});
+
+			function translateMovesToCoordinates(event) {
+				console.log('hey hey translate', event);
+				var move;
+				if (event.change.add && event.change.add.length) {
+					move = event.change.add[0];
+
+					if (!$scope.player.gkVariationArr.length) {
+						var str = (move.c === 1) ? 'b' : 'w';
+						str += humanCoordinates(move);
+						$scope.player.gkVariationArr.push(str);
+					} else {
+						$scope.player.gkVariationArr.push(humanCoordinates(move));
+					}
+				} else if (event.change.remove && event.change.remove.length) {
+					$scope.player.gkVariationArr.pop();
+				}
+			}
+
+			// TODO: This function obviously belongs some place universal.
+			function humanCoordinates(move) {
+				console.log('move', move);
+				// Note the missing i
+				var letters = 'abcdefghjklmnopqrst';
+
+				var x = letters.substring(move.x, move.x + 1).toUpperCase();
+				var y = $scope.player.kifuReader.game.size - move.y;
+				return x + y;
+			}
+
+			$scope.endVariationMode = function ($event, add) {
+				$event.preventDefault();
+
+				if (add) {
+					console.log('add');
+					$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
+				} else {
+					console.log('cancel');
+					$scope.formData.content = $scope.originalComment;
+				}
+
+				$scope.originalComment = undefined;
+
+				if ($scope.variationMode) {
+					$scope.toggleVariationMode();
+				}
+			};
+
 
 		}
 	);

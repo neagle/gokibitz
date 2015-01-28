@@ -54,8 +54,11 @@ angular.module('gokibitz.directives')
 			// Escape only registers on keyup
 			element.bind('keyup', function (event) {
 				var key = event.keyCode || event.which;
+				// Enter + shiftkey should have submitted comment already
+				// Escape cancels
 				if (key === 27) {
 					$scope.cancel();
+				// Otherwise, give us a preview
 				} else {
 					if (element.val() !== text) {
 

@@ -16,6 +16,7 @@ angular.module('gokibitz.controllers')
 			$document,
 			$modal
     ) {
+
       // Make the login/signup modal avaialble
       $scope.LoginSignup = LoginSignup;
 
@@ -37,14 +38,14 @@ angular.module('gokibitz.controllers')
         }
 
         $timeout(function () {
-          $scope.kifu.path = event.path;
+					if (!$scope.editMode && !$scope.variationMode) {
 
-          $scope.captures = event.position.capCount;
+						$scope.kifu.path = event.path;
 
-          var move = $scope.kifu.path.m;
+						$scope.captures = event.position.capCount;
 
-					// If we're not in edit mode, update the URL path
-					if (!$scope.editMode) {
+						var move = $scope.kifu.path.m;
+
 						if (move > 0) {
 							$location.search('path', pathFilter($scope.kifu.path, 'string'));
 						} else {
@@ -75,6 +76,41 @@ angular.module('gokibitz.controllers')
 				newMode = !$scope._editable.editMode;
 				$scope._editable.set(newMode, false);
 				$scope.editMode = newMode;
+			};
+
+			$scope.toggleVariationMode = function (startingColor) {
+				var newMode;
+
+				$scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
+				newMode = !$scope._editable.editMode;
+
+				var theme = $scope.player.board.theme;
+
+				$scope._editable.set(newMode, true);
+				$scope.variationMode = newMode;
+
+				var lastMove = $scope.player.kifuReader.node.move;
+				if (lastMove) {
+					console.log('lastMove', lastMove.c, 'startingColor', startingColor);
+				}
+
+				if ($scope.variationMode) {
+					$scope.player.gkRecordingVariation = true;
+					$scope.player.gkVariationArr = [];
+				}
+
+				if (!$scope.variationMode && $scope.player.oneBack) {
+					$scope.player.gkRecordingVariation = false;
+					$scope.player.next();
+					$scope.player.oneBack = false;
+					$scope.player.gkRecordingVariation = true;
+				}
+				if ($scope.variationMode && lastMove && lastMove.c === startingColor) {
+					$scope.player.gkRecordingVariation = false;
+					$scope.player.oneBack = true;
+					$scope.player.previous();
+					$scope.player.gkRecordingVariation = true;
+				}
 			};
 
 			$scope.swipeLeft = function (event) {

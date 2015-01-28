@@ -32,17 +32,19 @@ angular.module('gokibitz.directives')
 				return;
 			}
 
-			window.player = $scope.player;
-
 			var div = element.children()[0];
 
 			$scope.board = $scope.board || {
 				background: '',
-				stoneHandler: window.WGo.Board.drawHandlers.FLAT,
+				stoneHandler: $window.WGo.Board.drawHandlers.FLAT,
 				// Strangely, this has to be on both the board and its theme. Possibly
 				// inadvertent inconsistency in WGo?
 				font: 'Righteous',
 				theme: {
+					//coordinatesBackgroundColor: 'hsla(0, 50%, 50%, 0.3)',
+					coordinatesBackgroundColor: 'hsla(30, 40%, 100%, 0.5)',
+					coordinatesBackgroundColorVariation: 'hsla(100, 40%, 100%, 0.5)',
+					coordinatesColor: 'hsla(30, 40%, 25%, 0.5)',
 					font: 'Righteous',
 					gridLinesColor: 'hsl(50, 50%, 30%)',
 					gridLinesWidth: function(board) {
@@ -141,6 +143,7 @@ angular.module('gokibitz.directives')
 			};
 
 			// Turn a3 into { x: 2, y: 16 }
+			// TODO: This function obviously belongs some place universal.
 			normalizeCoordinates = function (move) {
 				var x, y;
 				var numRegExp = /[0-1]?[0-9]/;
