@@ -336,8 +336,8 @@
 											| &nbsp;
 											span
 									label Comment:
-									textarea.form-control(
-										ng-disabled='disableAddComment'
+									textarea#main-comment-box.form-control(
+										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
 										rows=3
 										gk-comment-box

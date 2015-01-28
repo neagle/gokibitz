@@ -11,7 +11,8 @@ angular.module('gokibitz.directives')
 		scope: {
 			submit: '&gkCommentSubmit',
 			cancel: '&gkCommentCancel',
-			preview: '=gkCommentPreview'
+			preview: '=gkCommentPreview',
+			model: '=ngModel'
 		},
 		link: function ($scope, element, attributes, ngModel) {
 			var text = element.val();
@@ -21,6 +22,34 @@ angular.module('gokibitz.directives')
 			var hasFocus = function () {
 				return $document[0].activeElement === element[0];
 			};
+
+			// Get a preview of rendered HTML from comment markdown
+			function preview() {
+				if (element.val() !== text) {
+
+					// Cancel any previous markdown calls
+					if (canceler) {
+						canceler.resolve();
+					}
+
+					text = element.val();
+
+					// Create a deferred with which to timeout the call,
+					// if need be (for instance, if the comment is submitted
+					// before the preview comes back)
+					canceler = $q.defer();
+
+					// Get an HTML preview of the markdown
+					$http.post('/api/markdown/', {
+						markdown: element.val()
+					}, {
+						timeout: canceler.promise
+					})
+						.success(function (data) {
+							$scope.preview = data.markup;
+						});
+				}
+			}
 
 			// Prevent changes in the model that happen elsewhere (ie, a regularly
 			// polling update) from updating more than the initial value of the
@@ -34,6 +63,11 @@ angular.module('gokibitz.directives')
 					}
 				};
 			}
+
+			// Watch the value of the comment and fetch a preview when it changes
+			$scope.$watch('model', function (value) {
+				preview();
+			});
 
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
@@ -54,36 +88,9 @@ angular.module('gokibitz.directives')
 			// Escape only registers on keyup
 			element.bind('keyup', function (event) {
 				var key = event.keyCode || event.which;
-				// Enter + shiftkey should have submitted comment already
 				// Escape cancels
 				if (key === 27) {
 					$scope.cancel();
-				// Otherwise, give us a preview
-				} else {
-					if (element.val() !== text) {
-
-						// Cancel any previous markdown calls
-						if (canceler) {
-							canceler.resolve();
-						}
-
-						text = element.val();
-
-						// Create a deferred with which to timeout the call,
-						// if need be (for instance, if the comment is submitted
-						// before the preview comes back)
-						canceler = $q.defer();
-
-						// Get an HTML preview of the markdown
-						$http.post('/api/markdown/', {
-							markdown: element.val()
-						}, {
-							timeout: canceler.promise
-						})
-							.success(function (data) {
-								$scope.preview = data.markup;
-							});
-					}
 				}
 			});
 		}

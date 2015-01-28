@@ -25,6 +25,7 @@ var UserSchema = new Schema({
 	location: String,
 	bio: String,
 	rank: String,
+	site: String,
 	twitter: String,
 	teacher: {
 		name: String,

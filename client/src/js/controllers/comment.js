@@ -244,24 +244,23 @@ angular.module('gokibitz.controllers')
 				}
 			});
 
+			// Wait for the player object to become available, since it's not
+			// initialized till domready
 			$scope.$watch('scope.player', function () {
-				console.log('hey, player is here');
-				console.log($scope.player.board.size);
 				$scope.player.addEventListener('update', function (event) {
-					console.log('update', event);
-					console.log('change', event.change);
 					if ($scope.variationMode && $scope.player.gkRecordingVariation) {
+						if (typeof $scope.originalComment === 'undefined') {
+							if (typeof $scope.formData.content !== 'undefined') {
+								// If there's content in the comment box, preserve it
+								$scope.originalComment = $scope.formData.content;
+							} else {
+								$scope.originalComment = '';
+							}
+						}
+
 						translateMovesToCoordinates(event);
 						$scope.formData = $scope.formData || {};
 						$scope.formData.content = $scope.formData.content || '';
-						console.log('add that content yo', $scope.player.gkVariationArr);
-						console.log('content', $scope.formData.content);
-
-						console.log('typeof $scope.originalComment', typeof $scope.originalComment);
-						if (typeof $scope.originalComment === 'undefined') {
-							$scope.originalComment = $scope.formData.content || '';
-							console.log('...', $scope.originalComment);
-						}
 
 						if ($scope.player.gkVariationArr) {
 							$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
@@ -271,7 +270,6 @@ angular.module('gokibitz.controllers')
 			});
 
 			function translateMovesToCoordinates(event) {
-				console.log('hey hey translate', event);
 				var move;
 				if (event.change.add && event.change.add.length) {
 					move = event.change.add[0];
@@ -290,7 +288,6 @@ angular.module('gokibitz.controllers')
 
 			// TODO: This function obviously belongs some place universal.
 			function humanCoordinates(move) {
-				console.log('move', move);
 				// Note the missing i
 				var letters = 'abcdefghjklmnopqrst';
 
@@ -303,10 +300,10 @@ angular.module('gokibitz.controllers')
 				$event.preventDefault();
 
 				if (add) {
-					console.log('add');
-					$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
+					if ($scope.player.gkVariationArr.length) {
+						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
+					}
 				} else {
-					console.log('cancel');
 					$scope.formData.content = $scope.originalComment;
 				}
 

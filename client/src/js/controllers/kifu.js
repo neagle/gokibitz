@@ -86,13 +86,11 @@ angular.module('gokibitz.controllers')
 
 				var theme = $scope.player.board.theme;
 
+				$scope.player.gkRecordingVariation = false;
 				$scope._editable.set(newMode, true);
 				$scope.variationMode = newMode;
 
 				var lastMove = $scope.player.kifuReader.node.move;
-				if (lastMove) {
-					console.log('lastMove', lastMove.c, 'startingColor', startingColor);
-				}
 
 				if ($scope.variationMode) {
 					$scope.player.gkRecordingVariation = true;
