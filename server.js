@@ -12,7 +12,11 @@ var mongoose = require('mongoose');
 var mongoStore = require('connect-mongo')(session);
 var configDB = require('./server/config/database.js');
 
+var http = require('http');
+var httpProxy = require('http-proxy');
+
 var app = express();
+
 mongoose.connect(configDB.url);
 
 // Compress all requests
@@ -66,7 +70,7 @@ app.use('/api/markdown/', markdown);
 app.use('/api/notification/', notification);
 app.use('*', routes);
 
-/// catch 404 and forward to error handler
+// catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
@@ -97,5 +101,17 @@ app.use(function(err, req, res, next) {
 	});
 });
 
+if (app.get('env') === 'development') {
+	console.log('Creating proxy server on port 3433 to simulate slow responses.');
+	var proxy = httpProxy.createProxyServer();
+
+	http.createServer(function (req, res) {
+		setTimeout(function () {
+			proxy.web(req, res, {
+				target: 'http://localhost:3434'
+			});
+		}, 1000);
+	}).listen(3433);
+}
 
 module.exports = app;
