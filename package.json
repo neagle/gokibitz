@@ -23,9 +23,9 @@
     "multiparty": "^3.2.6",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
+    "serve-favicon": "^2.2.0",
     "shortid": "^2.0.0",
-    "smartgame": "^0.1.2",
-    "static-favicon": "~1.0.0"
+    "smartgame": "^0.1.2"
   },
   "devDependencies": {
     "angular": "^1.3.8",
@@ -37,9 +37,8 @@
     "angular-scroll": "^0.6.4",
     "angular-touch": "^1.3.8",
     "angular-ui-router": "^0.2.11",
-    "angular-websocket": "^1.0.6",
     "browserify": "^8.0.3",
-    "browserify-ngannotate": "^0.5.0",
+    "browserify-ngannotate": "^0.6.0",
     "browserify-shim": "^3.8.2",
     "bulk-require": "^0.2.0",
     "bulkify": "^1.0.1",
@@ -60,6 +59,7 @@
     "gulp-size": "^1.1.0",
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^2.2.14",
+    "http-proxy": "^1.8.1",
     "jshint-stylish": "^0.2.0",
     "lodash": "^2.4.1",
     "ng-storage": "^0.3.1",
@@ -70,7 +70,7 @@
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
     "watchify": "^2.2.1",
-    "wgo": "neagle/wgo.js#themes"
+    "wgo": "neagle/wgo.js"
   },
   "browserify": {
     "transform": [
@@ -82,20 +82,21 @@
   "browser": {
     "angular": "./node_modules/angular/angular.js",
     "angular-cookies": "./node_modules/angular-cookies/angular-cookies.min.js",
-		"angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
+    "angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
     "angular-sanitize": "./node_modules/angular-sanitize/angular-sanitize.min.js",
     "angular-animate": "./node_modules/angular-animate/angular-animate.min.js",
     "angular-resource": "./node_modules/angular-resource/angular-resource.min.js",
     "angular-route": "./node_modules/angular-route/angular-route.min.js",
     "angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
     "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
-    "angular-websocket": "./node_modules/angular-websocket/angular-websocket.min.js",
     "ngStorage": "./node_modules/ng-storage/ngStorage.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
     "ui-bootstrap": "./client/src/js/lib/temporary_angular_boostrap/ui-bootstrap-0.13.0-SNAPSHOT.js",
     "ui-bootstrap-tpls": "./client/src/js/lib/temporary_angular_boostrap/ui-bootstrap-tpls-0.13.0-SNAPSHOT.js",
     "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
-    "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js"
+    "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
+    "WGo": "./client/src/js/lib/wgo/wgo.js",
+    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
   },
   "browserify-shim": {
     "angular": "angular",
@@ -104,11 +105,11 @@
         "angular"
       ]
     },
-		"angular-file-upload": {
-			"depends": [
-				"angular"
-			]
-		},
+    "angular-file-upload": {
+      "depends": [
+        "angular"
+      ]
+    },
     "angular-sanitize": {
       "depends": [
         "angular"
@@ -164,14 +165,14 @@
         "angular"
       ]
     },
-    "angular-websocket": {
+    "angular-scroll": {
       "depends": [
         "angular"
       ]
     },
-    "angular-scroll": {
+    "gokibitz-wgo": {
       "depends": [
-        "angular"
+        "WGo"
       ]
     }
   }
