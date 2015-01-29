@@ -114,6 +114,11 @@
 											a(href='https://online-go.com') OGS
 										td
 											| {{ user.externalGoUsernames.ogs }}
+									tr(ng-show='user.externalGoUsernames.igs || edit')
+										th
+											a(href='http://pandanet-igs.com/') IGS
+										td
+											| {{ user.externalGoUsernames.igs }}
 									tr(ng-show='user.externalGoUsernames.dgs || edit')
 										th
 											a(href='http://www.dragongoserver.net/') Dragon Go Server
@@ -281,8 +286,17 @@
 												a(tabindex='-1' href='https://online-go.com') OGS
 											td
 												input.short.form-control.input-sm(
-													id='kgsEdit'
+													id='ogsEdit'
 													ng-model='profile.externalGoUsernames.ogs'
+													placeholder='username'
+												)
+										tr
+											th
+												a(tabindex='-1' href='http://pandanet-igs.com/') IGS
+											td
+												input.short.form-control.input-sm(
+													id='igsEdit'
+													ng-model='profile.externalGoUsernames.igs'
 													placeholder='username'
 												)
 										tr
@@ -290,7 +304,7 @@
 												a(tabindex='-1' href='http://www.dragongoserver.net/') Dragon Go Server
 											td
 												input.short.form-control.input-sm(
-													id='kgsEdit'
+													id='dgsEdit'
 													ng-model='profile.externalGoUsernames.dgs'
 													placeholder='username'
 												)
@@ -299,7 +313,7 @@
 												a(tabindex='-1' href='http://www.tygemgo.com/') Tygem
 											td
 												input.short.form-control.input-sm(
-													id='kgsEdit'
+													id='tygemEdit'
 													ng-model='profile.externalGoUsernames.tygem'
 													placeholder='username'
 												)
@@ -308,7 +322,7 @@
 												a(tabindex='-1' href='http://www.wbaduk.com/') WBaduk
 											td
 												input.short.form-control.input-sm(
-													id='kgsEdit'
+													id='wbadukEdit'
 													ng-model='profile.externalGoUsernames.wbaduk'
 													placeholder='username'
 												)

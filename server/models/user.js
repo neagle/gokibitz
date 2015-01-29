@@ -40,6 +40,7 @@ var UserSchema = new Schema({
 		kgs: String,
 		ogs: String,
 		dgs: String,
+		igs: String,
 		tygem: String,
 		wbaduk: String
 	}
