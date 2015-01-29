@@ -1,0 +1,107 @@
+.sequencer {
+	$stone-size: 12px;
+	$stone-half: $stone-size / 2;
+	.btn:focus {
+		outline: none;
+	}
+
+	.white, .black {
+		position: relative;
+		padding: {
+			left: 15px;
+			right: 15px;
+		}
+
+		span {
+			border: {
+				radius: 50%;
+			}
+			display: inline-block;
+			height: $stone-size;
+			left: calc(50% - #{$stone-half});
+			position: absolute;
+			width: $stone-size;
+		}
+	}
+
+	.white {
+		span {
+			background: {
+				color: hsl(0, 0%, 95%);
+			}
+			/*height: 14px;*/
+			/*margin: {*/
+				/*bottom: 1px;*/
+				/*left: 1px;*/
+			/*}*/
+			/*width: 14px;*/
+		}
+	}
+
+	.black {
+		span {
+			background: {
+				color: hsl(0, 0%, 20%);
+			}
+		}
+	}
+
+	.add, .cancel {
+		text-transform: uppercase;
+
+		$speed: 0.2s;
+		$ease: ease;
+		$max-width: 60px;
+
+		&.ng-hide-add, &.ng-hide-remove	{
+			transition: 0s linear all;
+		}
+
+		// Transition hiding items
+		&.ng-hide-add-active {
+			/*position: absolute;*/
+			transition: $speed $ease all;
+		}
+		// Transition revealed items
+		&.ng-hide-remove-active {
+			transition: $speed $ease all;
+		}
+
+		&.ng-hide {
+		}
+
+		// Hiding items go from this:
+		&.ng-hide-add {
+			max-width: $max-width;
+			padding: {
+				left: 13px;
+				right: 13px;
+			}
+		}
+		// ...to this.
+		&.ng-hide-add.ng-hide-add-active {
+			max-width: 0;
+			padding: {
+				left: 0;
+				right: 0;
+			}
+		}
+
+		// Revealed items go from this:
+		&.ng-hide-remove {
+			max-width: 0;
+			padding: {
+				left: 0;
+				right: 0;
+			}
+		}
+		// ...to this.
+		&.ng-hide-remove.ng-hide-remove-active {
+			max-width: $max-width;
+			padding: {
+				left: 13px;
+				right: 13px;
+			}
+		}
+	}
+}

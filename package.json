@@ -69,8 +69,7 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
-    "watchify": "^2.2.1",
-    "wgo": "neagle/wgo.js"
+    "watchify": "^2.2.1"
   },
   "browserify": {
     "transform": [

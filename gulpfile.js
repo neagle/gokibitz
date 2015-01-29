@@ -14,15 +14,6 @@ var newer = require('gulp-newer');
 var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
-var rimraf = require('rimraf');
-
-// A build config not added to the git repo for
-// developer-specific configuration
-var buildConfigFile = './_build.config.js';
-var buildConfig;
-fs.existsSync(buildConfigFile, function () {
-	buildConfig = require(buildConfigFile);
-});
 
 gulp.task('bootstrap-assets', function () {
 	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
@@ -47,40 +38,6 @@ gulp.task('images', function () {
 		.pipe(newer(imageDest))
 		.pipe(imagemin())
 		.pipe(gulp.dest(imageDest));
-});
-
-// Turn the version of WGo.js installed in node_modules
-// into a symlink pointing elsewhere, for development.
-// Obliterated every time `npm install` is run.
-//
-// This is so that we can make changes to WGo.js in a
-// separate git repo.
-//
-// Its location is set in ./_build.config.js, which isn't
-// part of the repo, since it's developer-specific.
-//
-// Yours should look something like this:
-// module.exports = {
-//     wgoPath: '/Users/nateeagle5/Projects/personal/wgo.js/'
-// };
-gulp.task('link-wgo', function (callback) {
-	if (!buildConfig) {
-		console.log('Error: Missing ' + buildConfigFile);
-		callback();
-	} else if (!buildConfig.wgoPath) {
-		console.log('Error: Missing wgoPath in buildConfig');
-		callback();
-	} else {
-		// rm -rf
-		rimraf('./node_modules/wgo.js', function () {
-			fs.symlinkSync(
-				buildConfig.wgoPath, // source path
-				'./node_modules/wgo.js', // destination path
-				'dir'
-			);
-			callback();
-		});
-	}
 });
 
 // Hack the ability to import directories in Sass
@@ -134,7 +91,6 @@ gulp.task('sass', ['sass-includes'], function () {
 require('./gulp/tasks/browserify');
 require('./gulp/tasks/watchify');
 require('./gulp/tasks/uglify');
-require('./gulp/tasks/symlink');
 
 // Lint our server-side JS
 gulp.task('lint-server-js', function () {
@@ -144,7 +100,6 @@ gulp.task('lint-server-js', function () {
 });
 
 gulp.task('default', [
-	'symlink',
 	'lint-server-js',
 	'sass',
 	'uglify',
