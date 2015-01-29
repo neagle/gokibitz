@@ -33,6 +33,7 @@ var gokibitz = angular.module('gokibitz', [
 	'ngAnimate',
 	'ngTouch',
 	'http-auth-interceptor',
+	'angularFileUpload',
 	'ui.utils',
 	'ngStorage',
 	'720kb.socialshare',
@@ -43,6 +44,7 @@ var gokibitz = angular.module('gokibitz', [
 require('angular-ui-router');
 require('angular-animate');
 require('angular-route');
+require('angular-file-upload');
 require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
