@@ -32,7 +32,6 @@ var gokibitz = angular.module('gokibitz', [
 	'ngRoute',
 	'ngAnimate',
 	'ngTouch',
-	'ngWebSocket',
 	'http-auth-interceptor',
 	'ui.utils',
 	'ngStorage',
@@ -48,7 +47,6 @@ require('angular-cookies');
 require('angular-resource');
 require('angular-sanitize');
 require('angular-touch');
-require('angular-websocket');
 require('http-auth-interceptor');
 require('ui-bootstrap-tpls');
 require('ui-bootstrap');

@@ -34,7 +34,7 @@ require('./server/config/passport');
 app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'jade');
 
-app.use(favicon());
+app.use(favicon(__dirname + '/client/public/images/favicons/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
