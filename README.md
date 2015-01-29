@@ -1,7 +1,7 @@
 GoKibitz: Move-by-move conversations about go games
 ===================================================
 
-GoKibitz is a web app that lets users upload and review kifu (go game records in [sgf](http://www.red-bean.com/sgf/) format) and leave comments on individual moves.
+[GoKibitz](http://gokibitz.com) is a web app that lets users upload and review kifu (go game records in [sgf](http://www.red-bean.com/sgf/) format) and leave comments on individual moves.
 
 I developed this app because I found it frustrating to try to comment on games other players would post for review: instructions like "on move 140, black should consider e14..." are frustrating to write and to read.
 
