@@ -65,8 +65,11 @@ angular.module('gokibitz.directives')
 			}
 
 			// Watch the value of the comment and fetch a preview when it changes
-			$scope.$watch('model', function (value) {
-				preview();
+			$scope.$watch('model', function (newValue, oldValue) {
+				// @see http://stackoverflow.com/a/18915585/399077
+				if (newValue !== oldValue) {
+					preview();
+				}
 			});
 
 			// Check for enter on keypress, so we can prevent its default action
@@ -79,6 +82,7 @@ angular.module('gokibitz.directives')
 					if (canceler) {
 						canceler.resolve();
 					}
+
 
 					$scope.submit();
 					$scope.preview = '';
