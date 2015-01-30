@@ -1,12 +1,14 @@
 angular.module('gokibitz.controllers')
-	.controller('ListKifuController', function ($rootScope, $scope, $http, $location, $localStorage) {
+	.controller('ListKifuController', function ($rootScope, $scope, $http, $location, settings) {
+		$scope.$settings = settings;
+
 		$rootScope.pageTitle = 'Kifu – GoKibitz';
 		$scope.index = 0;
 		$scope.kifu = [];
 
-		$scope.$storage = $localStorage;
-		if (!$scope.$storage.kifuToggle) {
-			$scope.$storage.kifuToggle = ($scope.currentUser) ? 'owned' : 'public';
+		if (!$scope.$settings.listKifuToggle) {
+			$scope.$settings.listKifuToggle = ($scope.currentUser) ? 'owned' : 'public';
+			$scope.$settings.$update();
 		}
 
 		$scope.listKifu = function (replace) {
@@ -14,10 +16,9 @@ angular.module('gokibitz.controllers')
 				replace = false;
 			}
 
-			//console.log('listing kifu, starting with', $scope.index)
 			var url;
 
-			if ($scope.$storage.kifuToggle === 'owned' && $scope.currentUser) {
+			if ($scope.$settings.listKifuToggle === 'owned' && $scope.currentUser) {
 				url = '/api/user/' + $scope.currentUser.username + '/kifu';
 			} else {
 				url = '/api/kifu';
@@ -27,18 +28,14 @@ angular.module('gokibitz.controllers')
 				offset: $scope.index
 			};
 
-			//console.log('scope.search?', $scope.search);
 			if ($scope.search) {
 				params.search = $scope.search;
-				//replace = true;
-				//console.log('and searching for', $scope.search);
 			}
 
 			$http.get(url, {
 				params: params
 			})
 				.success(function (data) {
-					//console.log('data', data);
 					$scope.noKifu = false;
 
 					if (!replace) {
@@ -65,9 +62,7 @@ angular.module('gokibitz.controllers')
 
 		var searchTimeout;
 		$scope.searchKifu = function () {
-			//console.log('resetting scope index from', $scope.index);
 			$scope.index = 0;
-			//console.log('...to', $scope.index);
 
 			if ($scope.searched !== $scope.search) {
 				$scope.searched = $scope.search;
@@ -83,7 +78,6 @@ angular.module('gokibitz.controllers')
 		$scope.deleteKifu = function (kifu) {
 			$http.delete('/api/kifu/' + kifu._id)
 				.success(function (data) {
-					//console.log('success', data);
 					for (var i = $scope.kifu.length - 1; i >= 0; i -= 1) {
 						var item = $scope.kifu[i];
 						if (item._id === kifu._id) {
@@ -101,7 +95,11 @@ angular.module('gokibitz.controllers')
 			$location.path('/kifu/' + shortid);
 		};
 
-		$scope.$watch('$storage.kifuToggle', function () {
+		$scope.$watch('$settings.listKifuToggle', function (newValue, oldValue) {
 			$scope.listKifu(true);
+
+			if (newValue !== oldValue) {
+				$scope.$settings.$update();
+			}
 		});
 	});
