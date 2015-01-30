@@ -105,7 +105,16 @@ gokibitz.config(
 			})
 			.when('/kifu', {
 				templateUrl: '/partials/list-kifu',
-				controller: 'ListKifuController'
+				controller: 'ListKifuController',
+				resolve: {
+					settings: function (Settings) {
+						var SettingsData = Settings.get({
+							keys: ['listKifuToggle']
+						});
+
+						return SettingsData.$promise;
+					}
+				}
 			})
 			.when('/kifu/:shortid', {
 				templateUrl: '/partials/kifu',
