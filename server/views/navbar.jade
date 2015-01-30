@@ -62,7 +62,7 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 								//unread='false'
 								//username='currentUser.username'
 								most-recent='nav.mostRecentNotification'
-								last-seen='nav.$storage.lastSeenNotification'
+								last-seen='nav.$settings.lastSeenNotification'
 								limit='50'
 							)
 						//
@@ -72,7 +72,9 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 									ng-href='/notifications'
 								) See all
 
-			ul.nav.navbar-nav.navbar-right(ng-hide='currentUser')
+			ul.nav.navbar-nav.navbar-right(
+				ng-if='!currentUser'
+			)
 				li
 					//-a(href='/login') Log In
 					a(ng-click='loginModal()') Log In
@@ -82,7 +84,7 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 
 			ul.nav.navbar-nav.navbar-right.ng-cloak(
 				dropdown
-				ng-show='currentUser'
+				ng-if='currentUser'
 			)
 				li.dropdown
 					a.dropdown-toggle(dropdown-toggle) Welcome, {{ currentUser.username }}

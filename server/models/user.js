@@ -43,7 +43,8 @@ var UserSchema = new Schema({
 		igs: String,
 		tygem: String,
 		wbaduk: String
-	}
+	},
+	settings: Schema.Types.Mixed
 }, {
 	toJSON: {
 		virtuals: true
