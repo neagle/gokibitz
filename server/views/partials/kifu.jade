@@ -1,29 +1,13 @@
 .container-fluid
 	.row
-		.kifu-banner.col-lg-12
-			.white
-				.name {{ info.white.name || 'Anonymous' }}
-				= ' '
-				.rank {{ info.white.rank }}
-				.captures(
-					tooltip-placement='right'
-					tooltip='White’s captured prisoners'
-				) {{ captures.white }}
 
-			.black
-				.name {{ info.black.name || 'Anonymous' }}
-				= ' '
-				.rank {{ info.black.rank }}
-				.captures(
-					tooltip-placement='left'
-					tooltip='Black’s captured prisoners'
-				) {{ captures.black }}
-
-		.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3(
+		//-.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3(
+		.player-container.col-xs-12.col-sm-5.top-buffer(
 			ng-swipe-left='swipeLeft($event)'
 			ng-swipe-right='swipeRight($event)'
 		)
 			sgf(
+				always-visible
 				src='kifu.game.sgf'
 				start='kifu.path'
 				update='playerUpdate(event)'
@@ -36,329 +20,375 @@
 			//-button.btn.btn-default(ng-click='toggleEditMode()') Edit
 			//-button.btn.btn-default(ng-click='getSgf()') SGF
 
-		.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
-			div.panel.panel-default(
-				ng-hide='kifu.path.m !== 0'
-			)
-				.panel-heading
-					span.fui-info
-					= ' '
-					| Game Info
-				.panel-body
-					table.table-condensed
-						tbody
-							tr(ng-if='kifu.game.info.date')
-								th Date:
-								td {{ kifu.game.info.date }}
-							tr(ng-if='kifu.game.info.result')
-								th Result:
-								td {{ kifu.game.info.result }}
+		//-.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
+		.sgf-comments.col-xs-12.col-sm-7
 
-			div.panel.panel-default
-				div.panel-heading
-					span.fui-document
-					= ' '
-					| Game Comments
-				div.panel-body
-					div(ng-bind-html='sgfComment')
-					div(ng-if='!sgfComment') &hellip;
-
-			.btn-group.bottom-buffer.pull-right
-				.btn-group(
-					dropdown
-				)
-					button.btn.btn-default.dropdown-toggle(
-						type='button'
-						dropdown-toggle
-					) SGF
-						span.fa.icon-share
+			.row
+				.kifu-banner.col-xs-12
+					.white
+						.name {{ info.white.name || 'Anonymous' }}
 						= ' '
-						span.caret
+						.rank {{ info.white.rank }}
+						.captures(
+							tooltip-placement='right'
+							tooltip='White’s captured prisoners'
+						) {{ captures.white }}
 
-					ul.dropdown-menu.pull-right(
-						role='menu'
+					.black
+						.name {{ info.black.name || 'Anonymous' }}
+						= ' '
+						.rank {{ info.black.rank }}
+						.captures(
+							tooltip-placement='left'
+							tooltip='Black’s captured prisoners'
+						) {{ captures.black }}
+
+
+			.row
+				.col-md-5.col-md-push-7
+
+					//-div.panel.panel-default(ng-hide='kifu.path.m !== 0')
+					div.panel.panel-default()
+						.panel-heading
+							span.fui-info
+							= ' '
+							| Game Info
+						.panel-body
+							table.table-condensed
+								tbody
+									tr(ng-if='kifu.game.info.source')
+										th Source:
+										td {{ kifu.game.info.source }}
+									tr(ng-if='kifu.game.info.komi')
+										th Komi:
+										td {{ kifu.game.info.komi }}
+									tr(ng-if='kifu.game.info.result')
+										th Result:
+										td {{ kifu.game.info.result }}
+									tr(ng-if='kifu.game.info.date')
+										th Date:
+										td {{ kifu.game.info.date }}
+									tr(ng-if='kifu.game.info.place')
+										th Place:
+										td {{ kifu.game.info.place }}
+									tr(ng-if='kifu.game.info.rules')
+										th Rules:
+										td {{ kifu.game.info.rules }}
+									tr(ng-if='kifu.game.info.timeLimit')
+										th Time Limit:
+										td {{ kifu.game.info.timeLimit }}
+
+					div.panel.panel-default(
+						ng-show='sgfComment'
 					)
-						li
-							a(
-								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
-								target='_self'
-							) Without comments
+						div.panel-heading
+							span.fui-document
+							= ' '
+							| Game Comments
+						div.panel-body
+							div(ng-bind-html='sgfComment')
 
-				.btn-group(
-					dropdown
-				)
-					button.btn.btn-default.dropdown-toggle(
-						type='button'
-						dropdown-toggle
-					) Share
-						span.fa.icon-share
-						= ' '
-						span.caret
-
-					ul.dropdown-menu.pull-right(
-						role='menu'
-					)
-						li
-							a(
-								href='#'
-								socialshare
-								socialshare-provider='twitter'
-								socialshare-hashtags='gokibitz'
-								socialshare-text='{{ info.white.name || "Anonymous" }} vs. {{ info.black.name || "Anonymous" }}'
-							) Twitter
-						li
-							a(
-								href='#'
-								socialshare
-								socialshare-provider='facebook'
-							) Facebook
-						li
-							a(
-								ng-click='embed(kifu.shortid)'
-							) Embed
-
-
-
-		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
-
-			//-------------------------//
-			//- All-kifu comment list -//
-			//-------------------------//
-			.comments(
-				ng-if='kifu.path.m === 0'
-			)
-				.panel.panel-default
-					.panel-heading
-						span.fui-chat
-						= ' '
-						| Kibitz: {{ numComments }}
-						= ' '
-						ng-pluralize(
-							count='numComments'
-							when='{ "one": "Comment", "other": "Comments" }'
+					.btn-group.bottom-buffer.pull-right
+						.btn-group(
+							dropdown
 						)
+							button.btn.btn-default.dropdown-toggle(
+								type='button'
+								dropdown-toggle
+							) SGF
+								span.fa.icon-share
+								= ' '
+								span.caret
 
-					.panel-body
-						p(ng-if='!comments.length') No comments so far.
-						ul.media-list
-							li.comment.media(
-								ng-repeat='comment in comments track by comment._id'
+							ul.dropdown-menu.pull-right(
+								role='menu'
 							)
-								a.pull-left(
-									href='/user/{{:: comment.user.username }}'
-									target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
-								)
-									img.media-object(
-										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
-										style='width: 24px; height: 24px'
-									)
-								.comment.media-body
+								li
 									a(
-										href='/kifu/{{:: kifu.shortid }}?path={{:: comment.path }}'
-									)
-										| {{:: comment.user.username }}
-										= ' '
-										span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
-										= ' '
-										| commented on move {{:: comment.pathObject.m }} <br>
-									time.relative.small(
-										datetime='{{:: comment.date }}'
-									) {{:: comment.relativeDate | verboseNumbers }}
+										ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
+										target='_self'
+									) Without comments
 
-
-			//----------------------------------//
-			//- List comments on a single move -//
-			//----------------------------------//
-			.comments(
-				ng-if='kifu.path.m !== 0'
-			)
-				.panel.panel-default
-					.panel-heading
-						span.fui-chat
-						= ' '
-						| Kibitz
-					.panel-body(
-						ng-if='numComments'
-					)
-						//-div(ng-if='!comments.length') &hellip;
-						//div(ng-show='loading') Throbber
-
-						ul.media-list(
-							ng-show='numComments'
+						.btn-group(
+							dropdown
 						)
-							li.comment.media.col-md-12(
-								ng-class='{ animate: !loading, loading: loading, highlight: highlightedComment === comment._id }'
-								ng-repeat='comment in comments track by comment._id'
-								id='comment-{{ comment._id }}'
+							button.btn.btn-default.dropdown-toggle(
+								type='button'
+								dropdown-toggle
+							) Share
+								span.fa.icon-share
+								= ' '
+								span.caret
+
+							ul.dropdown-menu.pull-right(
+								role='menu'
 							)
-								a.pull-left(
-									ng-href='/user/{{:: comment.user.username }}'
-									target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
-								)
-									img.media-object(
-										ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
-										style='width: 24px; height: 24px'
-									)
-								.star.pull-left(
-								)
-									// Other users' comments
+								li
 									a(
-										ng-if='comment.user.username !== currentUser.username'
-										ng-click='toggleStar(comment)'
-										ng-class='{ true: "starred", false: "unstarred" }[comment.starredByMe]'
+										href='#'
+										socialshare
+										socialshare-provider='twitter'
+										socialshare-hashtags='gokibitz'
+										socialshare-text='{{ info.white.name || "Anonymous" }} vs. {{ info.black.name || "Anonymous" }}'
+									) Twitter
+								li
+									a(
+										href='#'
+										socialshare
+										socialshare-provider='facebook'
+									) Facebook
+								li
+									a(
+										ng-click='embed(kifu.shortid)'
+									) Embed
+
+				.col-md-7.col-md-pull-5(ng-controller='CommentController')
+
+					//-.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
+					//-.col-xs-12.col-sm-6(ng-controller='CommentController')
+
+					//-------------------------//
+					//- All-kifu comment list -//
+					//-------------------------//
+					.comments(
+						ng-if='kifu.path.m === 0'
+					)
+						.panel.panel-default
+							.panel-heading
+								span.fui-chat
+								= ' '
+								| Kibitz: {{ numComments }}
+								= ' '
+								ng-pluralize(
+									count='numComments'
+									when='{ "one": "Comment", "other": "Comments" }'
+								)
+
+							.panel-body
+								p(ng-if='!comments.length') No comments so far.
+								ul.media-list
+									li.comment.media(
+										ng-repeat='comment in comments track by comment._id'
 									)
-										.wrapper.pull-right
-											span.fui-star-2
-											= ' '
+										a.pull-left(
+											href='/user/{{:: comment.user.username }}'
+											target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+										)
+											img.media-object(
+												ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
+												style='width: 24px; height: 24px'
+											)
+										.comment.media-body
+											a(
+												href='/kifu/{{:: kifu.shortid }}?path={{:: comment.path }}'
+											)
+												| {{:: comment.user.username }}
+												= ' '
+												span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
+												= ' '
+												| commented on move {{:: comment.pathObject.m }} <br>
+											time.relative.small(
+												datetime='{{:: comment.date }}'
+											) {{:: comment.relativeDate | verboseNumbers }}
+
+
+					//----------------------------------//
+					//- List comments on a single move -//
+					//----------------------------------//
+					.comments(
+						ng-if='kifu.path.m !== 0'
+					)
+						.panel.panel-default
+							.panel-heading
+								span.fui-chat
+								= ' '
+								| Kibitz
+							.panel-body(
+								ng-if='numComments'
+							)
+								//-div(ng-if='!comments.length') &hellip;
+								//div(ng-show='loading') Throbber
+
+								ul.media-list(
+									ng-show='numComments'
+								)
+									li.comment.media.col-md-12(
+										ng-class='{ animate: !loading, loading: loading, highlight: highlightedComment === comment._id }'
+										ng-repeat='comment in comments track by comment._id'
+										id='comment-{{ comment._id }}'
+									)
+										a.pull-left(
+											ng-href='/user/{{:: comment.user.username }}'
+											target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+										)
+											img.media-object(
+												ng-src='{{:: comment.user.gravatar }}?s=24&d=retro'
+												style='width: 24px; height: 24px'
+											)
+										.star.pull-left(
+										)
+											// Other users' comments
+											a(
+												ng-if='comment.user.username !== currentUser.username'
+												ng-click='toggleStar(comment)'
+												ng-class='{ true: "starred", false: "unstarred" }[comment.starredByMe]'
+											)
+												.wrapper.pull-right
+													span.fui-star-2
+													= ' '
+													span(
+														ng-show='comment.stars.length > 0'
+													) {{ comment.stars.length }}
+
+											// Your own comments
 											span(
+												ng-if='comment.user.username === currentUser.username'
 												ng-show='comment.stars.length > 0'
-											) {{ comment.stars.length }}
+											)
+												.wrapper.pull-right
+													span.fui-star-2
+													= ' '
+													span {{ comment.stars.length }}
 
-									// Your own comments
-									span(
-										ng-if='comment.user.username === currentUser.username'
-										ng-show='comment.stars.length > 0'
-									)
-										.wrapper.pull-right
-											span.fui-star-2
+										.comment.media-body(ng-hide='edit')
+
+											.btn-group.btn-group-xs.pull-right(
+												ng-hide='comment.user.username !== currentUser.username'
+											)
+												button.btn.btn-primary(ng-click='edit=!edit')
+													i.fui-new
+
+												button.btn.btn-danger(
+													gk-really-message='Are you sure you want to delete your comment?'
+													gk-really-click='deleteComment(comment)'
+													gk-really-class='btn-danger'
+													gk-really-verb='Delete'
+												)
+													i.fui-trash
+
+											strong {{:: comment.user.username }}
 											= ' '
-											span {{ comment.stars.length }}
+											span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
+											= ' '
+											time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
 
-								.comment.media-body(ng-hide='edit')
+											span.comment-text(
+												dynamic='comment.content.html'
+											)
 
-									.btn-group.btn-group-xs.pull-right(
-										ng-hide='comment.user.username !== currentUser.username'
-									)
-										button.btn.btn-primary(ng-click='edit=!edit')
-											i.fui-new
+										.comment.media-body(ng-hide='!edit')
+											textarea.form-control(
+												rows='3'
+												ng-disabled='disableUpdateComment'
+												ng-model='comment.content.markdown'
+												gk-comment-box='updateComment(comment), cancelEdit(comment)'
+												gk-comment-submit='updateComment(comment)'
+												gk-comment-cancel='cancelEdit(comment)'
+												gk-comment-preview='preview'
+												gk-comment-oneway
+												gk-focus-me='edit'
+											)
 
-										button.btn.btn-danger(
-											gk-really-message='Are you sure you want to delete your comment?'
-											gk-really-click='deleteComment(comment)'
-											gk-really-class='btn-danger'
-											gk-really-verb='Delete'
-										)
-											i.fui-trash
+											h5(ng-hide='!preview') Preview
+											.preview(dynamic='preview')
 
-									strong {{:: comment.user.username }}
-									= ' '
-									span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
-									= ' '
-									time.relative.small(datetime='{{ comment.date }}') {{ comment.relativeDate }}
+											span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
+												| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
 
-									span.comment-text(
-										dynamic='comment.content.html'
-									)
+											span.help-block= 'You can use '
+												a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
+												= ' for formatting.'
 
-								.comment.media-body(ng-hide='!edit')
-									textarea.form-control(
-										rows='3'
-										ng-disabled='disableUpdateComment'
-										ng-model='comment.content.markdown'
-										gk-comment-box='updateComment(comment), cancelEdit(comment)'
-										gk-comment-submit='updateComment(comment)'
-										gk-comment-cancel='cancelEdit(comment)'
-										gk-comment-preview='preview'
-										gk-comment-oneway
-										gk-focus-me='edit'
-									)
+											button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
+												i.fui-check
+											= ' '
+											button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
+												i.fui-cross
 
-									h5(ng-hide='!preview') Preview
-									.preview(dynamic='preview')
+							//-.panel-footer.comment-compose(
+								//-ng-if='kifu.path.m !== 0 && !currentUser.username'
+							//-)
+								//-.row
+									//-.col-md-12
+										//-a(ng-click='loginModal()') Log in
+										//-= ' or '
+										//-a(ng-click='signupModal()') sign up
+										//-= ' to leave comments.'
 
-									span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-										| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
+							.panel-footer.comment-compose(
+								ng-if='kifu.path.m !== 0 && !currentUser.username'
+							)
+								.row
+									.col-md-12
+										p You need an account to make comments.
+										p
+											button.btn.btn-primary(
+												ng-click='LoginSignup.loginModal()'
+											) Log in
+											= ' '
+											button.btn.btn-primary(
+												ng-click='LoginSignup.signupModal()'
+											) Sign up
 
-									span.help-block= 'You can use '
-										a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-										= ' for formatting.'
+							.panel-footer.comment-compose(
+								ng-if='kifu.path.m !== 0 && currentUser.username'
+							)
+								.row
+									.col-md-12
+										form(ng-submit='addComment()')
+											.sequencer.pull-right.btn-group(
+												role='group'
+											)
+												button.btn-sm.white.btn.btn-default(
+													type='button'
+													ng-click='toggleVariationMode(-1)'
+													ng-class='{ active: variationMode }'
+												)
+													| &nbsp;
+													span
+												button.btn-sm.btn.btn-default.add(
+													ng-show='variationMode'
+													ng-click='endVariationMode($event, true)'
+												) Add
+												button.btn-sm.btn.btn-default.cancel(
+													ng-show='variationMode'
+													ng-click='endVariationMode($event, false)'
+												) Cancel
+												button.btn-sm.black.btn.btn-default(
+													type='button'
+													ng-click='toggleVariationMode(1)'
+													ng-class='{ active: variationMode }'
+												)
+													| &nbsp;
+													span
+											label Comment:
+											textarea#main-comment-box.form-control(
+												ng-disabled='disableAddComment || variationMode'
+												ng-model='formData.content'
+												rows=3
+												gk-comment-box
+												gk-comment-submit='addComment()'
+												gk-comment-preview='preview'
+											)
+								.row
+									.col-md-12
+										h5(ng-hide='!preview') Preview
+										.preview(dynamic='preview')
+								.row
+									.col-md-12
+										.row
+											.col-sm-6
+												span.help-block= 'You can use '
+													a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
+													= ' for formatting.'
 
-									button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
-										i.fui-check
-									= ' '
-									button.btn.btn-xs.btn-danger(ng-click='cancelEdit(comment)')
-										i.fui-cross
+											.col-sm-6.only-no-touch
+												span.help-block <kbd>&lt;enter&gt;</kbd> to submit
+													| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
 
-					//-.panel-footer.comment-compose(
-						//-ng-if='kifu.path.m !== 0 && !currentUser.username'
-					//-)
-						//-.row
-							//-.col-md-12
-								//-a(ng-click='loginModal()') Log in
-								//-= ' or '
-								//-a(ng-click='signupModal()') sign up
-								//-= ' to leave comments.'
 
-					.panel-footer.comment-compose(
-						ng-if='kifu.path.m !== 0 && !currentUser.username'
-					)
-						.row
-							.col-md-12
-								p You need an account to make comments.
-								p
-									button.btn.btn-primary(
-										ng-click='LoginSignup.loginModal()'
-									) Log in
-									= ' '
-									button.btn.btn-primary(
-										ng-click='LoginSignup.signupModal()'
-									) Sign up
-
-					.panel-footer.comment-compose(
-						ng-if='kifu.path.m !== 0 && currentUser.username'
-					)
-						.row
-							.col-md-12
-								form(ng-submit='addComment()')
-									.sequencer.pull-right.btn-group(
-										role='group'
-									)
-										button.btn-sm.white.btn.btn-default(
-											type='button'
-											ng-click='toggleVariationMode(-1)'
-											ng-class='{ active: variationMode }'
-										)
-											| &nbsp;
-											span
-										button.btn-sm.btn.btn-default.add(
-											ng-show='variationMode'
-											ng-click='endVariationMode($event, true)'
-										) Add
-										button.btn-sm.btn.btn-default.cancel(
-											ng-show='variationMode'
-											ng-click='endVariationMode($event, false)'
-										) Cancel
-										button.btn-sm.black.btn.btn-default(
-											type='button'
-											ng-click='toggleVariationMode(1)'
-											ng-class='{ active: variationMode }'
-										)
-											| &nbsp;
-											span
-									label Comment:
-									textarea#main-comment-box.form-control(
-										ng-disabled='disableAddComment || variationMode'
-										ng-model='formData.content'
-										rows=3
-										gk-comment-box
-										gk-comment-submit='addComment()'
-										gk-comment-preview='preview'
-									)
-						.row
-							.col-md-12
-								h5(ng-hide='!preview') Preview
-								.preview(dynamic='preview')
-						.row
-							.col-md-12
-								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-									| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-								span.help-block= 'You can use '
-									a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-									= ' for formatting.'
-
-						.row
-							.col-md-12
-								p.pull-right
-									button.btn.btn-primary.only-touch(ng-click='addComment()') Submit
+								.row
+									.col-md-12
+										p.pull-right
+											button.btn.btn-md.btn-primary.only-touch(ng-click='addComment()') Submit
 

@@ -1,3 +1,5 @@
+var $ = require('jquery');
+
 angular.module('gokibitz.directives')
 .directive('sgf', function ($window, $document, $timeout) {
 	return {
@@ -24,15 +26,53 @@ angular.module('gokibitz.directives')
 			// WGo.js layout object
 			layout: '=?',
 
-			player: '=?'
+			player: '=?',
+
+			alwaysVisible: '@?'
 		},
 		template: '<div></div>',
 		link: function ($scope, element, attributes) {
+
 			if (!$scope.src) {
 				return;
 			}
 
+			console.log('$scope.alwaysVisible', $scope.alwaysVisible);
+
+
 			var div = element.children()[0];
+
+
+			// jQuery Objects
+			var $element = $(element);
+			var $div = $(div);
+			var $nav = $('#gk-navbar');
+			var $parent = $element.parent();
+
+			function sizeSgf() {
+				console.log('$nav.outerHeight(true)', $nav.outerHeight(true));
+				var height = $window.innerHeight -
+					$nav.outerHeight(true) -
+					($parent.outerHeight(true) - $parent.height());
+
+				console.log('height', height);
+				$div.height(height);
+
+				$parent.height(height);
+				var right = $window.innerWidth - ($parent.offset().left + $parent.outerWidth());
+				$element.css({
+					//position: 'fixed',
+					right: right,
+					top: $parent.offset().top
+				});
+			}
+
+			function positionSgf() {
+				$element.css({
+					position: 'fixed'
+				});
+			}
+
 
 			$scope.board = $scope.board || {
 				background: '',
@@ -64,6 +104,11 @@ angular.module('gokibitz.directives')
 				}
 			];
 
+			// Size this thing
+			if ($scope.alwaysVisible) {
+				sizeSgf();
+			}
+
 			$scope.player = new $window.WGo.BasicPlayer(div, {
 				board: $scope.board,
 				move: $scope.start || 0,
@@ -75,8 +120,12 @@ angular.module('gokibitz.directives')
 				}
 			});
 
+			positionSgf();
+
 			// Make kifu info available to the outside world
 			$scope.info = $scope.player.kifu.info;
+			console.log('$scope.info', $scope.info);
+
 
 			// Set coordinates on or off
 			$scope.player.setCoordinates('coordinates' in attributes);
@@ -117,10 +166,33 @@ angular.module('gokibitz.directives')
 						c: (color === 1) ? 'hsl(0, 0%, 90%)' : 'hsl(0, 0%, 30%)'
 					});
 
-					$scope.player.temporarySequence.push(stone);
+					console.log('playing a stone');
+					var knode = new WGo.KNode({
+						move: {
+							x: move.x,
+							y: move.y,
+							c: color
+						}
+					});
+					console.log('knode', knode);
+					//$scope.player.play(move.x, move.y, move.c);
+					//$scope.player.kifuReader.node.appendChild(new WGo.KNode({
+						//move: {
+							//x: move.x,
+							//y: move.y,
+							//c: color
+						//}
+					//}));
+
+					$scope.player.temporarySequence.push(knode);
+					//$scope.player.temporarySequence.push(stone);
+					//console.log('making a label');
 					$scope.player.temporarySequence.push(label);
 
 					color = color * -1;
+
+					//$scope.player.next($scope.player.kifuReader.node.children.length-1);
+
 				});
 
 				//$scope.player.temporarySequence.forEach(function (item) {
@@ -128,8 +200,10 @@ angular.module('gokibitz.directives')
 				//});
 
 				function display(sequence) {
-					$scope.player.board.addObject(sequence[0]);
+					$scope.player.kifuReader.node.appendChild(sequence[0]);
+					//$scope.player.board.addObject(sequence[0]);
 					$scope.player.board.addObject(sequence[1]);
+					$scope.player.next($scope.player.kifuReader.node.children.length-1);
 
 					if (sequence.length > 2) {
 						animateTimer = $timeout(function () {
@@ -219,6 +293,12 @@ angular.module('gokibitz.directives')
 					$scope.player.removeSequence();
 				}
 			});
+
+			$scope.labelIsActive = function () {
+				console.log('label is active arguments', arguments);
+				return false;
+			};
 		}
 	};
 });
+

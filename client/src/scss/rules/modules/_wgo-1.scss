@@ -39,10 +39,12 @@ sgf {
 		}
 		padding: 0 6px;
 	}
+}
 
-	.player-container {
-		margin: {
-			bottom: 40px;
-		}
-	}
+.player-container {
+	/*margin: {*/
+		/*bottom: 40px;*/
+	/*}*/
+	outline: 1px solid red;
+	position: relative;
 }
