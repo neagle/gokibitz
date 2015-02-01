@@ -6,6 +6,7 @@ var User = require('../models/user').User;
 var Notification = require('../models/notification').Notification;
 var Comment = require('../models/comment').Comment;
 var async = require('async');
+var io = require('../io');
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
@@ -40,6 +41,13 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 									notification.comment = comment._id;
 
 									notification.save();
+								});
+							});
+
+							comment.populate('user', function () {
+								io.emit('send:' + kifu._id, {
+									change: 'new',
+									comment: comment
 								});
 							});
 
@@ -257,6 +265,11 @@ router.patch('/:id/star', function (req, res) {
 								notification.comment = comment._id;
 
 								notification.save();
+
+								io.emit('send:' + comment.kifu, {
+									change: 'star',
+									comment: comment
+								});
 							} else {
 								res.json(500, { message: 'Could not star comment. ' + error });
 							}
@@ -306,6 +319,12 @@ router.patch('/:id/unstar', function (req, res) {
 											console.log('Could not delete notifications for this comment', error);
 										}
 									});
+
+								io.emit('send:' + comment.kifu, {
+									change: 'unstar',
+									comment: comment
+								});
+
 							} else {
 								res.json(500, { message: 'Could not unstar comment. ' + error });
 							}
@@ -361,6 +380,11 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 					comment.remove();
 					res.json(200, { message: 'Comment removed.' });
 
+					io.emit('send:' + comment.kifu, {
+						change: 'delete',
+						comment: comment
+					});
+
 					// Remove any notifications for this comment
 					Notification.find()
 						.where('comment', comment)
@@ -399,6 +423,11 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 						if (!error) {
 							res.json(200, {
 								message: 'Comment updated.',
+								comment: comment
+							});
+
+							io.emit('send:' + comment.kifu, {
+								change: 'update',
 								comment: comment
 							});
 						} else {
