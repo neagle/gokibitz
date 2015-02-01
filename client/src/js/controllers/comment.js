@@ -29,11 +29,11 @@ angular.module('gokibitz.controllers')
 				// Turn off animation
 				$scope.loading = true;
 
-				if (!alreadyRendered) {
-					// Clear existing comments
-					$scope.comments = [];
-					$scope.numComments = null;
-				}
+				//if (!alreadyRendered) {
+					////Clear existing comments
+					//$scope.comments = [];
+					//$scope.numComments = null;
+				//}
 
 				// Cancel the addCommentsTimer, in case it's still running
 				// on a particularly long set of comments
@@ -57,6 +57,13 @@ angular.module('gokibitz.controllers')
 					timeout: canceler.promise
         })
 					.success(function (data) {
+
+						if (!alreadyRendered) {
+							//Clear existing comments
+							$scope.comments = [];
+							$scope.numComments = null;
+						}
+
 						var highlightedComment = $location.search().comment;
 						var highlightedCommentPresent = false;
 
@@ -130,6 +137,7 @@ angular.module('gokibitz.controllers')
 
 					})
 					.error(function (data) {
+						$scope.comments = [];
 						console.log('Error: ' + data);
 					});
 			};
