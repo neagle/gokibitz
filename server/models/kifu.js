@@ -54,8 +54,10 @@ var kifuSchema = new Schema({
 });
 
 function getProp(prop, str) {
+
 	var re = new RegExp(prop + '\\[([^\\]]*)\\]');
 	var match = re.exec(str);
+
 	return (match) ? match[1] : '';
 }
 
@@ -83,6 +85,41 @@ kifuSchema.virtual('game.info.white.rank')
 kifuSchema.virtual('game.info.result')
 	.get(function () {
 		return getProp('RE', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.source')
+	.get(function () {
+		return getProp('SO', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.timeLimit')
+	.get(function () {
+		return getProp('TM', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.rules')
+	.get(function () {
+		return getProp('RU', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.application')
+	.get(function () {
+		return getProp('AP', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.komi')
+	.get(function () {
+		return getProp('KM', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.event')
+	.get(function () {
+		return getProp('EV', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.place')
+	.get(function () {
+		return getProp('PC', this.game.sgf);
 	});
 
 kifuSchema.virtual('game.info.date')
