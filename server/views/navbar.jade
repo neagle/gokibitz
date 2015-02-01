@@ -28,17 +28,18 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					ng-repeat='item in menu'
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
-					ng-click='isCollapsed = true'
+					ng-click='goToAndCollapse(item)'
 				)
-					a(ng-href='/{{ item.link }}') {{ item.title }}
+					a(href='/{{ item.link }}') {{ item.title }}
 
 				li(
 					ng-repeat='item in authMenu'
 					ng-show='currentUser'
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
+					ng-click='goToAndCollapse(item)'
 				)
-					a(ng-href='/{{ item.link }}') {{ item.title }}
+					a(href='/{{ item.link }}') {{ item.title }}
 
 				li.notifications.dropdown(
 					dropdown
@@ -69,17 +70,15 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 							li.divider
 							li
 								a(
-									ng-href='/notifications'
+									href='/notifications'
 								) See all
 
 			ul.nav.navbar-nav.navbar-right(
 				ng-if='!currentUser'
 			)
 				li
-					//-a(href='/login') Log In
 					a(ng-click='loginModal()') Log In
 				li
-					//-a(href='/signup') Sign Up
 					a(ng-click='signupModal()') Sign Up
 
 			ul.nav.navbar-nav.navbar-right.ng-cloak(
@@ -88,7 +87,7 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 			)
 				li.dropdown
 					a.dropdown-toggle(dropdown-toggle) Welcome, {{ currentUser.username }}
-						=' '
+						= ' '
 						b.caret
 
 				ul.dropdown-menu(role='menu')

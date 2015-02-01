@@ -10,7 +10,7 @@ router.get('/', auth.ensureAuthenticated, function (req, res) {
 		var settings = {};
 
 		// If specific keys are sent, send back only those values
-		if (req.query.keys) {
+		if (req.query.keys && req.user.settings) {
 			var keys = req.query.keys;
 			if (Array.isArray(keys)) {
 				req.query.keys.forEach(function (key) {
@@ -23,7 +23,7 @@ router.get('/', auth.ensureAuthenticated, function (req, res) {
 				settings[keys] = req.user.settings[keys];
 			}
 		} else {
-			settings = req.user.settings;
+			settings = req.user.settings || {};
 		}
 
 		res.json(200, settings);

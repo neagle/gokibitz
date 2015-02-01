@@ -107,7 +107,11 @@ gokibitz.config(
 				templateUrl: '/partials/list-kifu',
 				controller: 'ListKifuController',
 				resolve: {
-					settings: function (Settings) {
+					settings: function (Settings, $rootScope) {
+						if (!$rootScope.currentUser) {
+							return;
+						}
+
 						var SettingsData = Settings.get({
 							keys: ['listKifuToggle']
 						});

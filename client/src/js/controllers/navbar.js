@@ -4,8 +4,17 @@ angular.module('gokibitz.controllers')
 
 	$scope.isCollapsed = true;
 
-	nav.$settings = new Settings();
-	nav.$settings.$get({ keys: ['lastSeenNotification'] });
+	$scope.goToAndCollapse = function (item) {
+		$scope.isCollapsed = true;
+		$location.path('/' + item.link);
+	};
+
+	$scope.$watch('currentUser', function (newValue, oldValue) {
+		if (newValue) {
+			nav.$settings = new Settings();
+			nav.$settings.$get({ keys: ['lastSeenNotification'] });
+		}
+	});
 
 	$scope.menu = [];
 	$scope.authMenu = [];
