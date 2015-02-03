@@ -790,6 +790,7 @@ Board.coordinates = {
 			var coordinatesBackground = theme_variable('coordinatesBackgroundColor', board);
 
 			if (coordinatesBackground) {
+				this.save();
 				// Draw a background behind the coordinates
 				this.beginPath();
 				this.moveTo(0, 0);
@@ -810,7 +811,6 @@ Board.coordinates = {
 				this.fill();
 
 				this.clip();
-				this.save();
 
 				this.restore();
 
