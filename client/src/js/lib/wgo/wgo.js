@@ -809,11 +809,6 @@ Board.coordinates = {
 				this.fillStyle = theme_variable('coordinatesBackgroundColor', board);
 				this.fill();
 
-				this.clip();
-				this.save();
-
-				this.restore();
-
 				xright = board.getX(-1.25);
 				xleft = board.getX(board.size + 0.25);
 				ytop = board.getY(-1.25);
