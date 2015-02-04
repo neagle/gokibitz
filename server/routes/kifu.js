@@ -3,7 +3,8 @@ var router = express.Router();
 var auth = require('../config/auth');
 var multiparty = require('multiparty');
 var fs = require('fs');
-//var smartgame = require('smartgame');
+var smartgame = require('smartgame');
+var smartgamer = require('smartgamer');
 var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
@@ -119,22 +120,54 @@ router.get('/:shortid/sgf', function (req, res) {
 		shortid: req.params.shortid
 	}, function (error, kifu) {
 		if (!error && kifu) {
-			User.findOne({
-				_id: kifu.owner
-			}, function (error, owner) {
-				//console.log(kifu, owner);
-				var filename = owner.username + '--' +
-					kifu.game.info.black.name +
-					'-vs-' +
-					kifu.game.info.white.name +
-					'.sgf';
-				res.set({
-					'Content-Disposition': 'attachment; filename=' + filename,
-					'Content-Type': 'application/x-go-sgf'
-				});
-				res.send(200, kifu.game.sgf);
+			var sgf;
 
-			});
+			function addCommentsToSgf(callback) {
+				Comment.find({ kifu: kifu._id })
+					.populate('user')
+					.exec(function (error, comments) {
+						// Transform a Mongoose document into a JavaScript object
+						comments = comments.map(function (comment) { return comment.toObject(); });
+
+						var gamer = smartgamer(smartgame.parse(kifu.game.sgf));
+
+						comments.forEach(function (comment) {
+							gamer.goTo(comment.path);
+							gamer.comment(gamer.comment() + '\n' +
+								comment.user.username + ': ' +
+								comment.content.markdown + '\n'
+							);
+						});
+
+						sgf = smartgame.generate(gamer.getSmartgame());
+						callback();
+					});
+			}
+
+			function getUser() {
+				User.findOne({
+					_id: kifu.owner
+				}, function (error, owner) {
+					//console.log(kifu, owner);
+					var filename = owner.username + '--' +
+						kifu.game.info.black.name +
+						'-vs-' +
+						kifu.game.info.white.name +
+						'.sgf';
+					res.set({
+						'Content-Disposition': 'attachment; filename=' + filename,
+						'Content-Type': 'application/x-go-sgf'
+					});
+					res.send(200, sgf);
+				});
+			}
+
+			if (req.query.nocomments) {
+				sgf = kifu.game.sgf;
+				getUser();
+			} else {
+				addCommentsToSgf(getUser);
+			}
 		} else if (error) {
 			res.json(500, { message: 'Error loading kifu. ' + error });
 		} else {

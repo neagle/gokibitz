@@ -26,6 +26,7 @@
     "serve-favicon": "^2.2.0",
     "shortid": "^2.0.0",
     "smartgame": "^0.1.2",
+    "smartgamer": "^0.1.1",
     "socket.io": "^1.3.2"
   },
   "devDependencies": {
@@ -175,17 +176,12 @@
     },
     "angular-socket-io": {
       "depends": [
-        "angular"
+        "io"
       ]
     },
     "gokibitz-wgo": {
       "depends": [
         "WGo"
-      ]
-    },
-    "angular-socket-io": {
-      "depends": [
-        "io"
       ]
     }
   }

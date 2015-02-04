@@ -82,6 +82,10 @@
 							a(
 								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
 								target='_self'
+							) With comments
+							a(
+								ng-href='/api/kifu/{{ kifu.shortid }}/sgf?nocomments=true'
+								target='_self'
 							) Without comments
 
 				.btn-group(
