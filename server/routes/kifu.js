@@ -123,7 +123,7 @@ router.get('/:shortid/sgf', function (req, res) {
 		if (!error && kifu) {
 			var sgf;
 
-			function addCommentsToSgf(callback) {
+			var addCommentsToSgf = function (callback) {
 				Comment.find({ kifu: kifu._id })
 					.populate('user')
 					.exec(function (error, comments) {
@@ -143,9 +143,9 @@ router.get('/:shortid/sgf', function (req, res) {
 						sgf = smartgame.generate(gamer.getSmartgame());
 						callback();
 					});
-			}
+			};
 
-			function getUser() {
+			var getUser = function () {
 				User.findOne({
 					_id: kifu.owner
 				}, function (error, owner) {
@@ -161,7 +161,7 @@ router.get('/:shortid/sgf', function (req, res) {
 					});
 					res.send(200, sgf);
 				});
-			}
+			};
 
 			if (req.query.nocomments) {
 				sgf = kifu.game.sgf;
