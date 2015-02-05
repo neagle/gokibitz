@@ -60,8 +60,36 @@
 					= ' '
 					| Game Comments
 				div.panel-body
-					div(ng-bind-html='sgfComment')
-					div(ng-if='!sgfComment') &hellip;
+					div(
+						ng-bind-html='sgfComment'
+						ng-hide='editGameComment'
+					)
+					div(ng-if='!sgfComment') &nbsp;
+
+					div(ng-show='editGameComment')
+						textarea.form-control.bottom-buffer(
+							rows='3'
+							ng-model='nodeComment'
+							ng-disabled='savingGameComment'
+						)
+					div(ng-show='kifu.owner.username === currentUser.username')
+						div(ng-show='!editGameComment')
+							button.btn.btn-sm.btn-default(
+								ng-click='toggleEditGameComment()'
+							) Edit
+
+						div(ng-show='editGameComment')
+							button.btn.btn-sm.btn-primary(
+								ng-click='saveGameComment()'
+							) Save
+
+							= ' '
+
+							button.btn.btn-sm.btn-warning(
+								ng-click='cancelGameComment()'
+							) Cancel
+
+
 
 			.btn-group.bottom-buffer.pull-right
 				.btn-group(

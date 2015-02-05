@@ -102,6 +102,7 @@ router.get('/:shortid', function (req, res) {
 		.findOne({
 			shortid: req.params.shortid
 		})
+		.populate('owner')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);
@@ -179,7 +180,7 @@ router.get('/:shortid/sgf', function (req, res) {
 router.get('/:id/comments/:path?', function (req, res) {
 	Kifu.findOne({
 		_id: req.params.id
-	} ,function (error, kifu) {
+	}, function (error, kifu) {
 		if (!error && kifu) {
 			var findOptions = {
 				kifu: kifu
@@ -215,6 +216,43 @@ router.get('/:id/comments/:path?', function (req, res) {
 			res.json(404, { message: 'No kifu found for that id.' });
 		}
 	});
+});
+
+// Update an SGF
+router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
+	var sgf = req.body.sgf;
+
+	// Escape closing brackets
+	// @see http://www.red-bean.com/sgf/sgf4.html
+	sgf = sgf.replace(/([^\\])(\])/g, '$1\\$2');
+
+	Kifu.findOne({
+		_id: req.params.id
+	})
+		.populate('owner')
+		.exec(function (error, kifu) {
+			console.log('kifu', kifu);
+
+			if (!error && kifu) {
+				if (!kifu.owner.equals(req.user) && !req.user.admin) {
+					res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
+				} else {
+					kifu.game.sgf = sgf;
+					kifu.save(function (error) {
+						if (!error) {
+							res.json(200, {
+								message: 'SGF updated.',
+								kifu: kifu
+							});
+						}
+					});
+				}
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that id.' });
+			}
+		});
 });
 
 router.post('/upload', auth.ensureAuthenticated, function (req, res) {

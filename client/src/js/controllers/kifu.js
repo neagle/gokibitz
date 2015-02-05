@@ -15,6 +15,9 @@ angular.module('gokibitz.controllers')
 	$document,
 	$modal
 ) {
+	var smartgame = require('smartgame');
+	var smartgamer = require('smartgamer');
+
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
 
@@ -56,6 +59,7 @@ angular.module('gokibitz.controllers')
 			}
 
 			// Format game comments
+			$scope.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
 		});
 	};
@@ -154,4 +158,43 @@ angular.module('gokibitz.controllers')
 			}
 		});
 	}
+
+	$scope.editGameComment = false;
+
+	$scope.toggleEditGameComment = function () {
+		$scope.editGameComment = !$scope.editGameComment;
+
+		if ($scope.editGameComment) {
+			$scope.originalNodeComment = $scope.nodeComment;
+		}
+	};
+
+	$scope.cancelGameComment = function () {
+		$scope.nodeComment = $scope.originalNodeComment;
+		$scope.editGameComment = false;
+	};
+
+	$scope.saveGameComment = function () {
+		$scope.savingGameComment = true;
+
+		var gamer = smartgamer(smartgame.parse($scope.kifu.game.sgf));
+		gamer.goTo($scope.kifu.path);
+		gamer.comment($scope.nodeComment);
+		var sgf = smartgame.generate(gamer.getSmartgame());
+		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
+			sgf: sgf
+		})
+			.success(function () {
+				$scope.savingGameComment = false;
+				$scope.editGameComment = false;
+				$scope.sgfComment = comments.format($scope.nodeComment);
+				$scope.player.kifuReader.node.comment = $scope.nodeComment;
+
+			})
+			.error(function () {
+				console.log('error', arguments);
+				$scope.savingGameComment = false;
+			});
+	};
+
 });
