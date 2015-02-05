@@ -16,6 +16,14 @@ var kifuSchema = new Schema({
 			required: true,
 			default: '',
 			trim: true
+		},
+
+		// Keep a reference to the original uploaded SGF
+		original: {
+			type: String,
+			required: true,
+			default: '',
+			trim: true
 		}
 	},
 	comments: [{

@@ -40,7 +40,7 @@ router.get('/', function (req, res) {
 			.sort({ uploaded: -1 })
 			.skip(offset)
 			.limit(limit)
-			.populate('owner')
+			.populate('owner', 'username')
 			.exec(function (error, kifu) {
 				if (!error && kifu.length) {
 					res.json(200, {
@@ -102,7 +102,7 @@ router.get('/:shortid', function (req, res) {
 		.findOne({
 			shortid: req.params.shortid
 		})
-		.populate('owner')
+		.populate('owner', 'username')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);
@@ -222,10 +222,6 @@ router.get('/:id/comments/:path?', function (req, res) {
 router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
 	var sgf = req.body.sgf;
 
-	// Escape closing brackets
-	// @see http://www.red-bean.com/sgf/sgf4.html
-	sgf = sgf.replace(/([^\\])(\])/g, '$1\\$2');
-
 	Kifu.findOne({
 		_id: req.params.id
 	})
@@ -266,6 +262,7 @@ router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 
 			newKifu.owner = req.user;
 			newKifu.game.sgf = sgf;
+			newKifu.game.original = sgf;
 			newKifu.save(function (error) {
 				if (!error) {
 					res.json(201, {

@@ -64,13 +64,14 @@
 						ng-bind-html='sgfComment'
 						ng-hide='editGameComment'
 					)
-					div(ng-if='!sgfComment') &nbsp;
+					div(ng-if='!sgfComment && kifu.owner.username !== currentUser.username && !editGameComment') &nbsp;
 
 					div(ng-show='editGameComment')
 						textarea.form-control.bottom-buffer(
 							rows='3'
 							ng-model='nodeComment'
 							ng-disabled='savingGameComment'
+							gk-focus-me='editGameComment'
 						)
 					div(ng-show='kifu.owner.username === currentUser.username')
 						div(ng-show='!editGameComment')
