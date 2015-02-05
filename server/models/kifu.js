@@ -139,23 +139,35 @@ kifuSchema.virtual('game.info.date')
 		}
 
 		// Deal with multiple dates
-		// @see DT property here: http://www.red-bean.com/sgf/properties.html
+		// @see DT property here: http://www.red-bean.com/sgf/properties.html#DT
 		date = date.split(',');
 
-		// TODO: We do not yet deal with date shortcuts according to the spec.
-		// (ex: 1996-05-06,07,08 = played on 6th,7th,8th May 1996)
-		//
-		// Luckily, DragonGo doesn't seem to use shortcuts as the spec recommends.
-		//
-		// But maybe somebody does or will?
-		//
-		// Writing a parser for this shouldn't be particularly hard, but it's worth
-		// seeing if someone has already done it.
+		var year, month;
 		for (var i = 0; i < date.length; i += 1) {
+			if (date[i].length === 10) {
+				// Store year and month to use in any shortcuts that follow
+				// ie, 2015-01-15,16
+				var dateArray = date[i].split('-');
+				year = dateArray[0];
+				month = dateArray[1];
+			} else if (date[i].length === 2) {
+				// Expand shortcuts
+				date[i] = year + '-' + month + '-' + date[i];
+			}
+
 			date[i] = moment(date[i]).format('MMMM Do, YYYY');
 		}
 
 		if (date.length <=  2) {
+			if (date.length === 2) {
+				var year1 = date[0].substring(date[0].length - 4);
+				var year2 = date[1].substring(date[1].length - 4);
+
+				// If the two dates are in the same year, only list the year once
+				if (year1 === year2) {
+					date[0] = date[0].substring(0, date[0].length - 6);
+				}
+			}
 			date = date.join(' – ');
 		} else if (date.length > 2) {
 			date = date.join(', ');
