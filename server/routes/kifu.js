@@ -233,13 +233,21 @@ router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
 				if (!kifu.owner.equals(req.user) && !req.user.admin) {
 					res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
 				} else {
+					// Make sure there's an original
+					if (!kifu.game.original) {
+						kifu.game.original = kifu.game.sgf;
+					}
+
 					kifu.game.sgf = sgf;
+
 					kifu.save(function (error) {
 						if (!error) {
 							res.json(200, {
 								message: 'SGF updated.',
 								kifu: kifu
 							});
+						} else {
+							res.json(500, { message: 'Error saving kifu. ' + error });
 						}
 					});
 				}
