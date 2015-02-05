@@ -133,7 +133,31 @@ kifuSchema.virtual('game.info.place')
 kifuSchema.virtual('game.info.date')
 	.get(function () {
 		var date = getProp('DT', this.game.sgf);
-		return moment(date).format('MMMM Do, YYYY');
+
+		// Deal with multiple dates
+		// @see DT property here: http://www.red-bean.com/sgf/properties.html
+		date = date.split(',');
+
+		// TODO: We do not yet deal with date shortcuts according to the spec.
+		// (ex: 1996-05-06,07,08 = played on 6th,7th,8th May 1996)
+		//
+		// Luckily, DragonGo doesn't seem to use shortcuts as the spec recommends.
+		//
+		// But maybe somebody does or will?
+		//
+		// Writing a parser for this shouldn't be particularly hard, but it's worth
+		// seeing if someone has already done it.
+		for (var i = 0; i < date.length; i += 1) {
+			date[i] = moment(date[i]).format('MMMM Do, YYYY');
+		}
+
+		if (date.length <=  2) {
+			date = date.join(' – ');
+		} else if (date.length > 2) {
+			date = date.join(', ');
+		}
+
+		return date;
 	});
 
 /**
