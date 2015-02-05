@@ -134,6 +134,10 @@ kifuSchema.virtual('game.info.date')
 	.get(function () {
 		var date = getProp('DT', this.game.sgf);
 
+		if (!date) {
+			return '';
+		}
+
 		// Deal with multiple dates
 		// @see DT property here: http://www.red-bean.com/sgf/properties.html
 		date = date.split(',');
