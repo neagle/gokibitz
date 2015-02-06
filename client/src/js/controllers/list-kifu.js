@@ -102,4 +102,16 @@ angular.module('gokibitz.controllers')
 				$scope.$settings.$update();
 			}
 		});
+
+		$scope.togglePublic = function (item) {
+			$http.put('/api/kifu/' + item.shortid, {
+				public: item.public
+			})
+				.success(function () {
+				})
+				.error(function (data) {
+					console.log('Error:', data);
+				});
+
+		};
 	});

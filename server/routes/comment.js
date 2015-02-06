@@ -7,6 +7,7 @@ var Notification = require('../models/notification').Notification;
 var Comment = require('../models/comment').Comment;
 var async = require('async');
 var io = require('../io');
+var _ = require('lodash');
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
@@ -142,13 +143,15 @@ router.get('/', function (req, res) {
 
 		comments
 			.populate('user', 'username email gravatar rank')
-			.populate('kifu', 'shortid game')
-			.select('-kifu.game')
+			.populate('kifu', 'shortid game public')
 			.exec(function (error, comments) {
 				if (!error) {
 					if (chunk) {
 						// Transform a Mongoose document into a JavaScript object
 						comments = comments.map(function (comment) { return comment.toObject(); });
+						comments = _.filter(comments, function (comment) {
+							return comment.kifu.public;
+						});
 						chunkify(comments);
 
 						if (chunkedComments.length >= limit) {

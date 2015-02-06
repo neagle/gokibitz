@@ -3,12 +3,17 @@
 // --------------------------------------------------
 
 $speed: 0.2s;
-$color: $flat-clouds;
+$color: $flat-gray-2;
+$color-light: $flat-clouds;
 $color2: $brand-secondary;
+$color2-light: $brand-secondary;
 
 .checkbox,
 .radio {
-	color: $flat-clouds;
+	color: $color;
+	&.dark-background {
+		color: $color-light;
+	}
 	font: {
 		size: ceil($component-font-size-base * 1.2); // ~14px
 		weight: 700;
@@ -139,6 +144,65 @@ $color2: $brand-secondary;
 			&.checked {
 				.icons {
 					color: $color;
+				}
+			}
+		}
+	}
+
+	&.dark-background {
+		.icons {
+			color: $color-light;
+		}
+
+		// Checked State
+		&.checked {
+			color: $color2-light;
+
+			.second-icon {
+				color: $color2-light;
+			}
+		}
+
+		// Disabled state
+		&.disabled {
+			color: mix($color-light, white, 38%);
+
+			.icons {
+				color: mix($color-light, white, 38%);
+			}
+			&.checked {
+
+				.icons {
+					color: mix($color-light, white, 38%);
+				}
+				.second-icon {
+					@include opacity(1);
+					color: mix($color-light, white, 38%);
+				}
+			}
+		}
+
+		// Primary
+		&.primary {
+			// Checked State
+			&.checked {
+				color: $color2-light;
+
+				.icons {
+					color: $color2-light;
+				}
+			}
+			// Disabled state
+			&.disabled {
+				color: $color-light;
+
+				.icons {
+					color: $color-light;
+				}
+				&.checked {
+					.icons {
+						color: $color-light;
+					}
 				}
 			}
 		}
