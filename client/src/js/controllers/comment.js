@@ -307,8 +307,8 @@ angular.module('gokibitz.controllers')
                                 // disable game replay, when there is focus on some form text field
 
                                 switch(event.keyCode){
-                                        case 27: $scope.endVariationMode(event, false); console.log("escape"); break;
-                                        case 13: $scope.endVariationMode(event, true); console.log("enter"); break;
+                                        case 27: $scope.endVariationMode(event, false); break;
+                                        case 13: $scope.endVariationMode(event, true); break;
                                         default: return true;
                                 }
                                 return true;
