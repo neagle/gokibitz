@@ -44,7 +44,7 @@
 						th
 						th(ng-show='uploader.isHTML5') Size
 						th(ng-show='uploader.isHTML5') Progress
-						th Status
+						//th Status
 						th Actions
 
 				tbody
@@ -74,7 +74,7 @@
 									role='progressbar'
 									ng-style="{ 'width': item.progress + '%' }"
 								)
-						td.text-center
+						//td.text-center
 							span(ng-show='item.isSuccess')
 								i.glyphicon.glyphicon-ok
 							span(ng-show='item.isCancel')
