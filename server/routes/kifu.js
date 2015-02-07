@@ -9,6 +9,7 @@ var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
 var Notification = require('../models/notification').Notification;
+var _ = require('lodash');
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -112,6 +113,57 @@ router.get('/:shortid', function (req, res) {
 				res.json(404, { message: 'No kifu found for that shortid.' });
 			}
 		});
+});
+
+// Update a kifu
+router.put('/:shortid', function (req, res) {
+	console.log('Updating kifu');
+	console.log('req.body', req.body);
+
+
+	if (!req.body) {
+		console.log('no kifu provided');
+		res.json(500, { message: 'No kifu provided.' });
+	} else {
+		console.log('finding that kifu');
+		Kifu
+			.findOne({
+				shortid: req.params.shortid
+			})
+			.populate('owner', 'username')
+			.exec(function (error, kifu) {
+				if (!error && kifu) {
+					if (!kifu.owner.equals(req.user) && !req.user.admin) {
+						console.log('you can\'t edit this!');
+						res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
+					} else {
+						kifu = _.assign(kifu, req.body);
+						console.log('updated', kifu);
+
+						// Old kifu did not have an original created at upload time
+						if (!kifu.game.original) {
+							kifu.game.original = kifu.game.sgf;
+						}
+
+						kifu.save(function (error) {
+							console.log('kifu saved', arguments);
+							if (!error) {
+								res.json(200, {
+									message: 'Kifu updated.',
+									kifu: kifu
+								});
+							} else {
+								res.json(500, { message: 'Could not save kifu. ' + error });
+							}
+						});
+					}
+				} else if (error) {
+					res.json(500, { message: 'Error loading kifu. ' + error });
+				} else {
+					res.json(404, { message: 'No kifu found for that shortid.' });
+				}
+			});
+	}
 });
 
 // TODO: Why does the _API_ need a shortid? That's only for pretty URLs.
@@ -227,8 +279,6 @@ router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
 	})
 		.populate('owner')
 		.exec(function (error, kifu) {
-			console.log('kifu', kifu);
-
 			if (!error && kifu) {
 				if (!kifu.owner.equals(req.user) && !req.user.admin) {
 					res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
@@ -269,6 +319,7 @@ router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 			var newKifu = new Kifu();
 
 			newKifu.owner = req.user;
+			newKifu.public = (fields.public[0] === 'true') ? true : false;
 			newKifu.game.sgf = sgf;
 			newKifu.game.original = sgf;
 			newKifu.save(function (error) {
