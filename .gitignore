@@ -38,3 +38,8 @@ _build.config.js
 
 # SSL Information
 ssl/
+
+# Mac System Files
+.DS_Store
+
+.idea/

@@ -1,6 +1,7 @@
 var bulk = require('bulk-require');
 var angular = require('angular');
 
+
 // WGo
 require('./lib/wgo/wgo.js');
 require('./lib/wgo/kifu.js');
@@ -38,7 +39,8 @@ var gokibitz = angular.module('gokibitz', [
 	'ngStorage',
 	'720kb.socialshare',
 	'flatui.directives',
-	'duScroll'
+	'duScroll',
+	'btford.socket-io'
 ]);
 
 require('angular-ui-router');
@@ -55,6 +57,7 @@ require('ui-bootstrap');
 require('ui-utils');
 require('ngStorage');
 require('angular-scroll');
+require('angular-socket-io');
 
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare
@@ -107,7 +110,11 @@ gokibitz.config(
 				templateUrl: '/partials/list-kifu',
 				controller: 'ListKifuController',
 				resolve: {
-					settings: function (Settings) {
+					settings: function (Settings, $rootScope) {
+						if (!$rootScope.currentUser) {
+							return;
+						}
+
 						var SettingsData = Settings.get({
 							keys: ['listKifuToggle']
 						});

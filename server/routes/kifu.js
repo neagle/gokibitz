@@ -3,11 +3,13 @@ var router = express.Router();
 var auth = require('../config/auth');
 var multiparty = require('multiparty');
 var fs = require('fs');
-//var smartgame = require('smartgame');
+var smartgame = require('smartgame');
+var smartgamer = require('smartgamer');
 var Kifu = require('../models/kifu').Kifu;
 var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
 var Notification = require('../models/notification').Notification;
+var _ = require('lodash');
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -39,7 +41,7 @@ router.get('/', function (req, res) {
 			.sort({ uploaded: -1 })
 			.skip(offset)
 			.limit(limit)
-			.populate('owner')
+			.populate('owner', 'username')
 			.exec(function (error, kifu) {
 				if (!error && kifu.length) {
 					res.json(200, {
@@ -101,6 +103,7 @@ router.get('/:shortid', function (req, res) {
 		.findOne({
 			shortid: req.params.shortid
 		})
+		.populate('owner', 'username')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);
@@ -112,6 +115,57 @@ router.get('/:shortid', function (req, res) {
 		});
 });
 
+// Update a kifu
+router.put('/:shortid', function (req, res) {
+	console.log('Updating kifu');
+	console.log('req.body', req.body);
+
+
+	if (!req.body) {
+		console.log('no kifu provided');
+		res.json(500, { message: 'No kifu provided.' });
+	} else {
+		console.log('finding that kifu');
+		Kifu
+			.findOne({
+				shortid: req.params.shortid
+			})
+			.populate('owner', 'username')
+			.exec(function (error, kifu) {
+				if (!error && kifu) {
+					if (!kifu.owner.equals(req.user) && !req.user.admin) {
+						console.log('you can\'t edit this!');
+						res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
+					} else {
+						kifu = _.assign(kifu, req.body);
+						console.log('updated', kifu);
+
+						// Old kifu did not have an original created at upload time
+						if (!kifu.game.original) {
+							kifu.game.original = kifu.game.sgf;
+						}
+
+						kifu.save(function (error) {
+							console.log('kifu saved', arguments);
+							if (!error) {
+								res.json(200, {
+									message: 'Kifu updated.',
+									kifu: kifu
+								});
+							} else {
+								res.json(500, { message: 'Could not save kifu. ' + error });
+							}
+						});
+					}
+				} else if (error) {
+					res.json(500, { message: 'Error loading kifu. ' + error });
+				} else {
+					res.json(404, { message: 'No kifu found for that shortid.' });
+				}
+			});
+	}
+});
+
 // TODO: Why does the _API_ need a shortid? That's only for pretty URLs.
 // Change to _id
 router.get('/:shortid/sgf', function (req, res) {
@@ -119,22 +173,54 @@ router.get('/:shortid/sgf', function (req, res) {
 		shortid: req.params.shortid
 	}, function (error, kifu) {
 		if (!error && kifu) {
-			User.findOne({
-				_id: kifu.owner
-			}, function (error, owner) {
-				//console.log(kifu, owner);
-				var filename = owner.username + '--' +
-					kifu.game.info.black.name +
-					'-vs-' +
-					kifu.game.info.white.name +
-					'.sgf';
-				res.set({
-					'Content-Disposition': 'attachment; filename=' + filename,
-					'Content-Type': 'application/x-go-sgf'
-				});
-				res.send(200, kifu.game.sgf);
+			var sgf;
 
-			});
+			var addCommentsToSgf = function (callback) {
+				Comment.find({ kifu: kifu._id })
+					.populate('user')
+					.exec(function (error, comments) {
+						// Transform a Mongoose document into a JavaScript object
+						comments = comments.map(function (comment) { return comment.toObject(); });
+
+						var gamer = smartgamer(smartgame.parse(kifu.game.sgf));
+
+						comments.forEach(function (comment) {
+							gamer.goTo(comment.path);
+							gamer.comment(gamer.comment() + '\n' +
+								comment.user.username + ': ' +
+								comment.content.markdown + '\n'
+							);
+						});
+
+						sgf = smartgame.generate(gamer.getSmartgame());
+						callback();
+					});
+			};
+
+			var getUser = function () {
+				User.findOne({
+					_id: kifu.owner
+				}, function (error, owner) {
+					//console.log(kifu, owner);
+					var filename = owner.username + '--' +
+						kifu.game.info.black.name +
+						'-vs-' +
+						kifu.game.info.white.name +
+						'.sgf';
+					res.set({
+						'Content-Disposition': 'attachment; filename=' + filename,
+						'Content-Type': 'application/x-go-sgf'
+					});
+					res.send(200, sgf);
+				});
+			};
+
+			if (req.query.nocomments) {
+				sgf = kifu.game.sgf;
+				getUser();
+			} else {
+				addCommentsToSgf(getUser);
+			}
 		} else if (error) {
 			res.json(500, { message: 'Error loading kifu. ' + error });
 		} else {
@@ -146,7 +232,7 @@ router.get('/:shortid/sgf', function (req, res) {
 router.get('/:id/comments/:path?', function (req, res) {
 	Kifu.findOne({
 		_id: req.params.id
-	} ,function (error, kifu) {
+	}, function (error, kifu) {
 		if (!error && kifu) {
 			var findOptions = {
 				kifu: kifu
@@ -184,6 +270,45 @@ router.get('/:id/comments/:path?', function (req, res) {
 	});
 });
 
+// Update an SGF
+router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
+	var sgf = req.body.sgf;
+
+	Kifu.findOne({
+		_id: req.params.id
+	})
+		.populate('owner')
+		.exec(function (error, kifu) {
+			if (!error && kifu) {
+				if (!kifu.owner.equals(req.user) && !req.user.admin) {
+					res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
+				} else {
+					// Make sure there's an original
+					if (!kifu.game.original) {
+						kifu.game.original = kifu.game.sgf;
+					}
+
+					kifu.game.sgf = sgf;
+
+					kifu.save(function (error) {
+						if (!error) {
+							res.json(200, {
+								message: 'SGF updated.',
+								kifu: kifu
+							});
+						} else {
+							res.json(500, { message: 'Error saving kifu. ' + error });
+						}
+					});
+				}
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that id.' });
+			}
+		});
+});
+
 router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 	var form = new multiparty.Form();
 
@@ -194,7 +319,9 @@ router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 			var newKifu = new Kifu();
 
 			newKifu.owner = req.user;
+			newKifu.public = (fields.public[0] === 'true') ? true : false;
 			newKifu.game.sgf = sgf;
+			newKifu.game.original = sgf;
 			newKifu.save(function (error) {
 				if (!error) {
 					res.json(201, {

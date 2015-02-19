@@ -16,6 +16,14 @@ var kifuSchema = new Schema({
 			required: true,
 			default: '',
 			trim: true
+		},
+
+		// Keep a reference to the original uploaded SGF
+		original: {
+			type: String,
+			required: true,
+			default: '',
+			trim: true
 		}
 	},
 	comments: [{
@@ -54,8 +62,10 @@ var kifuSchema = new Schema({
 });
 
 function getProp(prop, str) {
+
 	var re = new RegExp(prop + '\\[([^\\]]*)\\]');
 	var match = re.exec(str);
+
 	return (match) ? match[1] : '';
 }
 
@@ -85,10 +95,85 @@ kifuSchema.virtual('game.info.result')
 		return getProp('RE', this.game.sgf);
 	});
 
+kifuSchema.virtual('game.info.source')
+	.get(function () {
+		return getProp('SO', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.timeLimit')
+	.get(function () {
+		return getProp('TM', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.rules')
+	.get(function () {
+		return getProp('RU', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.application')
+	.get(function () {
+		return getProp('AP', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.komi')
+	.get(function () {
+		return getProp('KM', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.event')
+	.get(function () {
+		return getProp('EV', this.game.sgf);
+	});
+
+kifuSchema.virtual('game.info.place')
+	.get(function () {
+		return getProp('PC', this.game.sgf);
+	});
+
 kifuSchema.virtual('game.info.date')
 	.get(function () {
 		var date = getProp('DT', this.game.sgf);
-		return moment(date).format('MMMM Do, YYYY');
+
+		if (!date) {
+			return '';
+		}
+
+		// Deal with multiple dates
+		// @see DT property here: http://www.red-bean.com/sgf/properties.html#DT
+		date = date.split(',');
+
+		var year, month;
+		for (var i = 0; i < date.length; i += 1) {
+			if (date[i].length === 10) {
+				// Store year and month to use in any shortcuts that follow
+				// ie, 2015-01-15,16
+				var dateArray = date[i].split('-');
+				year = dateArray[0];
+				month = dateArray[1];
+			} else if (date[i].length === 2) {
+				// Expand shortcuts
+				date[i] = year + '-' + month + '-' + date[i];
+			}
+
+			date[i] = moment(date[i]).format('MMMM Do, YYYY');
+		}
+
+		if (date.length <=  2) {
+			if (date.length === 2) {
+				var year1 = date[0].substring(date[0].length - 4);
+				var year2 = date[1].substring(date[1].length - 4);
+
+				// If the two dates are in the same year, only list the year once
+				if (year1 === year2) {
+					date[0] = date[0].substring(0, date[0].length - 6);
+				}
+			}
+			date = date.join(' – ');
+		} else if (date.length > 2) {
+			date = date.join(', ');
+		}
+
+		return date;
 	});
 
 /**

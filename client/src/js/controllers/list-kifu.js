@@ -1,12 +1,12 @@
 angular.module('gokibitz.controllers')
 	.controller('ListKifuController', function ($rootScope, $scope, $http, $location, settings) {
-		$scope.$settings = settings;
+		$scope.$settings = settings || {};
 
 		$rootScope.pageTitle = 'Kifu – GoKibitz';
 		$scope.index = 0;
 		$scope.kifu = [];
 
-		if (!$scope.$settings.listKifuToggle) {
+		if (!$scope.$settings.listKifuToggle && $scope.currentUser) {
 			$scope.$settings.listKifuToggle = ($scope.currentUser) ? 'owned' : 'public';
 			$scope.$settings.$update();
 		}
@@ -102,4 +102,16 @@ angular.module('gokibitz.controllers')
 				$scope.$settings.$update();
 			}
 		});
+
+		$scope.togglePublic = function (item) {
+			$http.put('/api/kifu/' + item.shortid, {
+				public: item.public
+			})
+				.success(function () {
+				})
+				.error(function (data) {
+					console.log('Error:', data);
+				});
+
+		};
 	});

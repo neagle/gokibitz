@@ -36,6 +36,7 @@
 					.list-kifu.list-group
 						.kifu.list-group-item.fade-in-fade-out(
 							ng-repeat='item in kifu track by item._id'
+							ng-class='{ public: item.public, private: !item.public }'
 						)
 							.media
 								.media-left
@@ -79,6 +80,17 @@
 									time(
 										datetime='{{ item.game.info.date }}'
 									) {{ item.game.info.date | date: 'longDate' }}
+									p.gk-checkbox(ng-if='item.owner === currentUser._id')
+										label
+											input(
+												type='checkbox'
+												ng-model='item.public'
+												ng-change='togglePublic(item)'
+											)
+											= ' '
+											strong Public
+
+
 									p(ng-if='item.owner.username') Uploaded by
 										= ' '
 										a(

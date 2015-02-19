@@ -79,7 +79,7 @@ UserSchema
 	.get(function () {
 		if (this.email) {
       var hash = md5(this.email.trim().toLowerCase());
-      return 'http://www.gravatar.com/avatar/' + hash;
+      return '//www.gravatar.com/avatar/' + hash;
     } else {
 			return '';
 		}

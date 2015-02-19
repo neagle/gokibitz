@@ -1,27 +1,43 @@
+var _ = require('lodash');
+
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket) {
+
+			// Handle live updates to comments
+			socket.on('send:' + $scope.kifu._id, function (data) {
+				var index = function () {
+					return _.findIndex($scope.comments, function (n) {
+						return n._id === data.comment._id;
+					});
+				};
+
+				switch (data.change) {
+					case 'new':
+						$scope.comments.push(data.comment);
+						break;
+					case 'update':
+						$scope.comments[index()] = data.comment;
+						break;
+					case 'star':
+						$scope.comments[index()].stars = data.comment.stars;
+						break;
+					case 'unstar':
+						$scope.comments[index()].stars = data.comment.stars;
+						break;
+					case 'delete':
+						$scope.comments = _.filter($scope.comments, function (n) {
+							return n._id !== data.comment._id;
+						});
+						break;
+				}
+			});
+
 			$scope.formData = {};
 
 			$scope.highlightedComment = $location.search().comment;
 
-			var addCommentsTimer;
-			var pollComments;
 			var canceler;
-
-			var stop;
-			$scope.stopPolling = function () {
-				if (angular.isDefined(stop)) {
-					$interval.cancel(stop);
-					stop = undefined;
-				}
-			};
-
-			//stop = $interval(function () {
-				//if (!$scope.loading) {
-					//$scope.listComments(true);
-				//}
-			//}, 3000);
 
 			$scope.listComments = function (alreadyRendered) {
 				var path;
@@ -29,17 +45,11 @@ angular.module('gokibitz.controllers')
 				// Turn off animation
 				$scope.loading = true;
 
-				if (!alreadyRendered) {
-					// Clear existing comments
-					$scope.comments = [];
-					$scope.numComments = null;
-				}
-
-				// Cancel the addCommentsTimer, in case it's still running
-				// on a particularly long set of comments
-				if (addCommentsTimer) {
-					$timeout.cancel(addCommentsTimer);
-				}
+				//if (!alreadyRendered) {
+					////Clear existing comments
+					//$scope.comments = [];
+					//$scope.numComments = null;
+				//}
 
 				// Cancel any previous listComments calls
 				if (canceler) {
@@ -57,6 +67,13 @@ angular.module('gokibitz.controllers')
 					timeout: canceler.promise
         })
 					.success(function (data) {
+
+						if (!alreadyRendered) {
+							//Clear existing comments
+							$scope.comments = [];
+							$scope.numComments = null;
+						}
+
 						var highlightedComment = $location.search().comment;
 						var highlightedCommentPresent = false;
 
@@ -130,6 +147,7 @@ angular.module('gokibitz.controllers')
 
 					})
 					.error(function (data) {
+						$scope.comments = [];
 						console.log('Error: ' + data);
 					});
 			};
@@ -229,7 +247,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$on('$destroy', function () {
-				$scope.stopPolling();
+				socket.removeListener('send:' + $scope.kifu._id);
 			});
 
 			$scope.$watch('kifu.path', function () {

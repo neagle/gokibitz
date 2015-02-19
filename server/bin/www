@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 var debug = require('debug')('gokibitz');
 var app = require('../../server');
+var io = require('../io');
 
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
 	debug('Express server listening on port ' + server.address().port);
 });
+
+io.attach(server);

@@ -1,27 +1,47 @@
 .col-md-12
 	h3 Upload
 
-.col-md-3
-	.panel.panel-default
+.col-md-4
+	.panel.panel-default.bottom-buffer
 		.panel-heading Select Files
-		.panel-body
-			div(ng-show='uploader.isHTML5')
-				input(
+		.panel-body(
+			nv-file-drop=''
+			nv-file-over=''
+			over-class='file-over'
+			uploader='uploader'
+		)
+			div(
+				ng-show='uploader.isHTML5'
+			)
+
+				p Upload <abbr title="SmartGame Format">SGFs</abbr> for viewing on GoKibitz. They can be your games or others&rsquo;, but please be aware that games with commentary are generally copyrighted. Please don&rsquo;t upload them without the owner&rsquo;s permission.
+
+				hr
+
+				input.form-control(
 					nv-file-select
 					uploader='uploader'
 					type='file'
 					multiple
 				)
-.col-md-9
+
+				p.help-block You can also drag and drop SGF files here directly.
+.col-md-8
 	.panel.panel-default
 		.panel-heading Upload Queue
-		.panel-body
-			p Queue length: {{ uploader.queue.length }}
+		.panel-body(
+			nv-file-drop=''
+			nv-file-over=''
+			over-class='file-over'
+			uploader='uploader'
+		)
+			//-p Queue length: {{ uploader.queue.length }}
 
 			table.table
 				thead
 					tr
 						th(width='50%') Name
+						th
 						th(ng-show='uploader.isHTML5') Size
 						th(ng-show='uploader.isHTML5') Progress
 						th Status
@@ -40,6 +60,12 @@
 									ng-if='!item.shortid'
 								)
 									| {{ item.file.name }}
+						td
+							flatui-checkbox.inline-block(
+								model='item.public'
+								label='"Public"'
+							)
+
 						td(ng-show='uploader.isHTML5' nowrap)
 							| {{ item.file.size/1024/1024|number:2 }} MB
 						td(ng-show='uploader.isHTML5')
@@ -79,7 +105,12 @@
 								span.fui-trash
 								= ' Remove'
 
-			div
+			div(ng-show='notAnSgf')
+				p.text-danger Sorry! <code>{{ notAnSgf.name }}</code> doesn&rsquo;t appear to be an SGF file.
+
+			div(ng-show='uploader.queue.length')
+				p.help-block You can opt out of making your kifu public. Anyone can still view it and make comments if they have the URL, but neither it nor any comments made on it will show up elsewhere on the site.
+			//div
 				p Queue progress:
 					.progress
 						.progress-bar(
