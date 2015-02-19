@@ -303,53 +303,6 @@ angular.module('gokibitz.controllers')
 					$scope.player.gkVariationArr.pop();
 				}
 			}
-                        function variationKeyListener(event) {
-                                // disable game replay, when there is focus on some form text field
-
-                                switch(event.keyCode){
-                                        case 27: $scope.endVariationMode(event, false); break;
-                                        case 13: $scope.endVariationMode(event, true); break;
-                                        default: return true;
-                                }
-                                return true;
-                        } 
-
-                        // Variation mode lets users add variations to their comments by interacting with the board
-                        $scope.toggleVariationMode = function (startingColor) {
-                                var newMode;
-
-                                $scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
-                                newMode = !$scope._editable.editMode;
-
-                                var theme = $scope.player.board.theme;
-
-                                $scope.player.gkRecordingVariation = false;
-                                $scope._editable.set(newMode, true);
-                                $scope.variationMode = newMode;
-
-                                var lastMove = $scope.player.kifuReader.node.move;
-
-                                if ($scope.variationMode) {
-                                        $scope.player.gkRecordingVariation = true;
-                                        $scope.player.gkVariationArr = [];
-                                        $document[0].addEventListener("keydown", variationKeyListener);
-                                } else {
-                                        $document[0].removeEventListener("keydown", variationKeyListener);
-                                }  
-
-                                if (!$scope.variationMode && $scope.player.oneBack) {
-                                        $scope.player.gkRecordingVariation = false;
-                                        $scope.player.next();
-                                        $scope.player.oneBack = false;
-                                        $scope.player.gkRecordingVariation = true;
-                                }
-                                if ($scope.variationMode && lastMove && lastMove.c === startingColor) {
-                                        $scope.player.gkRecordingVariation = false;
-                                        $scope.player.oneBack = true;
-                                        $scope.player.previous();
-                                        $scope.player.gkRecordingVariation = true;
-                                }
-                        };
 			// TODO: This function obviously belongs some place universal.
 			function humanCoordinates(move) {
 				// Note the missing i
@@ -362,6 +315,7 @@ angular.module('gokibitz.controllers')
 
 			$scope.endVariationMode = function ($event, add) {
 				$event.preventDefault();
+
 				if (add) {
 					if ($scope.player.gkVariationArr.length) {
 						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
@@ -376,8 +330,7 @@ angular.module('gokibitz.controllers')
 					$scope.toggleVariationMode();
 				}
 			};
-                        
-                        
+
 
 		}
 	);
