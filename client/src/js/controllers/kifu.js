@@ -63,7 +63,10 @@ angular.module('gokibitz.controllers')
 			$scope.sgfComment = comments.format(event.node.comment);
 		});
 	};
-
+        $scope.toggleKifuVarMode = function () {
+                $scope.variationMode = !$scope.variationMode;
+                $scope.toggleEditMode();
+        };
 	// Set the page title
 	var titleTemplate = $interpolate(
 		'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
@@ -84,40 +87,6 @@ angular.module('gokibitz.controllers')
 		newMode = !$scope._editable.editMode;
 		$scope._editable.set(newMode, false);
 		$scope.editMode = newMode;
-	};
-
-	// Variation mode lets users add variations to their comments by interacting with the board
-	$scope.toggleVariationMode = function (startingColor) {
-		var newMode;
-
-		$scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
-		newMode = !$scope._editable.editMode;
-
-		var theme = $scope.player.board.theme;
-
-		$scope.player.gkRecordingVariation = false;
-		$scope._editable.set(newMode, true);
-		$scope.variationMode = newMode;
-
-		var lastMove = $scope.player.kifuReader.node.move;
-
-		if ($scope.variationMode) {
-			$scope.player.gkRecordingVariation = true;
-			$scope.player.gkVariationArr = [];
-		}
-
-		if (!$scope.variationMode && $scope.player.oneBack) {
-			$scope.player.gkRecordingVariation = false;
-			$scope.player.next();
-			$scope.player.oneBack = false;
-			$scope.player.gkRecordingVariation = true;
-		}
-		if ($scope.variationMode && lastMove && lastMove.c === startingColor) {
-			$scope.player.gkRecordingVariation = false;
-			$scope.player.oneBack = true;
-			$scope.player.previous();
-			$scope.player.gkRecordingVariation = true;
-		}
 	};
 
 	// Let touchscreen users swipe left and right to navigate
