@@ -129,6 +129,14 @@ angular.module('gokibitz.controllers')
 		$scope.player.previous();
 	};
 
+	$scope.nextCommentedMove = function () {
+		console.log('$scope.kifu.pathsWithComments', $scope.kifu.pathsWithComments);
+	};
+
+	$scope.previousCommentedMove = function () {
+		console.log('$scope.kifu.pathsWithComments', $scope.kifu.pathsWithComments);
+	};
+
 	// TODO: Use this method of getting the edited version of the SGF and doing
 	// something useful with it (like save it)
 	$scope.getSgf = function () {

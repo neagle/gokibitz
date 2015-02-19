@@ -49,7 +49,9 @@ var commentSchema = new Schema({
 
 commentSchema.virtual('content.html')
 	.get(function () {
-		return marked(parseLabels(this.content.markdown));
+		if (this.content.markdown) {
+			return marked(parseLabels(this.content.markdown));
+		}
 	});
 
 commentSchema.virtual('relativeDate')

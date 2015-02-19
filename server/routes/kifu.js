@@ -104,6 +104,7 @@ router.get('/:shortid', function (req, res) {
 			shortid: req.params.shortid
 		})
 		.populate('owner', 'username')
+		.populate('comments', 'path pathsWithComments')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);

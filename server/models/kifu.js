@@ -2,8 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var shortid = require('shortid');
 //var smartgame = require('smartgame');
+var smartgamer = require('smartgamer')();
 var moment = require('moment');
 //var Comment = require('./comment').Comment;
+var _ = require('lodash');
 
 var kifuSchema = new Schema({
 	shortid: {
@@ -175,6 +177,34 @@ kifuSchema.virtual('game.info.date')
 
 		return date;
 	});
+
+	kifuSchema.virtual('pathsWithComments')
+		.get(function () {
+			var paths = [];
+
+			if (this.comments) {
+				this.comments.forEach(function (comment) {
+					paths.push(comment.path);
+				});
+			}
+
+			// Remove duplicates
+			paths = _.uniq(paths);
+
+			// Turn paths into objects
+
+			// (This can't be used with map on its own, because pathTransform accepts optional arguments)
+			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#Example:_Tricky_use_case
+			paths = paths.map(function (path) {
+				return smartgamer.pathTransform(path, 'object');
+			});
+
+			// Sort paths by move number
+			return paths.sort(function (a, b) {
+				return a.m - b.m;
+			});
+		});
+
 
 /**
  * Comment Information

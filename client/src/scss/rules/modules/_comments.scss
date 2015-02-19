@@ -84,3 +84,18 @@ sgf-label {
 		}
 	}
 }
+
+.navigate-comments {
+	a {
+		color: transparentize($flat-clouds, 0.5);
+		cursor: pointer;
+
+		&:hover {
+		color: $flat-clouds;
+		}
+
+		&:first-child {
+			margin-right: 20px;
+		}
+	}
+}
