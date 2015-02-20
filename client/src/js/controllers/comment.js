@@ -266,7 +266,7 @@ angular.module('gokibitz.controllers')
 			// initialized till domready
 			$scope.$watch('scope.player', function () {
 				$scope.player.addEventListener('update', function (event) {
-					if ($scope.variationMode && $scope.player.gkRecordingVariation) {
+					if ($scope.variationMode) {
 						if (typeof $scope.originalComment === 'undefined') {
 							if (typeof $scope.formData.content !== 'undefined') {
 								// If there's content in the comment box, preserve it
@@ -303,7 +303,6 @@ angular.module('gokibitz.controllers')
 					$scope.player.gkVariationArr.pop();
 				}
 			}
-
 			// TODO: This function obviously belongs some place universal.
 			function humanCoordinates(move) {
 				// Note the missing i
@@ -313,13 +312,43 @@ angular.module('gokibitz.controllers')
 				var y = $scope.player.kifuReader.game.size - move.y;
 				return x + y;
 			}
+                        
+                        $scope.variationKeyListener = function(event){
+                               switch(event.keyCode){
+                                      case 13: $scope.endVariationMode(event, true); break;
+                                      case 27: $scope.endVariationMode(event, false); break;
+                                      default: return true;
+                               }
+                               return false;
+                        };
 
-			$scope.endVariationMode = function ($event, add) {
+			// Variation mode lets users add variations to their comments by interacting with the board
+                        $scope.toggleVariationMode = function (startingColor) {
+                                $scope.toggleKifuVarMode();
+                                var lastMove = $scope.player.kifuReader.node.move;
+
+                                if ($scope.variationMode) {
+                                        $scope.player.gkVariationArr = [];
+                                        $document[0].addEventListener('keydown', $scope.variationKeyListener);
+                                } else {
+                                        $document[0].removeEventListener('keydown', $scope.variationKeyListener);
+                                        if ($scope.player.oneBack) {
+                                               $scope.player.next();
+                                               $scope.player.oneBack = false;
+                                        }
+                                        if (lastMove && lastMove.c === startingColor) {
+                                               $scope.player.oneBack = true;
+                                               $scope.player.previous();
+                                        }
+                                } 
+                        };
+
+                        $scope.endVariationMode = function ($event, add) {
 				$event.preventDefault();
 
 				if (add) {
 					if ($scope.player.gkVariationArr.length) {
-						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
+						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' '); 
 					}
 				} else if (typeof $scope.originalComment !== 'undefined') {
 					$scope.formData.content = $scope.originalComment;
