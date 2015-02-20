@@ -321,7 +321,7 @@ angular.module('gokibitz.controllers')
 					if ($scope.player.gkVariationArr.length) {
 						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
 					}
-				} else {
+				} else if (typeof $scope.originalComment !== 'undefined') {
 					$scope.formData.content = $scope.originalComment;
 				}
 
