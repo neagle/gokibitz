@@ -342,15 +342,15 @@ angular.module('gokibitz.controllers')
 
 					// Trigger the mouseout behavior that removes any markers
 					$scope._editable._ev_out();
+				}
 
-					if ($scope.player.oneBack) {
-						$scope.player.next();
-						$scope.player.oneBack = false;
-					}
-					if (lastMove && lastMove.c === startingColor) {
-						$scope.player.oneBack = true;
-						$scope.player.previous();
-					}
+				if ($scope.player.oneBack) {
+					$scope.player.next();
+					$scope.player.oneBack = false;
+				}
+				if (lastMove && lastMove.c === startingColor) {
+					$scope.player.oneBack = true;
+					$scope.player.previous();
 				}
 			};
 
