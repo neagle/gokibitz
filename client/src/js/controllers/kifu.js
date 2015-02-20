@@ -27,6 +27,18 @@ angular.module('gokibitz.controllers')
 
 	$scope.kifu = kifu.data;
 
+	// Check if the current path is in a variation, or on the primary tree
+	function inVariation(path) {
+		for (var variation in path) {
+			if (variation !== 'm' && path[variation] !== 0) {
+				// path is in a variation
+				return true;
+			}
+		}
+		// path is on the primary tree
+		return false;
+	}
+
 	// Get the initial path from the URL
 	var initialPath = $location.search().path;
 	initialPath = pathFilter(initialPath, 'object');
@@ -36,6 +48,14 @@ angular.module('gokibitz.controllers')
 	$scope.playerUpdate = function (event) {
 		if (event.op === 'init') {
 			return;
+		}
+
+		// In theory, this means it's the last move
+		// (In theory, Communism works! IN THEORY.)
+		if (!inVariation(event.path) && !event.node.children.length) {
+			$scope.lastMove = true;
+		} else {
+			$scope.lastMove = false;
 		}
 
 		// Make sure this happens in the next digest cycle
