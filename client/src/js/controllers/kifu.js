@@ -63,10 +63,12 @@ angular.module('gokibitz.controllers')
 			$scope.sgfComment = comments.format(event.node.comment);
 		});
 	};
-        $scope.toggleKifuVarMode = function () {
-                $scope.variationMode = !$scope.variationMode;
-                $scope.toggleEditMode();
-        };
+
+	$scope.toggleKifuVarMode = function () {
+		$scope.variationMode = !$scope.variationMode;
+		$scope.toggleEditMode();
+	};
+
 	// Set the page title
 	var titleTemplate = $interpolate(
 		'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
@@ -126,7 +128,7 @@ angular.module('gokibitz.controllers')
 				}
 			}
 		});
-	}
+	};
 
 	$scope.editGameComment = false;
 
