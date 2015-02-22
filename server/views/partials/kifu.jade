@@ -25,7 +25,7 @@
 		)
 			.result(
 				ng-if='kifu.game.info.result'
-				ng-show='lastMove'
+				ng-show='lastMove && !player.temporarySequence'
 			)
 				.inner {{ kifu.game.info.result }}
 			sgf(
