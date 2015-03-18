@@ -36,7 +36,7 @@ var gokibitz = angular.module('gokibitz', [
 	'http-auth-interceptor',
 	'angularFileUpload',
 	'ui.utils',
-	'ngStorage',
+	'angular-locker',
 	'720kb.socialshare',
 	'flatui.directives',
 	'duScroll',
@@ -55,9 +55,9 @@ require('http-auth-interceptor');
 require('ui-bootstrap-tpls');
 require('ui-bootstrap');
 require('ui-utils');
-require('ngStorage');
 require('angular-scroll');
 require('angular-socket-io');
+require('angular-locker');
 
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare
@@ -78,7 +78,7 @@ bulk(__dirname, [
 ]);
 
 gokibitz.config(
-	function ($routeProvider, $locationProvider) {
+	function ($routeProvider, $locationProvider, lockerProvider) {
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/index',
@@ -149,6 +149,12 @@ gokibitz.config(
 			});
 
 		$locationProvider.html5Mode(true);
+
+		lockerProvider
+			.setDefaultDriver('local')
+			.setDefaultNamespace('gokibitz')
+			.setSeparator('.')
+			.setEventsEnabled('true');
 	}
 );
 

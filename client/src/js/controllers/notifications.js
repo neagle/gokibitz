@@ -1,9 +1,8 @@
 angular.module('gokibitz.controllers')
 	.controller('NotificationsController',
-    function ($scope, $routeParams, $http, $localStorage) {
-			$scope.$storage = $localStorage;
-			if (typeof $scope.$storage.onlyUnread === 'undefined') {
-				$scope.$storage.onlyUnread = false;
+    function ($scope, $routeParams, $http, locker) {
+			if (typeof locker.get('onlyUnread') === 'undefined') {
+				locker.put('onlyUnread', false);
 			}
     }
 );

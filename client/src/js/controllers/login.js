@@ -1,9 +1,8 @@
 angular.module('gokibitz.controllers')
-	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location, $localStorage) {
-		$scope.$storage = $localStorage;
+	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location, locker) {
 		$scope.error = {};
 		$scope.user = {
-			email: $scope.$storage.email || ''
+			email: locker.get('email') || ''
 		};
 
 		$scope.login = function (form) {
@@ -15,7 +14,7 @@ angular.module('gokibitz.controllers')
 				$scope.errors = {};
 
 				if (!err) {
-					$scope.$storage.email = $scope.user.email;
+					locker.put('email', $scope.user.email);
 					$modalInstance.close($scope.user);
 				} else {
 					angular.forEach(err.errors, function (error, field) {
