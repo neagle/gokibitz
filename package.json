@@ -166,11 +166,6 @@
         "angular"
       ]
     },
-    "ngStorage": {
-      "depends": [
-        "angular"
-      ]
-    },
     "angular-scroll": {
       "depends": [
         "angular"
