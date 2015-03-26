@@ -170,17 +170,20 @@ angular.module('gokibitz.controllers')
 			$scope.updateComment = function (comment) {
 				$scope.disableUpdateComment = true;
 				var self = this;
-
-				$http.put('/api/comment/' + comment._id, comment)
-					.success(function (data) {
-						$scope.disableUpdateComment = false;
-						angular.extend(comment, data.comment);
-						delete self.edit;
-					})
-					.error(function (data) {
-						$scope.disableUpdateComment = false;
-						console.log('Error: ' + data);
-					});
+				if(comment.content.markdown === ""){
+					$scope.deleteComment(comment);
+				} else {
+					$http.put('/api/comment/' + comment._id, comment)
+						.success(function (data) {
+							$scope.disableUpdateComment = false;
+							angular.extend(comment, data.comment);
+							delete self.edit;
+						})
+						.error(function (data) {
+							$scope.disableUpdateComment = false;
+							console.log('Error: ' + data);
+						});
+				}
 			};
 
 			$scope.cancelEdit = function (comment) {
