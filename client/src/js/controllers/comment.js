@@ -170,7 +170,7 @@ angular.module('gokibitz.controllers')
 			$scope.updateComment = function (comment) {
 				$scope.disableUpdateComment = true;
 				var self = this;
-				if(comment.content.markdown == ""){
+				if(comment.content.markdown === ""){
 					$scope.deleteComment(comment);
 				} else {
 					$http.put('/api/comment/' + comment._id, comment)
