@@ -23,6 +23,11 @@
 			ng-swipe-left='swipeLeft($event)'
 			ng-swipe-right='swipeRight($event)'
 		)
+			.result(
+				ng-if='kifu.game.info.result'
+				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence'
+			)
+				.inner {{ kifu.game.info.result }}
 			sgf(
 				src='kifu.game.sgf'
 				start='kifu.path'

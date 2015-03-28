@@ -42,9 +42,9 @@
 					tr
 						th(width='50%') Name
 						th
-						th(ng-show='uploader.isHTML5') Size
+						//th(ng-show='uploader.isHTML5') Size
 						th(ng-show='uploader.isHTML5') Progress
-						th Status
+						//th Status
 						th Actions
 
 				tbody
@@ -66,7 +66,7 @@
 								label='"Public"'
 							)
 
-						td(ng-show='uploader.isHTML5' nowrap)
+						//td(ng-show='uploader.isHTML5' nowrap)
 							| {{ item.file.size/1024/1024|number:2 }} MB
 						td(ng-show='uploader.isHTML5')
 							.progress
@@ -74,7 +74,7 @@
 									role='progressbar'
 									ng-style="{ 'width': item.progress + '%' }"
 								)
-						td.text-center
+						//td.text-center
 							span(ng-show='item.isSuccess')
 								i.glyphicon.glyphicon-ok
 							span(ng-show='item.isCancel')

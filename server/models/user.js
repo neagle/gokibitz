@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var md5 = require('MD5');
+var Comment = require('./comment').Comment;
 
 var UserSchema = new Schema({
 	email: {
@@ -71,7 +72,7 @@ UserSchema
 UserSchema
 	.virtual('userInfo')
 	.get(function () {
-		return { '_id': this._id, 'username': this.username, 'email': this.email };
+		return { '_id': this._id, 'username': this.username, 'email': this.email, 'admin': this.admin };
 	});
 
 UserSchema

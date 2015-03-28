@@ -25,6 +25,15 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 			comment.save(function (error) {
 				if (!error) {
 					kifu.comments.push(comment);
+
+					// TODO: There's gotta be an easier way deal with a schema change than this.
+					// Originals were added after some games had already been uploaded,
+					// so if we find an older game without one, we just make one from the
+					// current state of the sgf.
+					if (!kifu.game.original) {
+						kifu.game.original = kifu.game.sgf;
+					}
+
 					kifu.save(function (error) {
 						if (!error) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
@@ -378,6 +387,11 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 						var comments = kifu.comments;
 						var index = comments.indexOf(id);
 						comments.splice(index, 1);
+
+						if (!kifu.game.original) {
+							kifu.game.original = kifu.game.sgf;
+						}
+
 						kifu.save();
 					});
 					comment.remove();

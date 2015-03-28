@@ -27,6 +27,18 @@ angular.module('gokibitz.controllers')
 
 	$scope.kifu = kifu.data;
 
+	// Check if the current path is in a variation, or on the primary tree
+	function inVariation(path) {
+		for (var variation in path) {
+			if (variation !== 'm' && path[variation] !== 0) {
+				// path is in a variation
+				return true;
+			}
+		}
+		// path is on the primary tree
+		return false;
+	}
+
 	// Get the initial path from the URL
 	var initialPath = $location.search().path;
 	initialPath = pathFilter(initialPath, 'object');
@@ -36,6 +48,14 @@ angular.module('gokibitz.controllers')
 	$scope.playerUpdate = function (event) {
 		if (event.op === 'init') {
 			return;
+		}
+
+		// In theory, this means it's the last move
+		// (In theory, Communism works! IN THEORY.)
+		if (!inVariation(event.path) && !event.node.children.length) {
+			$scope.lastMove = true;
+		} else {
+			$scope.lastMove = false;
 		}
 
 		// Make sure this happens in the next digest cycle
@@ -64,6 +84,11 @@ angular.module('gokibitz.controllers')
 		});
 	};
 
+	$scope.toggleKifuVarMode = function () {
+		$scope.variationMode = !$scope.variationMode;
+		$scope.toggleEditMode();
+	};
+
 	// Set the page title
 	var titleTemplate = $interpolate(
 		'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
@@ -84,40 +109,6 @@ angular.module('gokibitz.controllers')
 		newMode = !$scope._editable.editMode;
 		$scope._editable.set(newMode, false);
 		$scope.editMode = newMode;
-	};
-
-	// Variation mode lets users add variations to their comments by interacting with the board
-	$scope.toggleVariationMode = function (startingColor) {
-		var newMode;
-
-		$scope._editable = $scope._editable || new WGo.Player.Editable($scope.player, $scope.player.board);
-		newMode = !$scope._editable.editMode;
-
-		var theme = $scope.player.board.theme;
-
-		$scope.player.gkRecordingVariation = false;
-		$scope._editable.set(newMode, true);
-		$scope.variationMode = newMode;
-
-		var lastMove = $scope.player.kifuReader.node.move;
-
-		if ($scope.variationMode) {
-			$scope.player.gkRecordingVariation = true;
-			$scope.player.gkVariationArr = [];
-		}
-
-		if (!$scope.variationMode && $scope.player.oneBack) {
-			$scope.player.gkRecordingVariation = false;
-			$scope.player.next();
-			$scope.player.oneBack = false;
-			$scope.player.gkRecordingVariation = true;
-		}
-		if ($scope.variationMode && lastMove && lastMove.c === startingColor) {
-			$scope.player.gkRecordingVariation = false;
-			$scope.player.oneBack = true;
-			$scope.player.previous();
-			$scope.player.gkRecordingVariation = true;
-		}
 	};
 
 	// Let touchscreen users swipe left and right to navigate
@@ -165,7 +156,7 @@ angular.module('gokibitz.controllers')
 				}
 			}
 		});
-	}
+	};
 
 	$scope.editGameComment = false;
 

@@ -187,10 +187,15 @@ router.get('/:shortid/sgf', function (req, res) {
 
 						comments.forEach(function (comment) {
 							gamer.goTo(comment.path);
-							gamer.comment(gamer.comment() + '\n' +
-								comment.user.username + ': ' +
-								comment.content.markdown + '\n'
-							);
+							var str = gamer.comment();
+
+							if (str) {
+								str += '\n';
+							}
+
+							str = str + comment.user.username + ': ' + comment.content.markdown + '\n';
+
+							gamer.comment(str);
 						});
 
 						sgf = smartgame.generate(gamer.getSmartgame());

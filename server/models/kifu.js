@@ -94,7 +94,17 @@ kifuSchema.virtual('game.info.white.rank')
 
 kifuSchema.virtual('game.info.result')
 	.get(function () {
-		return getProp('RE', this.game.sgf);
+		var result = getProp('RE', this.game.sgf);
+		// Find numbers in results
+		// @see http://www.regexr.com/3afnu
+		var numRegexp = /\d{0,3}\.\d{0,2}/;
+
+		// Strip unnecessary trailing zeros
+		// Example: W+5.70 → W+5.7
+		return result.replace(numRegexp, function (match) {
+			// Turning a number into a string strips trailing zeros through MAGIC
+			return Number(match).toString();
+		});
 	});
 
 kifuSchema.virtual('game.info.source')
