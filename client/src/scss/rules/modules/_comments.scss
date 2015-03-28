@@ -3,15 +3,22 @@
 		/*transition: none;*/
 	/*}*/
 .comments {
+	border: 2px dotted purple;
 
 	.panel-body {
-		min-height: 100px;
 		position: relative;
 
 		&.loading {
-			border: 10px solid yellow;
+			/*border: 10px solid blue;*/
 			/*min-height: 100px;*/
-			opacity: 0.3;
+			/*opacity: 0.3;*/
+		}
+	}
+
+	.media-list {
+		border: 2px dashed orange;
+		* {
+			border: 3px solid green;
 		}
 	}
 
@@ -20,6 +27,7 @@
 		/*background: {*/
 			/*color: $flat-clouds;*/
 		/*}*/
+		border: 3px solid red;
 		word-break: break-word;
 
 		.btn-group {
@@ -63,18 +71,24 @@
 	}
 
 	.animate {
-		&.ng-enter,
-		&.ng-leave {
+		&.ng-enter {
 			transition: all 0.5s;
+			position: relative;
+		}
+		&.ng-leave {
+			/*transition: all 10s;*/
+			/*transition: all 0.5s;*/
 		}
 
 		&.ng-leave.ng-leave-active,
 		&.ng-enter {
+			background: red;
 			opacity: 0;
 		}
 
 		&.ng-enter.ng-enter-active,
 		&.ng-leave	{
+			background: green;
 			opacity: 1;
 		}
 	}

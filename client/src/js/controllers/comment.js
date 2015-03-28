@@ -40,16 +40,18 @@ angular.module('gokibitz.controllers')
 			var canceler;
 
 			$scope.listComments = function (alreadyRendered) {
+				console.log('list comments');
 				var path;
 
 				// Turn off animation
 				$scope.loading = true;
 
-				//if (!alreadyRendered) {
-					////Clear existing comments
-					//$scope.comments = [];
-					//$scope.numComments = null;
-				//}
+				if (!alreadyRendered) {
+					// Clear existing comments
+					$scope.displayComments = [];
+					$scope.comments = [];
+					$scope.numComments = null;
+				}
 
 				// Cancel any previous listComments calls
 				if (canceler) {
@@ -113,7 +115,13 @@ angular.module('gokibitz.controllers')
 							// items is relatively complicated.
 
 							// Add an initial chunk of comments
-							$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							//$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							$scope.comments = data;
+							$scope.displayComments = data;
+							//$scope.displayComments = [];
+							//$scope.addMoreComments();
+
+							$scope.loading = false;
 							//console.log('$scope.comments', $scope.comments);
 
 							// ...then add the rest iteratively
@@ -121,9 +129,19 @@ angular.module('gokibitz.controllers')
 							var rate = 1;
 
 							function addCommentsToScope(data) {
+								console.log('add comments to scope', data);
 								$scope.comments = $scope.comments.concat(data.splice(0, rate));
 
 								if (data.length) {
+									// Make sure we don't keep loading comments for a move we're
+									// not currently on
+									if (
+										!angular.equals($scope.kifu.path, data[0].pathObject) &&
+										$scope.kifu.path.m !== 0
+									) {
+										return;
+									}
+
 									addCommentsTimer = $timeout(function () {
 										// Recurse!
 										addCommentsToScope(data);
@@ -139,7 +157,7 @@ angular.module('gokibitz.controllers')
 								}
 							}
 
-							addCommentsToScope(data);
+							//addCommentsToScope(data);
 						} else {
 							$scope.loading = false;
 							$scope.comments = data;
@@ -150,6 +168,28 @@ angular.module('gokibitz.controllers')
 						$scope.comments = [];
 						console.log('Error: ' + data);
 					});
+			};
+
+			$scope.addMoreComments = function (num) {
+				return;
+				//console.log('add more comments');
+
+				if (!$scope.comments) {
+					return;
+				}
+
+				if (!$scope.displayComments) {
+					$scope.displayComments = [];
+				}
+
+				var position = ($scope.displayComments) ? $scope.displayComments.length : 0;
+				num = num || 10;
+
+				console.log('position, num', position, num);
+
+				if ($scope.comments.length > position) {
+					$scope.displayComments = $scope.displayComments.concat($scope.comments.slice(position, position + num));
+				}
 			};
 
 			$scope.addComment = function () {
@@ -206,6 +246,7 @@ angular.module('gokibitz.controllers')
 					});
 
 			};
+			console.log('$scope.currentUser', $scope.currentUser);
 
 			$scope.toggleStar = function (comment) {
 				var userId = $scope.currentUser._id;
@@ -251,6 +292,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
+				console.log(+new Date(), 'WATCH');
 				$scope.listComments();
 			}, true);
 

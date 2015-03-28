@@ -40,7 +40,8 @@ var gokibitz = angular.module('gokibitz', [
 	'720kb.socialshare',
 	'flatui.directives',
 	'duScroll',
-	'btford.socket-io'
+	'btford.socket-io',
+	'infinite-scroll'
 ]);
 
 require('angular-ui-router');
@@ -65,6 +66,8 @@ require('./lib/angular-socialshare.js');
 
 // @see https://gist.github.com/cirqueit/b668f464a80ad5c8ca0b
 require('./lib/flatui.directives.js');
+
+require('./lib/ng-infinite-scroll.js');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);

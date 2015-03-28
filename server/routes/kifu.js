@@ -118,7 +118,7 @@ router.get('/:shortid', function (req, res) {
 // Update a kifu
 router.put('/:shortid', function (req, res) {
 	console.log('Updating kifu');
-	console.log('req.body', req.body);
+	//console.log('req.body', req.body);
 
 
 	if (!req.body) {

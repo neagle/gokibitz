@@ -68,6 +68,7 @@
     "lodash": "^2.4.1",
     "node-bourbon": "^1.2.3",
     "pretty-hrtime": "^1.0.0",
+    "scsslint": "0.0.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
