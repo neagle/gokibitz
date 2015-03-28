@@ -97,7 +97,7 @@ If you have any issues following these instructions, please let me know so that 
 Development Notes
 -----------------
 
-If you're fixing a bug, do me a solid and [create an issue](https://github.com/neagle/gokibitz/issues/new) and assign it to yourself. That way I won't try to fix it while you're working.
+If you're fixing a bug, do me a solid and [create an issue](https://github.com/neagle/gokibitz/issues/new) and mention that you're working on it. That way I won't try to fix it while you're working.
 
 If you're working on a feature, feel free to work on it and then unveil it to see what I think, but I'm also happy to give you feedback beforehand via an issue.
 
