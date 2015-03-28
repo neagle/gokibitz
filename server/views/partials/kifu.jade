@@ -73,6 +73,7 @@
 
 					div(ng-show='editGameComment')
 						textarea.form-control.bottom-buffer(
+							msd-elastic='\\n'
 							rows='6'
 							ng-model='nodeComment'
 							ng-disabled='savingGameComment'
@@ -290,6 +291,7 @@
 
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
+										msd-elastic='\\n'
 										rows='3'
 										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
@@ -375,6 +377,7 @@
 											span
 									label Comment:
 									textarea#main-comment-box.form-control(
+										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
 										rows=3

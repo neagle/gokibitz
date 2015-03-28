@@ -33,6 +33,7 @@
     "angular": "^1.3.8",
     "angular-animate": "^1.3.5",
     "angular-cookies": "^1.3.11",
+    "angular-elastic": "^2.3.5",
     "angular-locker": "^1.2.1",
     "angular-resource": "^1.3.5",
     "angular-route": "^1.3.5",
@@ -91,6 +92,7 @@
     "angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
     "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
     "angular-socket-io": "./node_modules/angular-socket-io/socket.js",
+    "angular-elastic": "./node_modules/angular-elastic/elastic.js",
     "io": "./node_modules/socket.io/node_modules/socket.io-client/socket.io.js",
     "angular-locker": "./node_modules/angular-locker/dist/angular-locker.js",
     "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
@@ -177,6 +179,11 @@
     "angular-socket-io": {
       "depends": [
         "io"
+      ]
+    },
+    "angular-elastic": {
+      "depends": [
+        "angular"
       ]
     },
     "gokibitz-wgo": {
