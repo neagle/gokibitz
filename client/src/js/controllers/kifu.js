@@ -121,11 +121,64 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.nextCommentedMove = function () {
-		console.log('$scope.kifu.pathsWithComments', $scope.kifu.pathsWithComments);
+		var closestPair = findClosestPair($scope.kifu.path);
+		console.log(closestPair);
+		$scope.player.goTo(closestPair.high);	
+	};
+
+	var findClosestPair = function(currentPath){
+		var high = $scope.kifu.pathsWithComments.length;
+		var low = -1;
+		while (high - low > 1){
+			var index = Math.round((high + low) / 2);
+			var indexPath = $scope.kifu.pathsWithComments[index];
+			console.log(index, low, high, currentPath.m, indexPath.m);
+			if (indexPath.m < currentPath.m){
+				low = index;
+			} else if (indexPath.m > currentPath.m){
+				high = index;
+			} else {
+				//We are either on a commented move or we are one a move with several variations
+				var matchingBranches = 0;
+				for (var i = low; i < high; i++){
+					var iPath = $scope.kifu.pathsWithComments[i];
+					var branchCompareScore = branchSameness(currentPath, iPath);
+					if (matchingBranches < branchCompareScore) {
+						matchingBranches = branchCompareScore;
+						low = high;
+						high = i;
+					}
+					
+				}
+				return {low:$scope.kifu.pathsWithComments[low], high:$scope.kifu.pathsWithComments[high]};
+			}
+		} 
+		return {low:$scope.kifu.pathsWithComments[low], high:$scope.kifu.pathsWithComments[high]};
+	};
+	
+	var branchSameness = function(currentPath, iPath){
+		var iProps = Object.keys(iPath);
+		var currentPathProps = Object.keys(currentPath);
+		if( iProps.length > currentPathProps.length){
+			var propsToCompare = iProps.length;
+		} else {
+			var propsToCompare = currentPathProps.length;
+		}
+		var count = 0;
+		for (var i; i < propsToCompare; i++){
+			var currentPathValue = (currentPath[i] !== 'undefined') ? currentPath[i] : 0;
+			var pathValue = (iPath[i] !== 'undefined') ? iPath[i] : 0;
+			if(currentPathValue === pathValue){
+				count++;
+			}
+		}
+		return count;
 	};
 
 	$scope.previousCommentedMove = function () {
-		console.log('$scope.kifu.pathsWithComments', $scope.kifu.pathsWithComments);
+		var closestPair = findClosestPair($scope.kifu.path);
+		console.log(closestPair);
+		$scope.player.goTo(closestPair.low);	
 	};
 
 	// TODO: Use this method of getting the edited version of the SGF and doing
