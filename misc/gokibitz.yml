@@ -1,0 +1,13 @@
+# ~/.tmuxinator/gokibitz.yml
+
+project_name: gokibitz
+project_root: ~/path/to/gokibitz
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - "vim README.md"
+        -
+        - mongod --config /usr/local/etc/mongod.conf
+        - ./bin/webdriver-manager start
+        - gulp watch

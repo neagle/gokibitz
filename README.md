@@ -104,3 +104,56 @@ If you're working on a feature, feel free to work on it and then unveil it to se
 ### Error: listen EADDRINUSE
 
 If you're like me and you close your laptop without shutting down your `gulp watch` process, sometimes when you come back you'll close your gulp watch, but you'll still be able to access the site locally and if you try to start up `gulp watch` again, you'll get an `EADDRESSINUSE` error. (And you'll still get console output about requests.) Just type `killall node` on a Mac (Command for Windows?) to shut down the node process and you should be able to start `gulp watch` again. If anyone wants to let me know how to fix this, I'd be much obliged.
+
+### Running Tests
+
+There are two kinds of tests in this project: acceptance tests (sometimes
+called functional or end-to-end tests) and unit tests. Acceptance tests make
+sure that the system is working as a whole and unit tests make sure that the
+logic of individual functions is correct.
+
+#### Acceptance tests:
+
+Assuming you have already run `npm install` you should already have links to
+the binaries you need in `./bin`.
+
+First you will need to get the Selenium Webdriver driver for Chrome. This is a
+one-time task.
+
+```bash
+./bin/webdriver-manager update
+```
+
+Then you will need to open the webdriver-manager in a separate terminal window,
+terminal tab, tmux pane, etc.
+
+```bash
+./bin/webdriver-manager start
+```
+
+In your main terminal you can run the tests with:
+
+```bash
+./bin/protractor spec/acceptance/conf.js
+```
+
+Note: You do not need to be running a development server, but you do need to
+have MongoDB running. The acceptance test starts up its own test app server
+that needs to connect to Mongo.
+
+If all goes well you should see a Chrome window open briefly and you should see
+information about passing (and failing) tests in your terminal.
+
+For examples of how to write acceptance tests look in the
+[spec/acceptance](spec/acceptance) folder. You can also look at the
+documentation for [Protractor](http://angular.github.io/protractor/#/) and
+[Chai](http://chaijs.com/) for information about the syntax.
+
+#### Unit tests
+
+These haven't been implemented yet.
+
+### Tmuxinator
+
+If you use [Tmuxinator](https://github.com/tmuxinator/tmuxinator) this
+[workspace file](misc/gokibitz.yml) might be helpful.
