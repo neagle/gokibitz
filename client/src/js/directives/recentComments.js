@@ -105,7 +105,7 @@ angular.module('gokibitz.directives')
 						}
 						since = new Date();
 					});
-      }, 3000);
+      }, 10000);
 
 			$scope.$on('$destroy', function () {
 				clearInterval(commentPoll);
