@@ -6,30 +6,34 @@ angular.module('gokibitz.controllers')
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
-				var index = function () {
-					return _.findIndex($scope.comments, function (n) {
-						return n._id === data.comment._id;
-					});
-				};
+				var pathString = pathFilter($scope.kifu.path, 'string');
 
-				switch (data.change) {
-					case 'new':
-						$scope.comments.push(data.comment);
-						break;
-					case 'update':
-						$scope.comments[index()] = data.comment;
-						break;
-					case 'star':
-						$scope.comments[index()].stars = data.comment.stars;
-						break;
-					case 'unstar':
-						$scope.comments[index()].stars = data.comment.stars;
-						break;
-					case 'delete':
-						$scope.comments = _.filter($scope.comments, function (n) {
-							return n._id !== data.comment._id;
+				if (data.comment && data.comment.path === pathString) {
+					var index = function () {
+						return _.findIndex($scope.comments, function (n) {
+							return n._id === data.comment._id;
 						});
-						break;
+					};
+
+					switch (data.change) {
+						case 'new':
+							$scope.comments.push(data.comment);
+							break;
+						case 'update':
+							$scope.comments[index()] = data.comment;
+							break;
+						case 'star':
+							$scope.comments[index()].stars = data.comment.stars;
+							break;
+						case 'unstar':
+							$scope.comments[index()].stars = data.comment.stars;
+							break;
+						case 'delete':
+							$scope.comments = _.filter($scope.comments, function (n) {
+								return n._id !== data.comment._id;
+							});
+							break;
+					}
 				}
 			});
 
@@ -171,16 +175,20 @@ angular.module('gokibitz.controllers')
 				$scope.disableUpdateComment = true;
 				var self = this;
 
-				$http.put('/api/comment/' + comment._id, comment)
-					.success(function (data) {
-						$scope.disableUpdateComment = false;
-						angular.extend(comment, data.comment);
-						delete self.edit;
-					})
-					.error(function (data) {
-						$scope.disableUpdateComment = false;
-						console.log('Error: ' + data);
-					});
+				if (comment.content.markdown === '') {
+					$scope.deleteComment(comment);
+				} else {
+					$http.put('/api/comment/' + comment._id, comment)
+						.success(function (data) {
+							$scope.disableUpdateComment = false;
+							angular.extend(comment, data.comment);
+							delete self.edit;
+						})
+						.error(function (data) {
+							$scope.disableUpdateComment = false;
+							console.log('Error: ' + data);
+						});
+				}
 			};
 
 			$scope.cancelEdit = function (comment) {
@@ -266,7 +274,7 @@ angular.module('gokibitz.controllers')
 			// initialized till domready
 			$scope.$watch('scope.player', function () {
 				$scope.player.addEventListener('update', function (event) {
-					if ($scope.variationMode && $scope.player.gkRecordingVariation) {
+					if ($scope.variationMode) {
 						if (typeof $scope.originalComment === 'undefined') {
 							if (typeof $scope.formData.content !== 'undefined') {
 								// If there's content in the comment box, preserve it
@@ -303,7 +311,6 @@ angular.module('gokibitz.controllers')
 					$scope.player.gkVariationArr.pop();
 				}
 			}
-
 			// TODO: This function obviously belongs some place universal.
 			function humanCoordinates(move) {
 				// Note the missing i
@@ -314,6 +321,47 @@ angular.module('gokibitz.controllers')
 				return x + y;
 			}
 
+			$scope.variationKeyListener = function (event) {
+				switch(event.keyCode){
+					// Enter
+					case 13:
+						$scope.endVariationMode(event, true);
+						break;
+					// Escape
+					case 27:
+						$scope.endVariationMode(event, false);
+						break;
+					default:
+						return true;
+				}
+				return false;
+			};
+
+			// Variation mode lets users add variations to their comments by interacting with the board
+			$scope.toggleVariationMode = function (startingColor) {
+				$scope.toggleKifuVarMode();
+				var lastMove = $scope.player.kifuReader.node.move;
+
+				if ($scope.variationMode) {
+					$scope.player.gkVariationArr = [];
+					$document[0].addEventListener('keyup', $scope.variationKeyListener);
+				} else {
+					$document[0].removeEventListener('keyup', $scope.variationKeyListener);
+
+					// Trigger the mouseout behavior that removes any markers
+					$scope._editable._ev_out();
+				}
+
+				if ($scope.player.oneBack) {
+					$scope.player.next();
+					$scope.player.oneBack = false;
+				}
+				if (lastMove && lastMove.c === startingColor) {
+					$scope.player.oneBack = true;
+					$scope.player.previous();
+				}
+			};
+
 			$scope.endVariationMode = function ($event, add) {
 				$event.preventDefault();
 
@@ -321,7 +369,7 @@ angular.module('gokibitz.controllers')
 					if ($scope.player.gkVariationArr.length) {
 						$scope.formData.content = $scope.originalComment + ' ' + $scope.player.gkVariationArr.join(' ');
 					}
-				} else {
+				} else if (typeof $scope.originalComment !== 'undefined') {
 					$scope.formData.content = $scope.originalComment;
 				}
 

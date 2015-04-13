@@ -112,3 +112,99 @@
 		}
 	}
 }
+
+.player-container {
+	position: relative;
+}
+
+.result {
+	color: $flat-clouds;
+	cursor: pointer;
+	font: {
+		family: Righteous, sans-serif;
+		size: 72px;
+	}
+	left: 0;
+	line-height: 1;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 30%;
+	z-index: 1000;
+
+	@media (max-width: $screen-xs-min) {
+		font-size: 36px;
+	}
+
+	@media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
+		font-size: 48px;
+	}
+
+	@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+		font-size: 36px;
+	}
+
+	@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+		font-size: 36px;
+	}
+
+	@media (min-width: $screen-lg-min) {
+		font-size: 60px;
+	}
+
+	> div {
+		background: {
+			color: transparentize($flat-carrot, 0.1);
+		}
+		border: {
+			radius: 5px;
+		}
+		display: inline-block;
+		padding: 20px;
+	}
+
+	$speed: 0.2s;
+	$ease: cubic-bezier(0.39, 0.575, 0.565, 1);
+	$delay: $speed;
+	$transform-origin: scale(0.8, 0.8) translate(0, 30px);
+	$transform-destination: scale(1, 1) translate(0, 0);
+
+	&.ng-hide-add, &.ng-hide-remove	{
+		transition: 0s linear all;
+	}
+
+	// Transition hiding items
+  &.ng-hide-add-active {
+		position: absolute;
+    transition: $speed $ease all;
+	}
+	// Transition revealed items
+	&.ng-hide-remove-active {
+		transition: $speed $ease $delay all;
+	}
+
+	&.ng-hide {
+	}
+
+	// Hiding items go from this:
+	&.ng-hide-add {
+		opacity: 1;
+		transform: $transform-destination;
+	}
+	// ...to this.
+	&.ng-hide-add.ng-hide-add-active {
+		opacity: 0;
+		transform: $transform-origin;
+	}
+
+	// Revealed items go from this:
+	&.ng-hide-remove {
+		opacity: 0;
+		transform: $transform-origin;
+	}
+	// ...to this.
+	&.ng-hide-remove.ng-hide-remove-active {
+		opacity: 1;
+		transform: $transform-destination;
+	}
+}

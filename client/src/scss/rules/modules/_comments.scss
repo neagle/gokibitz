@@ -4,11 +4,23 @@
 	/*}*/
 .comments {
 
+	.panel-body {
+		min-height: 100px;
+		position: relative;
+
+		&.loading {
+			border: 10px solid yellow;
+			/*min-height: 100px;*/
+			opacity: 0.3;
+		}
+	}
+
 	.comment {
 
 		/*background: {*/
 			/*color: $flat-clouds;*/
 		/*}*/
+		word-break: break-word;
 
 		.btn-group {
 			opacity: 0;

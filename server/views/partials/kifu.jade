@@ -6,6 +6,12 @@
 			ng-swipe-left='swipeLeft($event)'
 			ng-swipe-right='swipeRight($event)'
 		)
+			.result(
+				ng-if='kifu.game.info.result'
+				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
+				ng-click='hideResult = true'
+			)
+				.inner {{ kifu.game.info.result }}
 			sgf(
 				always-visible
 				src='kifu.game.sgf'
@@ -22,6 +28,59 @@
 
 		//-.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
 		.sgf-comments.col-xs-12.col-sm-7
+			div.panel.panel-default(
+				ng-hide='kifu.path.m !== 0'
+			)
+				.panel-heading
+					span.fui-info
+					= ' '
+					| Game Info
+				.panel-body
+					table.table-condensed
+						tbody
+							tr(ng-if='kifu.game.info.date')
+								th Date:
+								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.result')
+								th Result:
+								td {{ kifu.game.info.result }}
+
+			div.panel.panel-default
+				div.panel-heading
+					span.fui-document
+					= ' '
+					| Game Comments
+				div.panel-body
+					div(
+						ng-bind-html='sgfComment'
+						ng-hide='editGameComment'
+					)
+					div(ng-if='!sgfComment && kifu.owner.username !== currentUser.username && !editGameComment') &nbsp;
+
+					div(ng-show='editGameComment')
+						textarea.form-control.bottom-buffer(
+							msd-elastic='\\n'
+							rows='6'
+							ng-model='nodeComment'
+							ng-disabled='savingGameComment'
+							gk-focus-me='editGameComment'
+						)
+					div(ng-show='kifu.owner.username === currentUser.username')
+						div(ng-show='!editGameComment')
+							button.btn.btn-sm.btn-default(
+								ng-click='toggleEditGameComment()'
+							) Edit
+
+						div(ng-show='editGameComment')
+							button.btn.btn-sm.btn-primary(
+								ng-click='saveGameComment()'
+							) Save
+
+							= ' '
+
+							button.btn.btn-sm.btn-warning(
+								ng-click='cancelGameComment()'
+							) Cancel
 
 			.row
 				.kifu-banner.col-xs-12
@@ -227,6 +286,7 @@
 											)
 										.star.pull-left(
 										)
+
 											// Other users' comments
 											a(
 												ng-if='comment.user.username !== currentUser.username'
@@ -278,6 +338,7 @@
 
 										.comment.media-body(ng-hide='!edit')
 											textarea.form-control(
+												msd-elastic='\\n'
 												rows='3'
 												ng-disabled='disableUpdateComment'
 												ng-model='comment.content.markdown'
@@ -363,6 +424,7 @@
 													span
 											label Comment:
 											textarea#main-comment-box.form-control(
+												msd-elastic='\\n'
 												ng-disabled='disableAddComment || variationMode'
 												ng-model='formData.content'
 												rows=3

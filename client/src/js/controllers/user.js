@@ -20,7 +20,6 @@ angular.module('gokibitz.controllers')
 
 			// Valid ranks are 30-1k, 1-9d, and 1-9p
 			$scope.isValidRank = function (rank) {
-				rank = rank.toLowerCase();
 				var suffixes = ['k', 'd', 'p'];
 
 				var i = 0;

@@ -1,139 +1,232 @@
-.col-md-12
-	h3 Upload
+.container-fluid
+	.row
+		.col-md-12
+			h3 Upload
 
-.col-md-4
-	.panel.panel-default.bottom-buffer
-		.panel-heading Select Files
-		.panel-body(
-			nv-file-drop=''
-			nv-file-over=''
-			over-class='file-over'
-			uploader='uploader'
-		)
-			div(
-				ng-show='uploader.isHTML5'
-			)
-
-				p Upload <abbr title="SmartGame Format">SGFs</abbr> for viewing on GoKibitz. They can be your games or others&rsquo;, but please be aware that games with commentary are generally copyrighted. Please don&rsquo;t upload them without the owner&rsquo;s permission.
-
-				hr
-
-				input.form-control(
-					nv-file-select
+		.col-md-4
+			.panel.panel-default.bottom-buffer
+				.panel-heading Select Files
+				.panel-body(
+					nv-file-drop=''
+					nv-file-over=''
+					over-class='file-over'
 					uploader='uploader'
-					type='file'
-					multiple
 				)
+					div(
+						ng-show='uploader.isHTML5'
+					)
 
-				p.help-block You can also drag and drop SGF files here directly.
-.col-md-8
-	.panel.panel-default
-		.panel-heading Upload Queue
-		.panel-body(
-			nv-file-drop=''
-			nv-file-over=''
-			over-class='file-over'
-			uploader='uploader'
-		)
-			//-p Queue length: {{ uploader.queue.length }}
+						p Upload <abbr title="SmartGame Format">SGFs</abbr> for viewing on GoKibitz. They can be your games or others&rsquo;, but please be aware that games with commentary are generally copyrighted. Please don&rsquo;t upload them without the owner&rsquo;s permission.
 
-			table.table
-				thead
-					tr
-						th(width='50%') Name
-						th
-						th(ng-show='uploader.isHTML5') Size
-						th(ng-show='uploader.isHTML5') Progress
-						th Status
-						th Actions
+						hr
 
-				tbody
-					tr(ng-repeat='item in uploader.queue')
-						td
-							strong
-								a(
-									ng-if='item.shortid'
-									href='/kifu/{{ item.shortid }}'
-								)
-									| {{ item.file.name }}
-								span(
-									ng-if='!item.shortid'
-								)
-									| {{ item.file.name }}
-						td
-							flatui-checkbox.inline-block(
-								model='item.public'
-								label='"Public"'
-							)
-
-						td(ng-show='uploader.isHTML5' nowrap)
-							| {{ item.file.size/1024/1024|number:2 }} MB
-						td(ng-show='uploader.isHTML5')
-							.progress
-								.progress-bar(
-									role='progressbar'
-									ng-style="{ 'width': item.progress + '%' }"
-								)
-						td.text-center
-							span(ng-show='item.isSuccess')
-								i.glyphicon.glyphicon-ok
-							span(ng-show='item.isCancel')
-								i.glyphicon.glyphicon-ban-circle
-							span(ng-show='item.isError')
-								i.glyphicon.glyphicon-remove
-						td(nowrap)
-							button.btn.btn-success.btn-xs(
-								type='button'
-								ng-click='item.upload()'
-								ng-disabled='item.isReady || item.isUploading || item.isSuccess'
-							)
-								span.fui-upload
-								= ' Upload'
-							= ' '
-							button.btn.btn-warning.btn-xs(
-								type='button'
-								ng-click='item.cancel()'
-								ng-disabled='!item.isUploading'
-							)
-								span.fui-cross
-								= ' Cancel'
-							= ' '
-							button.btn.btn-danger.btn-xs(
-								type='button'
-								ng-click='item.remove()'
-							)
-								span.fui-trash
-								= ' Remove'
-
-			div(ng-show='notAnSgf')
-				p.text-danger Sorry! <code>{{ notAnSgf.name }}</code> doesn&rsquo;t appear to be an SGF file.
-
-			div(ng-show='uploader.queue.length')
-				p.help-block You can opt out of making your kifu public. Anyone can still view it and make comments if they have the URL, but neither it nor any comments made on it will show up elsewhere on the site.
-			//div
-				p Queue progress:
-					.progress
-						.progress-bar(
-							role='progressbar'
-							ng-style="{ 'width': uploader.progress + '%' }"
+						input.form-control(
+							nv-file-select
+							uploader='uploader'
+							type='file'
+							multiple
 						)
-				button.btn.btn-success.btn-s(
-					ng-click='uploader.uploadAll()'
-					ng-disabled='!uploader.getNotUploadedItems().length'
-				)
-					span.fui-upload
-					= ' Upload all'
-				= ' '
-				button.btn.btn-warning.btn-s(
-					ng-click='uploader.cancelAll()'
-					ng-disabled='!uploader.isUploading'
-				)
-					span.fui-cross
-					= ' Cancel all'
-				= ' '
-				button.btn.btn-danger.btn-s(
-					ng-click='uploader.removeAll()'
-				)
-					span.fui-trash
-					= ' Remove all'
+
+						p.help-block You can also drag and drop SGF files here directly.
+		.col-md-8
+			.row
+				.col-xs-12
+					.panel.panel-default
+						.panel-heading Upload Queue
+						.panel-body(
+							nv-file-drop=''
+							nv-file-over=''
+							over-class='file-over'
+							uploader='uploader'
+						)
+							//-p Queue length: {{ uploader.queue.length }}
+
+							table.table
+								thead
+									tr
+										th(width='50%') Name
+										th
+										//th(ng-show='uploader.isHTML5') Size
+										th(ng-show='uploader.isHTML5') Progress
+										//th Status
+										th Actions
+
+								tbody
+									tr(ng-repeat='item in uploader.queue')
+										td
+											strong
+												a(
+													ng-if='item.shortid'
+													href='/kifu/{{ item.shortid }}'
+												)
+													| {{ item.file.name }}
+												span(
+													ng-if='!item.shortid'
+												)
+													| {{ item.file.name }}
+										td
+											flatui-checkbox.inline-block(
+												model='item.public'
+												label='"Public"'
+											)
+
+										//td(ng-show='uploader.isHTML5' nowrap)
+											| {{ item.file.size/1024/1024|number:2 }} MB
+										td(ng-show='uploader.isHTML5')
+											.progress
+												.progress-bar(
+													role='progressbar'
+													ng-style="{ 'width': item.progress + '%' }"
+												)
+										//td.text-center
+											span(ng-show='item.isSuccess')
+												i.glyphicon.glyphicon-ok
+											span(ng-show='item.isCancel')
+												i.glyphicon.glyphicon-ban-circle
+											span(ng-show='item.isError')
+												i.glyphicon.glyphicon-remove
+										td(nowrap)
+											button.btn.btn-success.btn-xs(
+												type='button'
+												ng-click='item.upload()'
+												ng-disabled='item.isReady || item.isUploading || item.isSuccess'
+											)
+												span.fui-upload
+												= ' Upload'
+											= ' '
+											button.btn.btn-warning.btn-xs(
+												type='button'
+												ng-click='item.cancel()'
+												ng-disabled='!item.isUploading'
+											)
+												span.fui-cross
+												= ' Cancel'
+											= ' '
+											button.btn.btn-danger.btn-xs(
+												type='button'
+												ng-click='item.remove()'
+											)
+												span.fui-trash
+												= ' Remove'
+
+							div(ng-show='notAnSgf')
+								p.text-danger Sorry! <code>{{ notAnSgf.name }}</code> doesn&rsquo;t appear to be an SGF file.
+
+							div(ng-show='uploader.queue.length')
+								p.help-block You can opt out of making your kifu public. Anyone can still view it and make comments if they have the URL, but neither it nor any comments made on it will show up elsewhere on the site.
+							//div
+								p Queue progress:
+									.progress
+										.progress-bar(
+											role='progressbar'
+											ng-style="{ 'width': uploader.progress + '%' }"
+										)
+								button.btn.btn-success.btn-s(
+									ng-click='uploader.uploadAll()'
+									ng-disabled='!uploader.getNotUploadedItems().length'
+								)
+									span.fui-upload
+									= ' Upload all'
+								= ' '
+								button.btn.btn-warning.btn-s(
+									ng-click='uploader.cancelAll()'
+									ng-disabled='!uploader.isUploading'
+								)
+									span.fui-cross
+									= ' Cancel all'
+								= ' '
+								button.btn.btn-danger.btn-s(
+									ng-click='uploader.removeAll()'
+								)
+									span.fui-trash
+									= ' Remove all'
+			.row
+				.col-md-6
+					.panel.panel-default
+						.panel-heading Paste Raw SGF
+						.panel-body
+							.row
+								.col-xs-12
+									.alert.alert-success(
+										role='alert'
+										ng-if='rawSuccess'
+									)
+										strong Success!
+										p
+											a(href='/kifu/{{ rawSuccess.shortid }}') View your new Kifu
+									.alert.alert-danger(
+										role='alert'
+										ng-if='rawError'
+									)
+										strong Something went wrong!
+										= ' '
+										p {{ rawError.message }}
+
+									textarea.form-control(
+										rows=8
+										ng-model='rawSgf'
+										ng-change='checkSgf()'
+										ng-disabled='uploading'
+									)
+									flatui-checkbox.inline-block(
+										model='rawPublic'
+										label='"Public"'
+									)
+									p.pull-right.top-buffer
+										button.btn.btn-default(
+											ng-disabled='!rawSgf || uploading'
+											ng-click='uploadRawSgf()'
+										) Upload
+							.row
+								.col-xs-12
+									.alert(ng-if='!rawPublic')
+										p
+											strong Private.
+											= ' '
+											| Anyone can still view your kifu and make comments if you give them the URL, but neither it nor any comments made on it will show up elsewhere on the site.
+										p You can change this setting later.
+
+				.col-md-6
+					.panel.panel-default
+						.panel-heading Fetch SGF from a URL
+						.panel-body
+							.row
+								.col-xs-12
+									.alert.alert-success(
+										role='alert'
+										ng-if='urlSuccess'
+									)
+										strong Success!
+										p
+											a(href='/kifu/{{ urlSuccess.shortid }}') View your new Kifu
+									.alert.alert-danger(
+										role='alert'
+										ng-if='urlError'
+									)
+										strong Something went wrong!
+										= ' '
+										p {{ urlError.message }}
+
+									input.form-control(
+										ng-model='sgfUrl'
+										placeholder='http://'
+										ng-disabled='uploading'
+									)
+									flatui-checkbox.inline-block(
+										model='urlPublic'
+										label='"Public"'
+									)
+									p.pull-right.top-buffer
+										button.btn.btn-default(
+											ng-disabled='!sgfUrl || uploading'
+											ng-click='fetchSgf()'
+										) Fetch
+							.row
+								.col-xs-12
+									.alert(ng-if='!urlPublic')
+										p
+											strong Private.
+											= ' '
+											| Anyone can still view your kifu and make comments if you give them the URL, but neither it nor any comments made on it will show up elsewhere on the site.
+										p You can change this setting later.
 
