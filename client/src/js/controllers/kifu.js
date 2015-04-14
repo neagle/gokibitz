@@ -1,5 +1,6 @@
 /*jshint browser:true, maxparams: 10000000 */
 /*global WGo:true*/
+
 angular.module('gokibitz.controllers')
 .controller('KifuController', function (
 	$rootScope,
@@ -17,7 +18,7 @@ angular.module('gokibitz.controllers')
 ) {
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
-
+	
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
 
@@ -120,65 +121,79 @@ angular.module('gokibitz.controllers')
 		$scope.player.previous();
 	};
 
-	$scope.nextCommentedMove = function () {
-		var closestPair = findClosestPair($scope.kifu.path);
-		console.log(closestPair);
-		$scope.player.goTo(closestPair.high);	
-	};
-
-	var findClosestPair = function(currentPath){
-		var high = $scope.kifu.pathsWithComments.length;
-		var low = -1;
-		while (high - low > 1){
-			var index = Math.round((high + low) / 2);
-			var indexPath = $scope.kifu.pathsWithComments[index];
-			console.log(index, low, high, currentPath.m, indexPath.m);
-			if (indexPath.m < currentPath.m){
-				low = index;
-			} else if (indexPath.m > currentPath.m){
-				high = index;
-			} else {
-				//We are either on a commented move or we are one a move with several variations
-				var matchingBranches = 0;
-				for (var i = low; i < high; i++){
-					var iPath = $scope.kifu.pathsWithComments[i];
-					var branchCompareScore = branchSameness(currentPath, iPath);
-					if (matchingBranches < branchCompareScore) {
-						matchingBranches = branchCompareScore;
-						low = high;
-						high = i;
-					}
-					
-				}
-				return {low:$scope.kifu.pathsWithComments[low], high:$scope.kifu.pathsWithComments[high]};
+	$scope.comparePaths = function(a, b){
+		var getKeys = function(obj){
+			var keys = Object.keys(obj).filter(function(key) {
+				return !isNaN(parseInt(key));
+			});
+			keys.sort(function(a, b) {
+				return Number(a) - Number(b);
+			});
+			
+			while ( obj[keys[0]] == 0){
+				keys.shift();
 			}
-		} 
-		return {low:$scope.kifu.pathsWithComments[low], high:$scope.kifu.pathsWithComments[high]};
+			return keys;
+		};	
+	
+		var aKeys = getKeys(a);
+     		var bKeys = getKeys(b);
+		 
+		function compareKeys(aKeys, bKeys) {
+			var aKey = (aKeys.length) ? aKeys[0] : 0;
+			var bKey = (bKeys.length) ? bKeys[0] : 0;
+              
+			// If the lowest keys are different, use them to sort
+			if (aKey !== bKey) {
+				return aKey - bKey;
+			} else {
+				// If the VALUES of the lowest keys are different,
+				// use them to sort
+				if (a[aKey] !== b[bKey]) {
+					return a[aKey] - b[bKey];
+				} else {
+               				// Otherwise, drop the lowest key values
+               				aKeys.shift();
+               				bKeys.shift();
+                			
+               				if(aKeys.length === 0 && bKeys.length === 0){
+						//These are on the same branch. Check to see which move is higher.
+               					return a.m - b.m;                        
+               				} else {
+               					// else try to see where the differ further
+               					return compareKeys(aKeys, bKeys);
+					}
+				}
+			}
+		}
+		return compareKeys(aKeys, bKeys);
 	};
 	
-	var branchSameness = function(currentPath, iPath){
-		var iProps = Object.keys(iPath);
-		var currentPathProps = Object.keys(currentPath);
-		if( iProps.length > currentPathProps.length){
-			var propsToCompare = iProps.length;
-		} else {
-			var propsToCompare = currentPathProps.length;
-		}
-		var count = 0;
-		for (var i; i < propsToCompare; i++){
-			var currentPathValue = (currentPath[i] !== 'undefined') ? currentPath[i] : 0;
-			var pathValue = (iPath[i] !== 'undefined') ? iPath[i] : 0;
-			if(currentPathValue === pathValue){
-				count++;
+	$scope.uniqComments = $scope.kifu.pathsWithComments;
+	$scope.uniqComments.sort($scope.comparePaths);
+	
+	$scope.nextCommentedMove = function () {
+		var next;
+    		var i = 0;
+    		while (i < $scope.uniqComments.length && !next) {
+			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
+				$scope.player.goTo($scope.uniqComments[i]);
+				return;
 			}
+			i += 1;
 		}
-		return count;
 	};
 
 	$scope.previousCommentedMove = function () {
-		var closestPair = findClosestPair($scope.kifu.path);
-		console.log(closestPair);
-		$scope.player.goTo(closestPair.low);	
+		var previous;
+    		var i = $scope.uniqComments.length - 1;
+		while (i => 0) {
+			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) > 0) {
+				$scope.player.goTo($scope.uniqComments[i]);
+				return;
+			}
+			i -= 1;
+		}
 	};
 
 	// TODO: Use this method of getting the edited version of the SGF and doing

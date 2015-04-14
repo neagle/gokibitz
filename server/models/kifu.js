@@ -187,7 +187,7 @@ kifuSchema.virtual('game.info.date')
 
 		return date;
 	});
-
+ 
 	kifuSchema.virtual('pathsWithComments')
 		.get(function () {
 			var paths = [];
@@ -197,9 +197,11 @@ kifuSchema.virtual('game.info.date')
 					paths.push(comment.path);
 				});
 			}
-
+			console.log("Before  uniq: ", paths);
 			// Remove duplicates
 			paths = _.uniq(paths);
+
+			console.log("after uniq: ", paths);
 
 			// Turn paths into objects
 
@@ -208,11 +210,8 @@ kifuSchema.virtual('game.info.date')
 			paths = paths.map(function (path) {
 				return smartgamer.pathTransform(path, 'object');
 			});
+			return paths;
 
-			// Sort paths by move number
-			return paths.sort(function (a, b) {
-				return a.m - b.m;
-			});
 		});
 
 
