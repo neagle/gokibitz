@@ -3,7 +3,7 @@ var _ = require('lodash');
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
 		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket) {
-
+			
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
 				var index = function () {
@@ -15,6 +15,7 @@ angular.module('gokibitz.controllers')
 				switch (data.change) {
 					case 'new':
 						$scope.comments.push(data.comment);
+						$scope.updateUniqComments();
 						break;
 					case 'update':
 						$scope.comments[index()] = data.comment;
@@ -29,6 +30,7 @@ angular.module('gokibitz.controllers')
 						$scope.comments = _.filter($scope.comments, function (n) {
 							return n._id !== data.comment._id;
 						});
+						$scope.updateUniqComments();
 						break;
 				}
 			});
@@ -65,7 +67,7 @@ angular.module('gokibitz.controllers')
 				canceler = $q.defer();
 				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
 					timeout: canceler.promise
-        })
+	 })
 					.success(function (data) {
 
 						if (!alreadyRendered) {

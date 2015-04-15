@@ -70,6 +70,7 @@ angular.module('gokibitz.directives')
 				sgf: $scope.src,
 				enableWheel: false,
 				layout: $scope.layout,
+				rememberPath: false,
 				update: function (event) {
 					$scope.update({ event: event });
 				}
