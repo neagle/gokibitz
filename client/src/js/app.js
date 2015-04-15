@@ -41,7 +41,8 @@ var gokibitz = angular.module('gokibitz', [
 	'flatui.directives',
 	'duScroll',
 	'btford.socket-io',
-	'monospaced.elastic'
+	'monospaced.elastic',
+	'sticky'
 ]);
 
 require('angular-ui-router');
@@ -64,6 +65,8 @@ require('angular-elastic');
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare
 require('./lib/angular-socialshare.js');
+
+require('./lib/sticky.js');
 
 // @see https://gist.github.com/cirqueit/b668f464a80ad5c8ca0b
 require('./lib/flatui.directives.js');
