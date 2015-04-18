@@ -19,7 +19,7 @@ angular.module('gokibitz.controllers')
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
 	var _ = require('lodash');
-	
+
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
 
@@ -83,6 +83,35 @@ angular.module('gokibitz.controllers')
 			// Format game comments
 			$scope.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
+
+			// ...
+			if ($scope.uniqComments && $scope.uniqComments.length) {
+				var firstUniq = $scope.uniqComments[0];
+				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+
+				console.log('$scope.uniqComments', $scope.uniqComments);
+				console.log('$scope.kifu.path, firstUniq, lastUniq', $scope.kifu.path, firstUniq, lastUniq);
+
+				console.log('$scope.comparePaths($scope.kifu.path, firstUniq)', $scope.comparePaths($scope.kifu.path, firstUniq));
+				console.log('$scope.comparePaths($scope.kifu.path, lastUniq)', $scope.comparePaths($scope.kifu.path, lastUniq));
+				if ($scope.comparePaths($scope.kifu.path, firstUniq) > 0) {
+					$scope.moreCommentsBefore = true;
+				} else {
+					$scope.moreCommentsBefore = false;
+				}
+
+				if ($scope.comparePaths($scope.kifu.path, lastUniq) < 0) {
+					$scope.moreCommentsAfter = true;
+				} else {
+					$scope.moreCommentsAfter = false;
+				}
+
+			} else {
+				$scope.moreCommentsBefore = false;
+				$scope.moreCommentsAfter = false;
+			}
+
+			console.log('$scope.moreCommentsBefore, $scope.moreCommentsAfter', $scope.moreCommentsBefore, $scope.moreCommentsAfter);
 		});
 	};
 
@@ -130,20 +159,20 @@ angular.module('gokibitz.controllers')
 			keys.sort(function(a, b) {
 				return Number(a) - Number(b);
 			});
-			
+
 			while ( obj[keys[0]] == 0){
 				keys.shift();
 			}
 			return keys;
-		};	
-	
+		};
+
 		var aKeys = getKeys(a);
 		var bKeys = getKeys(b);
-		 
+
 		function compareKeys(aKeys, bKeys) {
 			var aKey = (aKeys.length) ? aKeys[0] : 0;
 			var bKey = (bKeys.length) ? bKeys[0] : 0;
-		
+
 			// If the lowest keys are different, use them to sort
 			if (aKey !== bKey) {
 				return aKey - bKey;
@@ -156,10 +185,10 @@ angular.module('gokibitz.controllers')
 					// Otherwise, drop the lowest key values
 					aKeys.shift();
 					bKeys.shift();
-					
+
 					if(aKeys.length === 0 && bKeys.length === 0){
 						//These are on the same branch. Check to see which move is higher.
-						return a.m - b.m;			      
+						return a.m - b.m;
 					} else {
 						// else try to see where the differ further
 						return compareKeys(aKeys, bKeys);
@@ -169,7 +198,7 @@ angular.module('gokibitz.controllers')
 		}
 		return compareKeys(aKeys, bKeys);
 	 };
-	
+
 	$scope.updateUniqComments = function() {
 		var paths = [];
 
@@ -199,12 +228,15 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.updateUniqComments($scope.kifu.comments);
-	
+
 	$scope.nextCommentedMove = function () {
 		var i = 0;
 		while (i < $scope.uniqComments.length) {
 			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
 				$scope.player.goTo($scope.uniqComments[i]);
+				console.log('i, $scope.uniqComments.length', i, $scope.uniqComments.length);
+				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+				console.log('$scope.kifu.path, lastUniq', $scope.kifu.path, lastUniq);
 				return;
 			}
 			i += 1;
@@ -220,6 +252,24 @@ angular.module('gokibitz.controllers')
 			}
 			i -= 1;
 		}
+	};
+
+	$scope.moreCommentsAfter = function () {
+		if (!$scope.uniqComments || $scope.uniqComments.length) {
+			return;
+		}
+
+		var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+		console.log('$scope.kifu.path, lastUniq', $scope.kifu.path, lastUniq);
+		console.log('compare', $scope.comparePaths($scope.kifu.path, lastUniq));
+		if ($scope.comparePaths($scope.kifu.path, lastUniq) > -1) {
+			return false;
+		} else {
+			return true;
+		}
+	};
+
+	$scope.moreCommentsBefore = function () {
 	};
 
 	// TODO: Use this method of getting the edited version of the SGF and doing
