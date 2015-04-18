@@ -180,9 +180,13 @@
 
 					.panel-body
 						p(ng-if='!loading && !comments.length') No comments so far.
-						ul.media-list
+						ul.media-list(
+							infinite-scroll='addMoreComments()'
+							infinite-scroll-distance='2'
+							infinite-scroll-immediate-check='true'
+						)
 							li.comment.media(
-								ng-repeat='comment in comments track by comment._id'
+								ng-repeat='comment in displayComments track by comment._id'
 							)
 								a.pull-left(
 									href='/user/{{:: comment.user.username }}'

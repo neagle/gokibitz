@@ -44,7 +44,6 @@ angular.module('gokibitz.controllers')
 			var canceler;
 
 			$scope.listComments = function (alreadyRendered) {
-				console.log('list comments');
 				var path;
 
 				// Turn off animation
@@ -121,9 +120,9 @@ angular.module('gokibitz.controllers')
 							// Add an initial chunk of comments
 							//$scope.comments = $scope.comments.concat(data.splice(0, 10));
 							$scope.comments = data;
-							$scope.displayComments = data;
-							//$scope.displayComments = [];
-							//$scope.addMoreComments();
+							//$scope.displayComments = data;
+							$scope.displayComments = [];
+							$scope.addMoreComments();
 
 							$scope.loading = false;
 							//console.log('$scope.comments', $scope.comments);
@@ -133,7 +132,6 @@ angular.module('gokibitz.controllers')
 							var rate = 1;
 
 							function addCommentsToScope(data) {
-								console.log('add comments to scope', data);
 								$scope.comments = $scope.comments.concat(data.splice(0, rate));
 
 								if (data.length) {
@@ -175,9 +173,6 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.addMoreComments = function (num) {
-				return;
-				//console.log('add more comments');
-
 				if (!$scope.comments) {
 					return;
 				}
@@ -188,8 +183,6 @@ angular.module('gokibitz.controllers')
 
 				var position = ($scope.displayComments) ? $scope.displayComments.length : 0;
 				num = num || 10;
-
-				console.log('position, num', position, num);
 
 				if ($scope.comments.length > position) {
 					$scope.displayComments = $scope.displayComments.concat($scope.comments.slice(position, position + num));
@@ -254,7 +247,6 @@ angular.module('gokibitz.controllers')
 					});
 
 			};
-			console.log('$scope.currentUser', $scope.currentUser);
 
 			$scope.toggleStar = function (comment) {
 				var userId = $scope.currentUser._id;
@@ -300,7 +292,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
-				console.log(+new Date(), 'WATCH');
+				//console.log(+new Date(), 'WATCH');
 				$scope.listComments();
 			}, true);
 

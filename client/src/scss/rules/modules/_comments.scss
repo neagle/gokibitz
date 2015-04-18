@@ -3,7 +3,6 @@
 		/*transition: none;*/
 	/*}*/
 .comments {
-	border: 2px dotted purple;
 
 	.panel-body {
 		position: relative;
@@ -16,10 +15,6 @@
 	}
 
 	.media-list {
-		border: 2px dashed orange;
-		* {
-			border: 3px solid green;
-		}
 	}
 
 	.comment {
@@ -27,7 +22,6 @@
 		/*background: {*/
 			/*color: $flat-clouds;*/
 		/*}*/
-		border: 3px solid red;
 		word-break: break-word;
 
 		.btn-group {
@@ -82,13 +76,11 @@
 
 		&.ng-leave.ng-leave-active,
 		&.ng-enter {
-			background: red;
 			opacity: 0;
 		}
 
 		&.ng-enter.ng-enter-active,
 		&.ng-leave	{
-			background: green;
 			opacity: 1;
 		}
 	}

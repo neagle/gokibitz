@@ -89,7 +89,7 @@ UserSchema
 	UserSchema
 		.virtual('totalComments')
 		.get(function () {
-			console.log('Comment.find', Comment.find({}));
+			//console.log('Comment.find', Comment.find({}));
 			return this._id;
 			//return Comment.find().count();
 		});
