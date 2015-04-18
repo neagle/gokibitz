@@ -65,6 +65,26 @@ angular.module('gokibitz.controllers')
 	initialPath = pathFilter(initialPath, 'object');
 	$scope.kifu.path = initialPath;
 
+	var updateCommentButtonStatus = function() {
+		if ($scope.uniqComments && $scope.uniqComments.length) {
+			var firstUniq = $scope.uniqComments[0];
+			var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+
+			if ($scope.comparePaths($scope.kifu.path, firstUniq) > 0) {
+				$scope.moreCommentsBefore = true;
+			} else {
+				$scope.moreCommentsBefore = false;
+			}
+			if ($scope.comparePaths($scope.kifu.path, lastUniq) < 0) {
+				$scope.moreCommentsAfter = true;
+			} else {
+				$scope.moreCommentsAfter = false;
+			}
+		} else {
+			$scope.moreCommentsBefore = false;
+			$scope.moreCommentsAfter = false;
+		}
+	};
 	// Fired every time the player updates
 	$scope.playerUpdate = function (event) {
 		if (event.op === 'init') {
@@ -102,37 +122,11 @@ angular.module('gokibitz.controllers')
 			// Format game comments
 			$scope.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
-
-			// ...
-			if ($scope.uniqComments && $scope.uniqComments.length) {
-				var firstUniq = $scope.uniqComments[0];
-				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
-
-				console.log('$scope.uniqComments', $scope.uniqComments);
-				console.log('$scope.kifu.path, firstUniq, lastUniq', $scope.kifu.path, firstUniq, lastUniq);
-
-				console.log('$scope.comparePaths($scope.kifu.path, firstUniq)', $scope.comparePaths($scope.kifu.path, firstUniq));
-				console.log('$scope.comparePaths($scope.kifu.path, lastUniq)', $scope.comparePaths($scope.kifu.path, lastUniq));
-				if ($scope.comparePaths($scope.kifu.path, firstUniq) > 0) {
-					$scope.moreCommentsBefore = true;
-				} else {
-					$scope.moreCommentsBefore = false;
-				}
-
-				if ($scope.comparePaths($scope.kifu.path, lastUniq) < 0) {
-					$scope.moreCommentsAfter = true;
-				} else {
-					$scope.moreCommentsAfter = false;
-				}
-
-			} else {
-				$scope.moreCommentsBefore = false;
-				$scope.moreCommentsAfter = false;
-			}
-
-			console.log('$scope.moreCommentsBefore, $scope.moreCommentsAfter', $scope.moreCommentsBefore, $scope.moreCommentsAfter);
+			
+			updateCommentButtonStatus();
 		});
 	};
+
 
 	$scope.toggleKifuVarMode = function () {
 		$scope.variationMode = !$scope.variationMode;
@@ -175,9 +169,8 @@ angular.module('gokibitz.controllers')
 			var keys = Object.keys(obj).filter(function(key) {
 				return !isNaN(parseInt(key));
 			});
-			keys.sort(function(a, b) {
-				return Number(a) - Number(b);
-			});
+			keys = keys.map(function (key) { return Number(key); });
+			keys.sort();
 
 			while (obj[keys[0]] == 0){
 				keys.shift();
@@ -215,7 +208,21 @@ angular.module('gokibitz.controllers')
 				}
 			}
 		}
-		return compareKeys(aKeys, bKeys);
+		
+		var minKeyA = aKeys[0] || a.m;
+		var minKeyB = bKeys[0] || b.m;
+		
+		if(minKeyA === minKeyB){
+			if (typeof a[minKeyA] === 'undefined' && typeof b[minKeyB] === 'undefined') {
+            			// These are the same move
+				// Shouldn't ever happen but just in case.
+            			return 0;
+        		} else {
+				return compareKeys(aKeys, bKeys);
+			}
+		} else {
+			return minKeyA - minKeyB;
+		}
 	 };
 
 	$scope.updateUniqComments = function() {
@@ -241,6 +248,7 @@ angular.module('gokibitz.controllers')
 				});
 				paths.sort($scope.comparePaths);
 				$scope.uniqComments = paths;
+				updateCommentButtonStatus();
 			}).error(function(data, status, headers, config){
 				console.log("Error retrieving kifu for new comments: ", data.message);
 			});
