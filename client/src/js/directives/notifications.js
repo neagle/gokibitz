@@ -95,7 +95,7 @@ angular.module('gokibitz.directives')
 
 			ctrl.getNotifications();
 
-			var notificationsPoll = setInterval(ctrl.getNotifications, 5000);
+			var notificationsPoll = setInterval(ctrl.getNotifications, 10000);
 
 			$scope.$watch('ctrl.lastSeen', ctrl.countNotifications);
 

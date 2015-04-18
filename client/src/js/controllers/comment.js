@@ -6,30 +6,34 @@ angular.module('gokibitz.controllers')
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
-				var index = function () {
-					return _.findIndex($scope.comments, function (n) {
-						return n._id === data.comment._id;
-					});
-				};
+				var pathString = pathFilter($scope.kifu.path, 'string');
 
-				switch (data.change) {
-					case 'new':
-						$scope.comments.push(data.comment);
-						break;
-					case 'update':
-						$scope.comments[index()] = data.comment;
-						break;
-					case 'star':
-						$scope.comments[index()].stars = data.comment.stars;
-						break;
-					case 'unstar':
-						$scope.comments[index()].stars = data.comment.stars;
-						break;
-					case 'delete':
-						$scope.comments = _.filter($scope.comments, function (n) {
-							return n._id !== data.comment._id;
+				if (data.comment && data.comment.path === pathString) {
+					var index = function () {
+						return _.findIndex($scope.comments, function (n) {
+							return n._id === data.comment._id;
 						});
-						break;
+					};
+
+					switch (data.change) {
+						case 'new':
+							$scope.comments.push(data.comment);
+							break;
+						case 'update':
+							$scope.comments[index()] = data.comment;
+							break;
+						case 'star':
+							$scope.comments[index()].stars = data.comment.stars;
+							break;
+						case 'unstar':
+							$scope.comments[index()].stars = data.comment.stars;
+							break;
+						case 'delete':
+							$scope.comments = _.filter($scope.comments, function (n) {
+								return n._id !== data.comment._id;
+							});
+							break;
+					}
 				}
 			});
 
@@ -211,16 +215,20 @@ angular.module('gokibitz.controllers')
 				$scope.disableUpdateComment = true;
 				var self = this;
 
-				$http.put('/api/comment/' + comment._id, comment)
-					.success(function (data) {
-						$scope.disableUpdateComment = false;
-						angular.extend(comment, data.comment);
-						delete self.edit;
-					})
-					.error(function (data) {
-						$scope.disableUpdateComment = false;
-						console.log('Error: ' + data);
-					});
+				if (comment.content.markdown === '') {
+					$scope.deleteComment(comment);
+				} else {
+					$http.put('/api/comment/' + comment._id, comment)
+						.success(function (data) {
+							$scope.disableUpdateComment = false;
+							angular.extend(comment, data.comment);
+							delete self.edit;
+						})
+						.error(function (data) {
+							$scope.disableUpdateComment = false;
+							console.log('Error: ' + data);
+						});
+				}
 			};
 
 			$scope.cancelEdit = function (comment) {

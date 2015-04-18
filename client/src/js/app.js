@@ -42,6 +42,7 @@ var gokibitz = angular.module('gokibitz', [
 	'duScroll',
 	'btford.socket-io',
 	'infinite-scroll'
+	'monospaced.elastic'
 ]);
 
 require('angular-ui-router');
@@ -59,6 +60,7 @@ require('ui-utils');
 require('angular-scroll');
 require('angular-socket-io');
 require('angular-locker');
+require('angular-elastic');
 
 // Third-party share button directive
 // @see https://github.com/720kb/angular-socialshare

@@ -170,7 +170,7 @@ angular.module('gokibitz.controllers')
 
 		var gamer = smartgamer(smartgame.parse($scope.kifu.game.sgf));
 		gamer.goTo($scope.kifu.path);
-		gamer.comment($scope.nodeComment.replace(/([^\\])(\])/g, '$1\\$2'));
+		gamer.comment($scope.nodeComment);
 		var sgf = smartgame.generate(gamer.getSmartgame());
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf

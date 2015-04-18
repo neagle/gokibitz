@@ -1,13 +1,13 @@
 angular.module('gokibitz.controllers')
 	.controller('UploadController',
-		function ($scope, FileUploader) {
+		function ($scope, FileUploader, $http) {
 			var path = require('path');
 			//console.log('upload control', FileUploader);
 			var uploader = $scope.uploader = new FileUploader({
 				url: '/api/kifu/upload',
 			});
 
-			console.log('$scope.uploader', $scope.uploader);
+			//console.log('$scope.uploader', $scope.uploader);
 
 
 			// FILTERS
@@ -72,6 +72,44 @@ angular.module('gokibitz.controllers')
 			//	console.info('Complete', xhr, item, response);
 			//	//item.shortid = response.shortid;
 			//});
+			$scope.rawPublic = true;
+			$scope.urlPublic = true;
 
+			$scope.uploadRawSgf = function () {
+				$scope.rawSuccess = null;
+				$scope.rawError = null;
+				$scope.uploading = true;
+				$http.post('/api/kifu/upload', {
+					rawSgf: $scope.rawSgf,
+					public: $scope.rawPublic
+				}).success(function (data) {
+					$scope.uploading = false;
+					$scope.rawSuccess = data;
+					// Reset the SGF textarea
+					$scope.rawSgf = '';
+				}).error(function (error) {
+					$scope.uploading = false;
+					$scope.rawError = error;
+				});
+			};
+
+			$scope.fetchSgf = function () {
+				$scope.urlSuccess = null;
+				$scope.urlError = null;
+
+				$scope.uploading = true;
+				$http.post('/api/kifu/upload', {
+					url: $scope.sgfUrl,
+					public: $scope.urlPublic
+				}).success(function (data) {
+					$scope.urlSuccess = data;
+					$scope.uploading = false;
+					// Reset the URL input
+					$scope.sgfUrl = '';
+				}).error(function (error) {
+					$scope.urlError = error;
+					$scope.uploading = false;
+				});
+			};
 		}
 	);

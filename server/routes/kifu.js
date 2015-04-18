@@ -10,6 +10,7 @@ var User = require('../models/user').User;
 var Comment = require('../models/comment').Comment;
 var Notification = require('../models/notification').Notification;
 var _ = require('lodash');
+var http = require('http');
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -315,31 +316,60 @@ router.put('/:id/sgf', auth.ensureAuthenticated, function (req, res) {
 });
 
 router.post('/upload', auth.ensureAuthenticated, function (req, res) {
-	var form = new multiparty.Form();
+	function createKifu(sgf, public) {
 
-	form.parse(req, function (error, fields, files) {
-		files.file.forEach(function (file) {
-			var sgf = fs.readFileSync(file.path, { encoding: 'utf-8' });
-			//var game = smartgame.parse(sgf);
-			var newKifu = new Kifu();
+		var newKifu = new Kifu();
 
-			newKifu.owner = req.user;
-			newKifu.public = (fields.public[0] === 'true') ? true : false;
-			newKifu.game.sgf = sgf;
-			newKifu.game.original = sgf;
-			newKifu.save(function (error) {
-				if (!error) {
-					res.json(201, {
-						message: 'Kifu successfully created!',
-						_id: newKifu._id,
-						shortid: newKifu.shortid
-					});
-				} else {
-					res.json(500, { message: 'Could not create kifu. Error: ' + error });
+		newKifu.owner = req.user;
+		newKifu.public = (typeof public === 'undefined') ? true : public;
+		newKifu.game.sgf = sgf;
+		newKifu.game.original = sgf;
+		newKifu.save(function (error) {
+			if (!error) {
+				res.json(201, {
+					message: 'Kifu successfully created!',
+					_id: newKifu._id,
+					shortid: newKifu.shortid
+				});
+			} else {
+				res.json(500, { message: 'Could not create kifu. Error: ' + error });
+			}
+		});
+	}
+
+	if (req.body.rawSgf) {
+		// Create a new Kifu from uploaded text
+		createKifu(req.body.rawSgf, req.body.public);
+	} else if (req.body.url) {
+		// Create a new Kifu from an SGF fetched from a URL
+		http.get(req.body.url, function (fetchRes) {
+			var request = this;
+			var sgf = '';
+			fetchRes.on('data', function (chunk) {
+				sgf += chunk;
+				if (sgf.length > 10000) {
+					request.abort();
+					res.json(500, { message: 'This seems way too big to be an SGF.' });
 				}
 			});
+
+			fetchRes.on('end', function () {
+				createKifu(sgf, req.body.public);
+			});
+		}).on('error', function (error) {
+			res.json(500, { message: 'Could not create kifu from URL. ' + error });
 		});
-	});
+	} else {
+		var form = new multiparty.Form();
+
+		form.parse(req, function (error, fields, files) {
+			files.file.forEach(function (file) {
+				var sgf = fs.readFileSync(file.path, { encoding: 'utf-8' });
+				//var game = smartgame.parse(sgf);
+				createKifu(sgf, (fields.public[0] === 'true') ? true : false);
+			});
+		});
+	}
 });
 
 module.exports = router;
