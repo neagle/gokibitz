@@ -165,6 +165,7 @@ angular.module('gokibitz.controllers')
 						} else {
 							$scope.loading = false;
 							$scope.comments = data;
+							$scope.displayComments = $scope.comments;
 						}
 
 					})
