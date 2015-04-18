@@ -169,17 +169,15 @@ angular.module('gokibitz.controllers')
 			var keys = Object.keys(obj).filter(function(key) {
 				return !isNaN(parseInt(key));
 			});
-			keys = keys.map(function (key) { return Number(key); });
-			keys.sort();
+			keys.sort(function (a, b){
+				return a - b;
+			});
 
 			while (obj[keys[0]] == 0){
 				keys.shift();
 			}
 			return keys;
 		};
-
-		var aKeys = getKeys(a);
-		var bKeys = getKeys(b);
 
 		function compareKeys(aKeys, bKeys) {
 			var aKey = (aKeys.length) ? aKeys[0] : 0;
@@ -209,10 +207,13 @@ angular.module('gokibitz.controllers')
 			}
 		}
 		
+		var aKeys = getKeys(a);
+		var bKeys = getKeys(b);
+
 		var minKeyA = aKeys[0] || a.m;
 		var minKeyB = bKeys[0] || b.m;
 		
-		if(minKeyA === minKeyB){
+		if(minKeyA == minKeyB){
 			if (typeof a[minKeyA] === 'undefined' && typeof b[minKeyB] === 'undefined') {
             			// These are the same move
 				// Shouldn't ever happen but just in case.
