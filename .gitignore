@@ -43,3 +43,5 @@ ssl/
 .DS_Store
 
 .idea/
+
+err.out

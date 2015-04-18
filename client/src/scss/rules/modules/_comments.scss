@@ -5,14 +5,16 @@
 .comments {
 
 	.panel-body {
-		min-height: 100px;
 		position: relative;
 
 		&.loading {
-			border: 10px solid yellow;
+			/*border: 10px solid blue;*/
 			/*min-height: 100px;*/
-			opacity: 0.3;
+			/*opacity: 0.3;*/
 		}
+	}
+
+	.media-list {
 	}
 
 	.comment {
@@ -63,9 +65,13 @@
 	}
 
 	.animate {
-		&.ng-enter,
-		&.ng-leave {
+		&.ng-enter {
 			transition: all 0.5s;
+			position: relative;
+		}
+		&.ng-leave {
+			/*transition: all 10s;*/
+			/*transition: all 0.5s;*/
 		}
 
 		&.ng-leave.ng-leave-active,

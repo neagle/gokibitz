@@ -25,7 +25,8 @@
 		)
 			.result(
 				ng-if='kifu.game.info.result'
-				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence'
+				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
+				ng-click='hideResult = true'
 			)
 				.inner {{ kifu.game.info.result }}
 			sgf(
@@ -73,6 +74,7 @@
 
 					div(ng-show='editGameComment')
 						textarea.form-control.bottom-buffer(
+							msd-elastic='\\n'
 							rows='6'
 							ng-model='nodeComment'
 							ng-disabled='savingGameComment'
@@ -177,10 +179,14 @@
 						)
 
 					.panel-body
-						p(ng-if='!comments.length') No comments so far.
-						ul.media-list
+						p(ng-if='!loading && !comments.length') No comments so far.
+						ul.media-list(
+							infinite-scroll='addMoreComments()'
+							infinite-scroll-distance='2'
+							infinite-scroll-immediate-check='true'
+						)
 							li.comment.media(
-								ng-repeat='comment in comments track by comment._id'
+								ng-repeat='comment in displayComments track by comment._id'
 							)
 								a.pull-left(
 									href='/user/{{:: comment.user.username }}'
@@ -232,18 +238,23 @@
 							)
 								i.fui-arrow-right
 
-					.panel-body(
+					.panel-body.clearfix(
 						ng-if='numComments'
+						ng-class='{ loading: loading }'
 					)
+						.throbber(ng-show='loading')
+						//-.throbber
 						//-div(ng-if='!comments.length') &hellip;
-						//div(ng-show='loading') Throbber
 
-						ul.media-list(
+						ul.media-list.clearfix(
 							ng-show='numComments'
+							infinite-scroll='addMoreComments()'
+							infinite-scroll-distance='2'
+							infinite-scroll-immediate-check='true'
 						)
 							li.comment.media.col-md-12(
-								ng-class='{ animate: !loading, loading: loading, highlight: highlightedComment === comment._id }'
-								ng-repeat='comment in comments track by comment._id'
+								ng-class='{ animate: !loading, highlight: highlightedComment === comment._id }'
+								ng-repeat='comment in displayComments track by comment._id'
 								id='comment-{{ comment._id }}'
 							)
 								a.pull-left(
@@ -282,7 +293,7 @@
 								.comment.media-body(ng-hide='edit')
 
 									.btn-group.btn-group-xs.pull-right(
-										ng-hide='comment.user.username !== currentUser.username'
+										ng-hide='comment.user.username !== currentUser.username && !currentUser.admin'
 									)
 										button.btn.btn-primary(ng-click='edit=!edit')
 											i.fui-new
@@ -307,6 +318,7 @@
 
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
+										msd-elastic='\\n'
 										rows='3'
 										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
@@ -392,6 +404,7 @@
 											span
 									label Comment:
 									textarea#main-comment-box.form-control(
+										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
 										rows=3

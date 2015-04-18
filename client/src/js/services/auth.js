@@ -15,6 +15,7 @@ angular.module('gokibitz.services')
 				password: user.password,
 				rememberMe: user.rememberMe
 			}, function(user) {
+				console.log('save user', user);
 				$rootScope.currentUser = user;
 				return cb();
 			}, function(err) {
@@ -46,6 +47,7 @@ angular.module('gokibitz.services')
 
 		currentUser: function () {
 			Session.get(function(user) {
+				console.log('user', user);
 				$rootScope.currentUser = user;
 			});
 		},
