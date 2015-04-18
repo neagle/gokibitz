@@ -41,7 +41,7 @@ var gokibitz = angular.module('gokibitz', [
 	'flatui.directives',
 	'duScroll',
 	'btford.socket-io',
-	'cfp.hotkeys'
+	'cfp.hotkeys',
 	'infinite-scroll',
 	'monospaced.elastic'
 ]);

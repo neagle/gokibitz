@@ -122,7 +122,7 @@ angular.module('gokibitz.controllers')
 			// Format game comments
 			$scope.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
-			
+
 			updateCommentButtonStatus();
 		});
 	};
@@ -206,19 +206,19 @@ angular.module('gokibitz.controllers')
 				}
 			}
 		}
-		
+
 		var aKeys = getKeys(a);
 		var bKeys = getKeys(b);
 
 		var minKeyA = aKeys[0] || a.m;
 		var minKeyB = bKeys[0] || b.m;
-		
-		if(minKeyA == minKeyB){
+
+		if (minKeyA === minKeyB) {
 			if (typeof a[minKeyA] === 'undefined' && typeof b[minKeyB] === 'undefined') {
-            			// These are the same move
+				// These are the same move
 				// Shouldn't ever happen but just in case.
-            			return 0;
-        		} else {
+				return 0;
+			} else {
 				return compareKeys(aKeys, bKeys);
 			}
 		} else {
@@ -250,8 +250,8 @@ angular.module('gokibitz.controllers')
 				paths.sort($scope.comparePaths);
 				$scope.uniqComments = paths;
 				updateCommentButtonStatus();
-			}).error(function(data, status, headers, config){
-				console.log("Error retrieving kifu for new comments: ", data.message);
+			}).error(function(data, status, headers, config) {
+				console.log('Error retrieving kifu for new comments:', data.message);
 			});
 	};
 
@@ -273,9 +273,7 @@ angular.module('gokibitz.controllers')
 		while (i < $scope.uniqComments.length) {
 			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
 				$scope.player.goTo($scope.uniqComments[i]);
-				console.log('i, $scope.uniqComments.length', i, $scope.uniqComments.length);
 				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
-				console.log('$scope.kifu.path, lastUniq', $scope.kifu.path, lastUniq);
 				return;
 			}
 			i += 1;
@@ -299,24 +297,6 @@ angular.module('gokibitz.controllers')
 				event.preventDefault();
 			}
 		});
-
-	$scope.moreCommentsAfter = function () {
-		if (!$scope.uniqComments || $scope.uniqComments.length) {
-			return;
-		}
-
-		var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
-		console.log('$scope.kifu.path, lastUniq', $scope.kifu.path, lastUniq);
-		console.log('compare', $scope.comparePaths($scope.kifu.path, lastUniq));
-		if ($scope.comparePaths($scope.kifu.path, lastUniq) > -1) {
-			return false;
-		} else {
-			return true;
-		}
-	};
-
-	$scope.moreCommentsBefore = function () {
-	};
 
 	// TODO: Use this method of getting the edited version of the SGF and doing
 	// something useful with it (like save it)
