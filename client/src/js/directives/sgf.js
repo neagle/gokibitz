@@ -71,6 +71,7 @@ angular.module('gokibitz.directives')
 				enableWheel: false,
 				layout: $scope.layout,
 				rememberPath: false,
+				enableKeys: false,
 				update: function (event) {
 					$scope.update({ event: event });
 				}

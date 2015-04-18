@@ -14,7 +14,8 @@ angular.module('gokibitz.controllers')
 	kifu,
 	$interpolate,
 	$document,
-	$modal
+	$modal,
+	hotkeys
 ) {
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
@@ -28,6 +29,24 @@ angular.module('gokibitz.controllers')
 	$scope.sgfLink = '/api/kifu/' + $routeParams.shortid + '/sgf';
 
 	$scope.kifu = kifu.data;
+
+	hotkeys.bindTo($scope)
+		.add({
+			combo: 'left',
+			description: 'Go to the previous move',
+			callback: function (event, hotkey) {
+				$scope.player.previous();
+				event.preventDefault();
+			}
+		})
+		.add({
+			combo: 'right',
+			description: 'Go to the next move',
+			callback: function (event, hotkey) {
+				$scope.player.next();
+				event.preventDefault();
+			}
+		});
 
 	// Check if the current path is in a variation, or on the primary tree
 	function inVariation(path) {
@@ -160,7 +179,7 @@ angular.module('gokibitz.controllers')
 				return Number(a) - Number(b);
 			});
 
-			while ( obj[keys[0]] == 0){
+			while (obj[keys[0]] == 0){
 				keys.shift();
 			}
 			return keys;
@@ -229,6 +248,17 @@ angular.module('gokibitz.controllers')
 
 	$scope.updateUniqComments($scope.kifu.comments);
 
+	$scope.previousCommentedMove = function () {
+		var i = $scope.uniqComments.length - 1;
+		while (i >= 0) {
+			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) > 0) {
+				$scope.player.goTo($scope.uniqComments[i]);
+				return;
+			}
+			i -= 1;
+		}
+	};
+
 	$scope.nextCommentedMove = function () {
 		var i = 0;
 		while (i < $scope.uniqComments.length) {
@@ -243,16 +273,23 @@ angular.module('gokibitz.controllers')
 		}
 	};
 
-	$scope.previousCommentedMove = function () {
-		var i = $scope.uniqComments.length - 1;
-		while (i >= 0) {
-			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) > 0) {
-				$scope.player.goTo($scope.uniqComments[i]);
-				return;
+	hotkeys.bindTo($scope)
+		.add({
+			combo: 'alt+left',
+			description: 'Go to the previous move with comments',
+			callback: function (event, hotkey) {
+				$scope.previousCommentedMove();
+				event.preventDefault();
 			}
-			i -= 1;
-		}
-	};
+		})
+		.add({
+			combo: 'alt+right',
+			description: 'Go to the next move with comments',
+			callback: function (event, hotkey) {
+				$scope.nextCommentedMove();
+				event.preventDefault();
+			}
+		});
 
 	$scope.moreCommentsAfter = function () {
 		if (!$scope.uniqComments || $scope.uniqComments.length) {

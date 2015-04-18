@@ -220,11 +220,15 @@
 							a(
 								ng-click='previousCommentedMove()'
 								ng-show='moreCommentsBefore'
+								tooltip-placement='left'
+								tooltip='Go to the previous move with comments'
 							)
 								i.fui-arrow-left
 							a(
 								ng-click='nextCommentedMove()'
 								ng-show='moreCommentsAfter'
+								tooltip-placement='left'
+								tooltip='Go to the next move with comments'
 							)
 								i.fui-arrow-right
 

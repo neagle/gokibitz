@@ -65,3 +65,6 @@ $icon-font-path: '/fonts/flat-ui/';
 @import "rules/layout";
 @import "rules/modules/all";
 @import "rules/state";
+
+// Third-party
+@import "lib/angular-hotkeys";
