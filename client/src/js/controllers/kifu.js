@@ -210,8 +210,8 @@ angular.module('gokibitz.controllers')
 		var aKeys = getKeys(a);
 		var bKeys = getKeys(b);
 
-		var minKeyA = aKeys[0] || a.m;
-		var minKeyB = bKeys[0] || b.m;
+		var minKeyA = Number(aKeys[0]) || Number(a.m);
+		var minKeyB = Number(bKeys[0]) || Number(b.m);
 
 		if (minKeyA === minKeyB) {
 			if (typeof a[minKeyA] === 'undefined' && typeof b[minKeyB] === 'undefined') {
