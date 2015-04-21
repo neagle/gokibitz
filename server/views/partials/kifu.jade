@@ -53,12 +53,27 @@
 				.panel-body
 					table.table-condensed
 						tbody
-							tr(ng-if='kifu.game.info.date')
-								th Date:
-								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.source')
+								th Source:
+								td {{ kifu.game.info.source }}
+							tr(ng-if='kifu.game.info.komi')
+								th Komi:
+								td {{ kifu.game.info.komi }}
 							tr(ng-if='kifu.game.info.result')
 								th Result:
 								td {{ kifu.game.info.result }}
+							tr(ng-if='kifu.game.info.date')
+								th Date:
+								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.place')
+								th Place:
+								td {{ kifu.game.info.place }}
+							tr(ng-if='kifu.game.info.rules')
+								th Rules:
+								td {{ kifu.game.info.rules }}
+							tr(ng-if='kifu.game.info.timeLimit')
+								th Time Limit:
+								td {{ kifu.game.info.timeLimit }}
 
 			div.panel.panel-default
 				div.panel-heading
