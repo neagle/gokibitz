@@ -55,12 +55,27 @@
 				.panel-body
 					table.table-condensed
 						tbody
-							tr(ng-if='kifu.game.info.date')
-								th Date:
-								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.source')
+								th Source:
+								td {{ kifu.game.info.source }}
+							tr(ng-if='kifu.game.info.komi')
+								th Komi:
+								td {{ kifu.game.info.komi }}
 							tr(ng-if='kifu.game.info.result')
 								th Result:
 								td {{ kifu.game.info.result }}
+							tr(ng-if='kifu.game.info.date')
+								th Date:
+								td {{ kifu.game.info.date }}
+							tr(ng-if='kifu.game.info.place')
+								th Place:
+								td {{ kifu.game.info.place }}
+							tr(ng-if='kifu.game.info.rules')
+								th Rules:
+								td {{ kifu.game.info.rules }}
+							tr(ng-if='kifu.game.info.timeLimit')
+								th Time Limit:
+								td {{ kifu.game.info.timeLimit }}
 
 			div.panel.panel-default
 				div.panel-heading
@@ -181,10 +196,14 @@
 						)
 
 					.panel-body
-						p(ng-if='!comments.length') No comments so far.
-						ul.media-list
+						p(ng-if='!loading && !comments.length') No comments so far.
+						ul.media-list(
+							infinite-scroll='addMoreComments()'
+							infinite-scroll-distance='2'
+							infinite-scroll-immediate-check='true'
+						)
 							li.comment.media(
-								ng-repeat='comment in comments track by comment._id'
+								ng-repeat='comment in displayComments track by comment._id'
 							)
 								a.pull-left(
 									href='/user/{{:: comment.user.username }}'
@@ -219,18 +238,38 @@
 						span.fui-chat
 						= ' '
 						| Kibitz
-					.panel-body(
-						ng-if='numComments'
-					)
-						//-div(ng-if='!comments.length') &hellip;
-						//div(ng-show='loading') Throbber
 
-						ul.media-list(
+						.navigate-comments.pull-right(ng-show='uniqComments && uniqComments.length')
+							a(
+								ng-click='previousCommentedMove()'
+								ng-show='moreCommentsBefore'
+								title='Go to the previous move with comments'
+							)
+								i.fui-arrow-left
+							a(
+								ng-click='nextCommentedMove()'
+								ng-show='moreCommentsAfter'
+								title='Go to the next move with comments'
+							)
+								i.fui-arrow-right
+
+					.panel-body.clearfix(
+						ng-if='numComments'
+						ng-class='{ loading: loading }'
+					)
+						.throbber(ng-show='loading')
+						//-.throbber
+						//-div(ng-if='!comments.length') &hellip;
+
+						ul.media-list.clearfix(
 							ng-show='numComments'
+							infinite-scroll='addMoreComments()'
+							infinite-scroll-distance='2'
+							infinite-scroll-immediate-check='true'
 						)
 							li.comment.media.col-md-12(
-								ng-class='{ animate: !loading, loading: loading, highlight: highlightedComment === comment._id }'
-								ng-repeat='comment in comments track by comment._id'
+								ng-class='{ animate: !loading, highlight: highlightedComment === comment._id }'
+								ng-repeat='comment in displayComments track by comment._id'
 								id='comment-{{ comment._id }}'
 							)
 								a.pull-left(
@@ -269,7 +308,7 @@
 								.comment.media-body(ng-hide='edit')
 
 									.btn-group.btn-group-xs.pull-right(
-										ng-hide='comment.user.username !== currentUser.username'
+										ng-hide='comment.user.username !== currentUser.username && !currentUser.admin'
 									)
 										button.btn.btn-primary(ng-click='edit=!edit')
 											i.fui-new

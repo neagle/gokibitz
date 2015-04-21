@@ -41,8 +41,9 @@ var gokibitz = angular.module('gokibitz', [
 	'flatui.directives',
 	'duScroll',
 	'btford.socket-io',
-	'monospaced.elastic',
-	'sticky'
+	'cfp.hotkeys',
+	'infinite-scroll',
+	'monospaced.elastic'
 ]);
 
 require('angular-ui-router');
@@ -60,6 +61,7 @@ require('ui-utils');
 require('angular-scroll');
 require('angular-socket-io');
 require('angular-locker');
+require('angular-hotkeys');
 require('angular-elastic');
 
 // Third-party share button directive
@@ -70,6 +72,8 @@ require('./lib/sticky.js');
 
 // @see https://gist.github.com/cirqueit/b668f464a80ad5c8ca0b
 require('./lib/flatui.directives.js');
+
+require('./lib/ng-infinite-scroll.js');
 
 angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);

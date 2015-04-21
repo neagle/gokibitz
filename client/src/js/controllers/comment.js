@@ -18,6 +18,7 @@ angular.module('gokibitz.controllers')
 					switch (data.change) {
 						case 'new':
 							$scope.comments.push(data.comment);
+							$scope.updateUniqComments();
 							break;
 						case 'update':
 							$scope.comments[index()] = data.comment;
@@ -32,6 +33,7 @@ angular.module('gokibitz.controllers')
 							$scope.comments = _.filter($scope.comments, function (n) {
 								return n._id !== data.comment._id;
 							});
+							$scope.updateUniqComments();
 							break;
 					}
 				}
@@ -49,11 +51,12 @@ angular.module('gokibitz.controllers')
 				// Turn off animation
 				$scope.loading = true;
 
-				//if (!alreadyRendered) {
-					////Clear existing comments
-					//$scope.comments = [];
-					//$scope.numComments = null;
-				//}
+				if (!alreadyRendered) {
+					// Clear existing comments
+					$scope.displayComments = [];
+					$scope.comments = [];
+					$scope.numComments = null;
+				}
 
 				// Cancel any previous listComments calls
 				if (canceler) {
@@ -69,7 +72,7 @@ angular.module('gokibitz.controllers')
 				canceler = $q.defer();
 				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
 					timeout: canceler.promise
-        })
+	 })
 					.success(function (data) {
 
 						if (!alreadyRendered) {
@@ -117,7 +120,13 @@ angular.module('gokibitz.controllers')
 							// items is relatively complicated.
 
 							// Add an initial chunk of comments
-							$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							//$scope.comments = $scope.comments.concat(data.splice(0, 10));
+							$scope.comments = data;
+							//$scope.displayComments = data;
+							$scope.displayComments = [];
+							$scope.addMoreComments();
+
+							$scope.loading = false;
 							//console.log('$scope.comments', $scope.comments);
 
 							// ...then add the rest iteratively
@@ -128,6 +137,15 @@ angular.module('gokibitz.controllers')
 								$scope.comments = $scope.comments.concat(data.splice(0, rate));
 
 								if (data.length) {
+									// Make sure we don't keep loading comments for a move we're
+									// not currently on
+									if (
+										!angular.equals($scope.kifu.path, data[0].pathObject) &&
+										$scope.kifu.path.m !== 0
+									) {
+										return;
+									}
+
 									addCommentsTimer = $timeout(function () {
 										// Recurse!
 										addCommentsToScope(data);
@@ -143,10 +161,11 @@ angular.module('gokibitz.controllers')
 								}
 							}
 
-							addCommentsToScope(data);
+							//addCommentsToScope(data);
 						} else {
 							$scope.loading = false;
 							$scope.comments = data;
+							$scope.displayComments = $scope.comments;
 						}
 
 					})
@@ -154,6 +173,23 @@ angular.module('gokibitz.controllers')
 						$scope.comments = [];
 						console.log('Error: ' + data);
 					});
+			};
+
+			$scope.addMoreComments = function (num) {
+				if (!$scope.comments) {
+					return;
+				}
+
+				if (!$scope.displayComments) {
+					$scope.displayComments = [];
+				}
+
+				var position = ($scope.displayComments) ? $scope.displayComments.length : 0;
+				num = num || 10;
+
+				if ($scope.comments.length > position) {
+					$scope.displayComments = $scope.displayComments.concat($scope.comments.slice(position, position + num));
+				}
 			};
 
 			$scope.addComment = function () {
@@ -259,6 +295,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
+				//console.log(+new Date(), 'WATCH');
 				$scope.listComments();
 			}, true);
 

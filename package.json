@@ -33,6 +33,7 @@
     "angular": "^1.3.8",
     "angular-animate": "^1.3.5",
     "angular-cookies": "^1.3.11",
+    "angular-hotkeys": "^1.4.5",
     "angular-elastic": "^2.3.5",
     "angular-locker": "^1.2.1",
     "angular-resource": "^1.3.5",
@@ -73,6 +74,8 @@
     "node-bourbon": "^1.2.3",
     "nodemon": "^1.3.7",
     "pretty-hrtime": "^1.0.0",
+    "smartgamer": "^0.1.3",
+    "scsslint": "0.0.3",
     "protractor": "^2.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
@@ -97,6 +100,7 @@
     "angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
     "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
     "angular-socket-io": "./node_modules/angular-socket-io/socket.js",
+    "angular-hotkeys": "./node_modules/angular-hotkeys/build/hotkeys.js",
     "angular-elastic": "./node_modules/angular-elastic/elastic.js",
     "io": "./node_modules/socket.io/node_modules/socket.io-client/socket.io.js",
     "angular-locker": "./node_modules/angular-locker/dist/angular-locker.js",
@@ -172,6 +176,11 @@
       ]
     },
     "angular-scroll": {
+      "depends": [
+        "angular"
+      ]
+    },
+    "angular-hotkeys": {
       "depends": [
         "angular"
       ]

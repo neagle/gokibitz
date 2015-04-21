@@ -2,8 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var shortid = require('shortid');
 //var smartgame = require('smartgame');
+var smartgamer = require('smartgamer')();
 var moment = require('moment');
 //var Comment = require('./comment').Comment;
+var _ = require('lodash');
 
 var kifuSchema = new Schema({
 	shortid: {
@@ -185,6 +187,7 @@ kifuSchema.virtual('game.info.date')
 
 		return date;
 	});
+ 
 
 /**
  * Comment Information

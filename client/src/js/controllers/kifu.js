@@ -1,5 +1,6 @@
 /*jshint browser:true, maxparams: 10000000 */
 /*global WGo:true*/
+
 angular.module('gokibitz.controllers')
 .controller('KifuController', function (
 	$rootScope,
@@ -13,10 +14,12 @@ angular.module('gokibitz.controllers')
 	kifu,
 	$interpolate,
 	$document,
-	$modal
+	$modal,
+	hotkeys
 ) {
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
+	var _ = require('lodash');
 
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
@@ -26,6 +29,24 @@ angular.module('gokibitz.controllers')
 	$scope.sgfLink = '/api/kifu/' + $routeParams.shortid + '/sgf';
 
 	$scope.kifu = kifu.data;
+
+	hotkeys.bindTo($scope)
+		.add({
+			combo: 'left',
+			description: 'Go to the previous move',
+			callback: function (event, hotkey) {
+				$scope.player.previous();
+				event.preventDefault();
+			}
+		})
+		.add({
+			combo: 'right',
+			description: 'Go to the next move',
+			callback: function (event, hotkey) {
+				$scope.player.next();
+				event.preventDefault();
+			}
+		});
 
 	// Check if the current path is in a variation, or on the primary tree
 	function inVariation(path) {
@@ -44,6 +65,26 @@ angular.module('gokibitz.controllers')
 	initialPath = pathFilter(initialPath, 'object');
 	$scope.kifu.path = initialPath;
 
+	var updateCommentButtonStatus = function() {
+		if ($scope.uniqComments && $scope.uniqComments.length) {
+			var firstUniq = $scope.uniqComments[0];
+			var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+
+			if ($scope.comparePaths($scope.kifu.path, firstUniq) > 0) {
+				$scope.moreCommentsBefore = true;
+			} else {
+				$scope.moreCommentsBefore = false;
+			}
+			if ($scope.comparePaths($scope.kifu.path, lastUniq) < 0) {
+				$scope.moreCommentsAfter = true;
+			} else {
+				$scope.moreCommentsAfter = false;
+			}
+		} else {
+			$scope.moreCommentsBefore = false;
+			$scope.moreCommentsAfter = false;
+		}
+	};
 	// Fired every time the player updates
 	$scope.playerUpdate = function (event) {
 		if (event.op === 'init') {
@@ -81,8 +122,11 @@ angular.module('gokibitz.controllers')
 			// Format game comments
 			$scope.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
+
+			updateCommentButtonStatus();
 		});
 	};
+
 
 	$scope.toggleKifuVarMode = function () {
 		$scope.variationMode = !$scope.variationMode;
@@ -119,6 +163,140 @@ angular.module('gokibitz.controllers')
 	$scope.swipeRight = function (event) {
 		$scope.player.previous();
 	};
+
+	$scope.comparePaths = function(a, b){
+		var getKeys = function(obj){
+			var keys = Object.keys(obj).filter(function(key) {
+				return !isNaN(parseInt(key));
+			});
+			keys.sort(function (a, b){
+				return a - b;
+			});
+
+			while (obj[keys[0]] == 0){
+				keys.shift();
+			}
+			return keys;
+		};
+
+		function compareKeys(aKeys, bKeys) {
+			var aKey = (aKeys.length) ? aKeys[0] : 0;
+			var bKey = (bKeys.length) ? bKeys[0] : 0;
+
+			// If the lowest keys are different, use them to sort
+			if (aKey !== bKey) {
+				return aKey - bKey;
+			} else {
+				// If the VALUES of the lowest keys are different,
+				// use them to sort
+				if (a[aKey] !== b[bKey]) {
+					return a[aKey] - b[bKey];
+				} else {
+					// Otherwise, drop the lowest key values
+					aKeys.shift();
+					bKeys.shift();
+
+					if(aKeys.length === 0 && bKeys.length === 0){
+						//These are on the same branch. Check to see which move is higher.
+						return a.m - b.m;
+					} else {
+						// else try to see where the differ further
+						return compareKeys(aKeys, bKeys);
+					}
+				}
+			}
+		}
+
+		var aKeys = getKeys(a);
+		var bKeys = getKeys(b);
+
+		var minKeyA = Number(aKeys[0]) || Number(a.m);
+		var minKeyB = Number(bKeys[0]) || Number(b.m);
+
+		if (minKeyA === minKeyB) {
+			if (typeof a[minKeyA] === 'undefined' && typeof b[minKeyB] === 'undefined') {
+				// These are the same move
+				// Shouldn't ever happen but just in case.
+				return 0;
+			} else {
+				return compareKeys(aKeys, bKeys);
+			}
+		} else {
+			return minKeyA - minKeyB;
+		}
+	 };
+
+	$scope.updateUniqComments = function() {
+		var paths = [];
+
+		$http.get('api/kifu/' + $scope.kifu.shortid)
+			.success(function(data) {
+				var comments = data.comments;
+
+				if (comments) {
+					comments.forEach(function (comment) {
+						paths.push(comment.path);
+					});
+				}
+				// Remove duplicates
+				paths = _.uniq(paths);
+
+				// Turn paths into objects
+				// (This can't be used with map on its own, because pathTransform accepts optional arguments)
+				// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#Example:_Tricky_use_case
+				paths = paths.map(function (path) {
+					return smartgamer().pathTransform(path, 'object');
+				});
+				paths.sort($scope.comparePaths);
+				$scope.uniqComments = paths;
+				updateCommentButtonStatus();
+			}).error(function(data, status, headers, config) {
+				console.log('Error retrieving kifu for new comments:', data.message);
+			});
+	};
+
+	$scope.updateUniqComments($scope.kifu.comments);
+
+	$scope.previousCommentedMove = function () {
+		var i = $scope.uniqComments.length - 1;
+		while (i >= 0) {
+			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) > 0) {
+				$scope.player.goTo($scope.uniqComments[i]);
+				return;
+			}
+			i -= 1;
+		}
+	};
+
+	$scope.nextCommentedMove = function () {
+		var i = 0;
+		while (i < $scope.uniqComments.length) {
+			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
+				$scope.player.goTo($scope.uniqComments[i]);
+				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
+				return;
+			}
+			i += 1;
+		}
+	};
+
+	hotkeys.bindTo($scope)
+		.add({
+			combo: 'alt+left',
+			description: 'Go to the previous move with comments',
+			callback: function (event, hotkey) {
+				$scope.previousCommentedMove();
+				event.preventDefault();
+			}
+		})
+		.add({
+			combo: 'alt+right',
+			description: 'Go to the next move with comments',
+			callback: function (event, hotkey) {
+				$scope.nextCommentedMove();
+				event.preventDefault();
+			}
+		});
 
 	// TODO: Use this method of getting the edited version of the SGF and doing
 	// something useful with it (like save it)

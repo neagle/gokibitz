@@ -105,6 +105,7 @@ router.get('/:shortid', function (req, res) {
 			shortid: req.params.shortid
 		})
 		.populate('owner', 'username')
+		.populate('comments', 'path pathsWithComments')
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.json(200, kifu);
@@ -119,7 +120,7 @@ router.get('/:shortid', function (req, res) {
 // Update a kifu
 router.put('/:shortid', function (req, res) {
 	console.log('Updating kifu');
-	console.log('req.body', req.body);
+	//console.log('req.body', req.body);
 
 
 	if (!req.body) {
