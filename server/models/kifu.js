@@ -107,6 +107,11 @@ kifuSchema.virtual('game.info.result')
 		});
 	});
 
+kifuSchema.virtual('game.info.comment')
+	.get(function () {
+		return getProp('GC', this.game.sgf);
+	});
+
 kifuSchema.virtual('game.info.source')
 	.get(function () {
 		return getProp('SO', this.game.sgf);
@@ -187,7 +192,7 @@ kifuSchema.virtual('game.info.date')
 
 		return date;
 	});
- 
+
 
 /**
  * Comment Information
