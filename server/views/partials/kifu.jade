@@ -52,11 +52,11 @@
 					= ' '
 					| Game Info
 				.panel-body
-					table.table-condensed
+					table.table-condensed.game-info
 						tbody
 							tr(ng-if='kifu.game.info.comment')
 								th Game Comment:
-								td {{ kifu.game.info.comment }}
+								td.text {{ kifu.game.info.comment }}
 							tr(ng-if='kifu.game.info.source')
 								th Source:
 								td {{ kifu.game.info.source }}

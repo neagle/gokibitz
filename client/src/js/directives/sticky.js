@@ -15,6 +15,13 @@ angular.module('gokibitz.directives')
 			var topSpace = 70;
 			var bottomSpace = 140;
 
+			var rect, elemHeight;
+			function recalc() {
+				rect = elem[0].getBoundingClientRect();
+				elemHeight = elem[0].offsetHeight;
+				elem[0].parentNode.style.minHeight = elemHeight + 10 + 'px';
+			}
+
 			// Cross-browser getDocHeight function
 			// (I miss jQuery.)
 			function getDocHeight() {
@@ -38,11 +45,7 @@ angular.module('gokibitz.directives')
 			}
 
 			function scroll() {
-				var rect = elem[0].getBoundingClientRect();
-				var left = ($window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
 				var top = ($window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-
-				var elemHeight = elem[0].offsetHeight;
 				var totalHeight = top - topSpace;
 
 				if (top >= topSpace) {
@@ -56,7 +59,7 @@ angular.module('gokibitz.directives')
 						elem[0].style.position = 'absolute';
 						elem[0].style.top = bottomStick + 'px';
 					}
-				} else {
+				} else if (elem[0].style.position = 'fixed') {
 					elem[0].style.position = 'relative';
 					elem[0].style.top = 0;
 					elem[0].style.bottom = null;
@@ -66,6 +69,7 @@ angular.module('gokibitz.directives')
 			$win.on('resize', debounce(20, resize));
 
 			$document.ready(function () {
+				recalc();
 				resize();
 			});
 		}
