@@ -35,6 +35,8 @@ ui.notifications.media-list
 						| commented
 					span(ng-if='notification.cause === "star"')
 						| starred your comment
+					span(ng-if='notification.cause === "mention"')
+						| mentioned you
 
 					= ' '
 					| on move {{ notification.path }} of

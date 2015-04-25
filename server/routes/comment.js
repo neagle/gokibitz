@@ -34,6 +34,17 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 						kifu.game.original = kifu.game.sgf;
 					}
 
+					var newNotification = function (cause, to) {
+						// Send a notification to the mentioned user
+						var notification = new Notification();
+						notification.cause = cause;
+						notification.to = to;
+						notification.from = comment.user;
+						notification.kifu = comment.kifu;
+						notification.path = comment.path;
+						notification.comment = comment._id;					
+						notification.save();
+					};
 					kifu.save(function (error) {
 						if (!error) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
@@ -42,18 +53,29 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							comment.getRecipients(function (recipients) {
 								recipients.forEach(function (recipient) {
 									// Send a notification to the kifu owner
-									var notification = new Notification();
-									notification.cause = 'new comment';
-									notification.to = recipient;
-									notification.from = comment.user;
-									notification.kifu = comment.kifu;
-									notification.path = comment.path;
-									notification.comment = comment._id;
-
-									notification.save();
+									newNotification('new comment', recipient);
 								});
 							});
 
+							var usernames = comment.content.markdown.match(/@[a-z0-9_-]*/g);
+
+							if(usernames){
+								usernames.map(function(x) { 
+									return x.replace('@', ''); 
+								}).filter(function(username) { 
+									return username.length !== 0 && comment.user.username !== username; 
+								});
+								//Send out a notification to each user
+								usernames.forEach(function(username) {
+									User.findOne({ username: username }, function (error, user) {
+										if (!error && user) {
+											newNotification('mention', user);
+										} else {
+											console.log(error, user);
+										}
+									});
+								});
+							}
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
 									change: 'new',
