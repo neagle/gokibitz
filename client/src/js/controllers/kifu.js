@@ -347,21 +347,29 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.saveGameComment = function () {
+		// Change the state while we're saving the comment
 		$scope.savingGameComment = true;
 
 		var gamer = smartgamer(smartgame.parse($scope.kifu.game.sgf));
 		gamer.goTo($scope.kifu.path);
 		gamer.comment($scope.kifu.nodeComment);
 		var sgf = smartgame.generate(gamer.getSmartgame());
+
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf
 		})
 			.success(function () {
 				$scope.savingGameComment = false;
 				$scope.editGameComment = false;
-				$scope.sgfComment = comments.format($scope.kifu.nodeComment);
-				$scope.player.kifuReader.node.comment = $scope.kifu.nodeComment;
 
+				// Refresh the SGF with the new version
+				$scope.kifu.game.sgf = sgf;
+
+				// Update the display version
+				$scope.sgfComment = comments.format($scope.kifu.nodeComment);
+
+				// Update WGO
+				$scope.player.kifuReader.node.comment = $scope.kifu.nodeComment;
 			})
 			.error(function () {
 				$scope.sgfComment = arguments;
