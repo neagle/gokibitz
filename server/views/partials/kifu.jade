@@ -165,7 +165,9 @@
 
 		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
 
-			div.panel.panel-default
+			div.panel.panel-default(
+				ng-if='sgfComment || kifu.owner.username === currentUser.username'
+			)
 				div.panel-heading
 					span.fui-document
 					= ' '
