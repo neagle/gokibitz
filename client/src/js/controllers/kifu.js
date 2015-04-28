@@ -20,6 +20,7 @@ angular.module('gokibitz.controllers')
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
 	var _ = require('lodash');
+	var moment = require('moment');
 
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
@@ -119,8 +120,10 @@ angular.module('gokibitz.controllers')
 				}
 			}
 
+			updateClock(event.node);
+
 			// Format game comments
-			$scope.nodeComment = event.node.comment;
+			$scope.kifu.nodeComment = event.node.comment;
 			$scope.sgfComment = comments.format(event.node.comment);
 
 			updateCommentButtonStatus();
@@ -334,12 +337,12 @@ angular.module('gokibitz.controllers')
 		$scope.editGameComment = !$scope.editGameComment;
 
 		if ($scope.editGameComment) {
-			$scope.originalNodeComment = $scope.nodeComment;
+			$scope.originalNodeComment = $scope.kifu.nodeComment;
 		}
 	};
 
 	$scope.cancelGameComment = function () {
-		$scope.nodeComment = $scope.originalNodeComment;
+		$scope.kifu.nodeComment = $scope.originalNodeComment;
 		$scope.editGameComment = false;
 	};
 
@@ -348,7 +351,7 @@ angular.module('gokibitz.controllers')
 
 		var gamer = smartgamer(smartgame.parse($scope.kifu.game.sgf));
 		gamer.goTo($scope.kifu.path);
-		gamer.comment($scope.nodeComment);
+		gamer.comment($scope.kifu.nodeComment);
 		var sgf = smartgame.generate(gamer.getSmartgame());
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf
@@ -356,14 +359,50 @@ angular.module('gokibitz.controllers')
 			.success(function () {
 				$scope.savingGameComment = false;
 				$scope.editGameComment = false;
-				$scope.sgfComment = comments.format($scope.nodeComment);
-				$scope.player.kifuReader.node.comment = $scope.nodeComment;
+				$scope.sgfComment = comments.format($scope.kifu.nodeComment);
+				$scope.player.kifuReader.node.comment = $scope.kifu.nodeComment;
 
 			})
 			.error(function () {
-				console.log('error', arguments);
+				$scope.sgfComment = arguments;
 				$scope.savingGameComment = false;
 			});
 	};
+
+	function formatTime(time) {
+		var duration= moment.duration(Number(time), 'seconds');
+		// @see https://github.com/moment/moment/issues/1048
+		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
+	}
+
+	function updateClock(node) {
+		if (!node.move) {
+			return;
+		}
+
+		var key = (node.move.c === 1) ? 'BL' : 'WL';
+		var otherKey = (node.move.c === 1) ? 'WL' : 'BL';
+
+		if (!node[key]) {
+			return;
+		}
+
+		var timeLeft = Number(node[key]);
+		var previousMoveTime;
+		if (node.parent && node.parent.parent) {
+			previousMoveTime = Number(node.parent.parent[key]);
+		}
+
+		$scope.clock = $scope.clock || {};
+
+		var timeSpent = Math.floor(previousMoveTime) - Math.floor(timeLeft);
+		$scope.clock.timeSpent = formatTime(timeSpent);
+
+		$scope.clock[key] = formatTime(timeLeft);
+		if (node.parent) {
+			$scope.clock[otherKey] = formatTime(node.parent[otherKey]);
+		}
+
+	}
 
 });

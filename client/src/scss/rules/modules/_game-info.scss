@@ -1,5 +1,15 @@
 .game-info {
+	th, td {
+		line-height: 1.4;
+	}
+
+	th {
+		text-align: right;
+		vertical-align: top;
+	}
+
 	td {
 		word-break: break-word;
+		vertical-align: bottom;
 	}
 }

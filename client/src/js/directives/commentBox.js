@@ -11,7 +11,7 @@ angular.module('gokibitz.directives')
 		scope: {
 			submit: '&gkCommentSubmit',
 			cancel: '&gkCommentCancel',
-			preview: '=gkCommentPreview',
+			preview: '=?gkCommentPreview',
 			model: '=ngModel'
 		},
 		link: function ($scope, element, attributes, ngModel) {
@@ -65,12 +65,14 @@ angular.module('gokibitz.directives')
 			}
 
 			// Watch the value of the comment and fetch a preview when it changes
-			$scope.$watch('model', function (newValue, oldValue) {
-				// @see http://stackoverflow.com/a/18915585/399077
-				if (newValue !== oldValue) {
-					preview();
-				}
-			});
+			if ($scope.preview) {
+				$scope.$watch('model', function (newValue, oldValue) {
+					// @see http://stackoverflow.com/a/18915585/399077
+					if (newValue !== oldValue) {
+						preview();
+					}
+				});
+			}
 
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
@@ -94,7 +96,7 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
-					$scope.cancel();
+					$scope.$apply('cancel()');
 				}
 			});
 		}

@@ -119,7 +119,13 @@ kifuSchema.virtual('game.info.source')
 
 kifuSchema.virtual('game.info.timeLimit')
 	.get(function () {
-		return getProp('TM', this.game.sgf);
+		var timeLimit = getProp('TM', this.game.sgf);
+		if (timeLimit) {
+			timeLimit = moment.duration(Number(timeLimit), 'seconds');
+			return timeLimit.humanize();
+		} else {
+			return undefined;
+		}
 	});
 
 kifuSchema.virtual('game.info.rules')
