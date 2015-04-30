@@ -2,6 +2,10 @@ angular.module('gokibitz.directives')
 .directive('sgf', function ($window, $document, $timeout) {
 	return {
 		restrict: 'E',
+
+		// Include DOM inside the tag
+		transclude: true,
+
 		scope: {
 			// The SGF's source data
 			src: '=',
@@ -26,7 +30,7 @@ angular.module('gokibitz.directives')
 
 			player: '=?'
 		},
-		template: '<div></div>',
+		template: '<div></div><ng-transclude></ng-transclude>',
 		link: function ($scope, element, attributes) {
 			if (!$scope.src) {
 				return;

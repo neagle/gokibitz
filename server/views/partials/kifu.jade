@@ -24,12 +24,6 @@
 			ng-swipe-left='swipeLeft($event)'
 			ng-swipe-right='swipeRight($event)'
 		)
-			.result(
-				ng-if='kifu.game.info.result'
-				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
-				ng-click='hideResult = true'
-			)
-				.inner {{ kifu.game.info.result }}
 			sgf(
 				sticky
 				src='kifu.game.sgf'
@@ -40,6 +34,12 @@
 				coordinates
 				ng-class='{ "variation-mode": variationMode, "edit-mode": editMode }'
 			)
+				.result(
+					ng-if='kifu.game.info.result'
+					ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
+					ng-click='hideResult = true'
+				)
+					.inner {{ kifu.game.info.result }}
 
 			//-button.btn.btn-default(ng-click='toggleEditMode()') Edit
 			//-button.btn.btn-default(ng-click='getSgf()') SGF
