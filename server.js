@@ -104,17 +104,4 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-if (app.get('env') === 'development') {
-	console.log('Creating proxy server on port 3433 to simulate slow responses.');
-	var proxy = httpProxy.createProxyServer();
-
-	http.createServer(function (req, res) {
-		setTimeout(function () {
-			proxy.web(req, res, {
-				target: 'http://localhost:3434'
-			});
-		}, 1000);
-	}).listen(3433);
-}
-
 module.exports = app;
