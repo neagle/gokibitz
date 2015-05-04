@@ -5,6 +5,7 @@ var User = require('../models/user').User;
 var Notification = require('../models/notification').Notification;
 var _ = require('lodash');
 
+// Get a user object from a username
 function findUser(username, callback) {
 	User.findOne({
 		username: username
@@ -57,31 +58,31 @@ router.get('/', auth.ensureAuthenticated, function (req, res) {
 				.skip(offset)
 				.limit(limit)
 				.exec(function (error, notifications) {
-          if (!error && notifications) {
-            // Turn notifications into a JS object
-            notifications = notifications.map(function (notification) {
-              return notification.toObject();
-            });
+					if (!error && notifications) {
+						// Turn notifications into a JS object
+						notifications = notifications.map(function (notification) {
+							return notification.toObject();
+						});
 
-            // Strip the SGF. It was needed to resolve virtual info properties
-            // But it adds unnecessary weight to the response
-            notifications = _.map(notifications, function (notification) {
-              delete notification.kifu.game.sgf;
-              return notification;
-            });
-            res.json(200, notifications);
-          } else if (!error) {
-            res.json(200, []);
-          } else {
-            res.json(500, { message: error });
-          }
-        });
-      } else if (error) {
-        res.json(500, { message: error });
-      } else {
-        res.json(200, { message: [] });
-      }
-    }
+						// Strip the SGF. It was needed to resolve virtual info properties
+						// But it adds unnecessary weight to the response
+						notifications = _.map(notifications, function (notification) {
+							delete notification.kifu.game.sgf;
+							return notification;
+						});
+						res.json(200, notifications);
+					} else if (!error) {
+						res.json(200, []);
+					} else {
+						res.json(500, { message: error });
+					}
+				});
+		} else if (error) {
+			res.json(500, { message: error });
+		} else {
+			res.json(200, { message: [] });
+		}
+	}
 
 	if (!username) {
 		var user = req.user;
@@ -89,36 +90,37 @@ router.get('/', auth.ensureAuthenticated, function (req, res) {
 	} else {
 		findUser(username, getNotifications);
 	}
-
-	router.get('/read/:id', auth.ensureAuthenticated, function (req, res) {
-		var id = req.params.id;
-		var user = req.user;
-
-		Notification
-			.findById(id)
-			.populate('to')
-			.exec(function (error, notification) {
-				if (!error) {
-					if (!user.equals(notification.to)) {
-						res.json('550', { message: 'You can\'t read someone else\'s notification.' });
-					} else {
-						notification.read = true;
-						notification.save(function (error) {
-							if (!error) {
-								res.json(200, {
-									message: 'Notification marked as read.'
-								});
-							} else {
-								res.json(500, { message: 'Could not mark notification as read. ' + error });
-							}
-						});
-					}
-				} else {
-					res.json('500', { message: error });
-				}
-			});
-	});
-
 });
+
+// Mark a notification as being read
+router.get('/read/:id', auth.ensureAuthenticated, function (req, res) {
+	var id = req.params.id;
+	var user = req.user;
+
+	Notification
+		.findById(id)
+		.populate('to')
+		.exec(function (error, notification) {
+			if (!error) {
+				if (!user.equals(notification.to)) {
+					res.json('550', { message: 'You can\'t read someone else\'s notification.' });
+				} else {
+					notification.read = true;
+					notification.save(function (error) {
+						if (!error) {
+							res.json(200, {
+								message: 'Notification marked as read.'
+							});
+						} else {
+							res.json(500, { message: 'Could not mark notification as read. ' + error });
+						}
+					});
+				}
+			} else {
+				res.json('500', { message: error });
+			}
+		});
+});
+
 
 module.exports = router;
