@@ -28,6 +28,12 @@
 						.real-name.align-sm-right(ng-if='user.realName') {{ user.realName }}
 						.location.align-sm-right(ng-if='user.location') {{ user.location }}
 
+			.row
+				.col-xs-12(ng-hide='!user.stars')
+					p.stars.align-sm-right {{ user.stars }}
+						= ' '
+						span.fui-star-2
+
 			.row.top-buffer.bottom-buffer.align-sm-right(
 				ng-show='isMine'
 			)

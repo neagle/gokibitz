@@ -94,6 +94,7 @@ UserSchema
 			//return Comment.find().count();
 		});
 
+
 /**
  * Validations
  */
@@ -189,7 +190,31 @@ UserSchema.methods = {
 		}
 		var salt = new Buffer(this.salt, 'base64');
 		return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+	},
+
+	/**
+	 * Get total number of stars given to this user's comments
+	 */
+	getStars: function (callback) {
+		Comment.aggregate({
+			$match: {
+				user: mongoose.Types.ObjectId(this._id),
+				'stars.0': {
+					$exists: true
+				}
+			}
+		}, {
+			$unwind: '$stars'
+		}, {
+			$group: {
+				_id: null,
+				count: { $sum: 1 }
+			}
+		}, function (error, results) {
+			callback(error, results[0].count);
+		});
 	}
+
 };
 
 var user = mongoose.model('User', UserSchema);

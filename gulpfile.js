@@ -6,8 +6,6 @@ var bourbon = require('node-bourbon');
 var autoprefix = require('gulp-autoprefixer');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
-var nodemon = require('gulp-nodemon');
-var livereload = require('gulp-livereload');
 var notify = require('gulp-notify');
 var imagemin = require('gulp-imagemin');
 var newer = require('gulp-newer');
@@ -91,6 +89,7 @@ gulp.task('sass', ['sass-includes'], function () {
 require('./gulp/tasks/browserify');
 require('./gulp/tasks/watchify');
 require('./gulp/tasks/uglify');
+require('./gulp/tasks/dev-server');
 
 // Lint our server-side JS
 gulp.task('lint-server-js', function () {
@@ -111,27 +110,18 @@ gulp.task('default', [
 	// Nothing!
 });
 
-gulp.task('watch', ['watchify'], function () {
-	var server = livereload();
-
-	nodemon({
-		script: './server/bin/www',
-		ext: 'js jade',
-		watch: ['server', 'server.js'],
-		env: {
-			DEBUG: 'gokibitz',
-			PORT: 3434
-		}
-	})
-		.on('change', ['lint-server-js']);
-
+gulp.task('watch', ['server:start', 'watchify'], function () {
 	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
-	//gulp.watch('client/src/submodules/wgo.js/wgo/src/*.js', ['browserify']);
 	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
 	gulp.watch('client/src/assets/images/**/*', ['images']);
 	gulp.watch('client/src/assets/js/**/*', ['js-assets']);
 
-	gulp.watch('client/public/**').on('change', function (file) {
-		server.changed(file.path);
-	});
+	gulp.watch([
+		'server/**/*',
+		'server.js'
+	], ['server:restart']);
+
+	//gulp.watch('client/public/**').on('change', function (file) {
+		//server.changed(file.path);
+	//});
 });
