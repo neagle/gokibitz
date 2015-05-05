@@ -211,7 +211,14 @@ UserSchema.methods = {
 				count: { $sum: 1 }
 			}
 		}, function (error, results) {
-			callback(error, results[0].count);
+			var stars;
+			if (results[0] && results[0].count) {
+				stars = results[0].count;
+			} else {
+				stars = 0;
+			}
+
+			callback(error, stars);
 		});
 	}
 
