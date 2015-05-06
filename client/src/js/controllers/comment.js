@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var mentio = require('ment.io');
 
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
