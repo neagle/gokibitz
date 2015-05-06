@@ -45,6 +45,15 @@ angular.module('gokibitz.controllers')
 		});
 	};
 
+	$scope.passwordModal = function () {
+		$modal.open({
+			templateUrl: '/partials/password',
+			controller: 'PasswordController'
+		});
+	};
+
+	$scope.passwordModal();
+
 	$scope.logout = function () {
 		Auth.logout(function (err) {
 			if (!err) {

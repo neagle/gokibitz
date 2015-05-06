@@ -48,6 +48,49 @@ exports.show = function (req, res, next) {
 };
 
 /**
+ *  Update user
+ *  returns {username, profile}
+ */
+exports.update = function (req, res, next) {
+	User.findById(req.user._id, function (err, user) {
+		if (err) {
+			return next(new Error('Failed to load User'));
+		}
+		if (user) {
+			if (user.authenticate(req.body.oldPassword)) {
+				user.password = req.body.newPassword;
+				user.save(function (error) {
+					if (error) {
+						res.json(500, error);
+					} else {
+						res.send(200, 'Password successfully changed');
+					}
+				});
+			} else {
+				res.json(500, 'Old password is not correct');
+			}
+		} else {
+			res.send(404, 'USER_NOT_FOUND');
+		}
+	});
+
+
+	//User.findById(new ObjectId(userId), function (err, user) {
+		//if (err) {
+			//return next(new Error('Failed to load User'));
+		//}
+		//if (user) {
+			//console.log('user', user);
+			//console.log('req.body', req.body);
+			////user.password = req.body.password
+			//res.send({username: user.username, profile: user.profile });
+		//} else {
+			//res.send(404, 'USER_NOT_FOUND');
+		//}
+	//});
+};
+
+/**
  *  Username exists
  *  returns {exists}
  */

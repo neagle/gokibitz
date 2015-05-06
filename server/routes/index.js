@@ -7,6 +7,7 @@ var auth = require('../config/auth');
 // User routes
 var users = require('../controllers/users');
 router.post('/auth/users', users.create);
+router.put('/auth/users', users.update);
 router.get('/auth/users/:userId', users.show);
 
 // Check if username is available
