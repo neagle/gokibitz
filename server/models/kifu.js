@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var shortid = require('shortid');
 //var smartgame = require('smartgame');
-var smartgamer = require('smartgamer')();
+//var smartgamer = require('smartgamer')();
 var moment = require('moment');
 //var Comment = require('./comment').Comment;
-var _ = require('lodash');
+//var _ = require('lodash');
 
 var kifuSchema = new Schema({
 	shortid: {
@@ -52,8 +52,8 @@ var kifuSchema = new Schema({
 	muted: {
 		type: Boolean,
 		default: false
-	}
-
+	},
+	tags: [String]
 }, {
 	toJSON: {
 		virtuals: true
@@ -119,7 +119,13 @@ kifuSchema.virtual('game.info.source')
 
 kifuSchema.virtual('game.info.timeLimit')
 	.get(function () {
-		return getProp('TM', this.game.sgf);
+		var timeLimit = getProp('TM', this.game.sgf);
+		if (timeLimit) {
+			timeLimit = moment.duration(Number(timeLimit), 'seconds');
+			return timeLimit.humanize();
+		} else {
+			return undefined;
+		}
 	});
 
 kifuSchema.virtual('game.info.rules')

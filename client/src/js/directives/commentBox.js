@@ -11,7 +11,7 @@ angular.module('gokibitz.directives')
 		scope: {
 			submit: '&gkCommentSubmit',
 			cancel: '&gkCommentCancel',
-			preview: '=gkCommentPreview',
+			preview: '=?gkCommentPreview',
 			model: '=ngModel'
 		},
 		link: function ($scope, element, attributes, ngModel) {
@@ -94,7 +94,7 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
-					$scope.cancel();
+					$scope.$apply('cancel()');
 				}
 			});
 		}

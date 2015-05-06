@@ -1,5 +1,7 @@
 /*jshint camelcase:false*/
 /*global WGo:true*/
+
+// GoKibitz's custom flat stones
 WGo.Board.drawHandlers.FLAT = {
 	stone: {
 		draw: function (args, board) {

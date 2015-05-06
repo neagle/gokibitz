@@ -104,17 +104,21 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-if (app.get('env') === 'development') {
-	console.log('Creating proxy server on port 3433 to simulate slow responses.');
-	var proxy = httpProxy.createProxyServer();
+// Let's fix our memory leak¬
 
-	http.createServer(function (req, res) {
-		setTimeout(function () {
-			proxy.web(req, res, {
-				target: 'http://localhost:3434'
-			});
-		}, 1000);
-	}).listen(3433);
-}
+//var memwatch = require('memwatch-next');
+//var heapdump = require('heapdump');
+
+//memwatch.on('leak', function (info) {
+	//console.error('Memory leak detected:', info);
+	//var file = '/tmp/gokibitz-' + process.pid + '-' + Date.now() + '.heapsnapshot';
+	//heapdump.writeSnapshot(file, function (err) {
+		//if (err) {
+			//console.error(err);
+		//} else {
+			//console.error('Wrote snapshot: ' + file);
+		//}
+	//});
+//});
 
 module.exports = app;

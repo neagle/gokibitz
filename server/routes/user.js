@@ -11,7 +11,15 @@ router.get('/:username', function (req, res) {
 		.select('-hashedPassword -salt')
 		.exec(function (error, user) {
 			if (!error && user) {
-				res.json(200, user);
+				// Get a user's total star count
+				// TODO: this is just one of probably a handful of things we're going
+				// to want to get about a user that require async operations. This will
+				// probably need to be abstracted into a unified function.
+				user.getStars(function (error, stars) {
+					user = user.toObject();
+					user.stars = stars;
+					res.json(200, user);
+				});
 			} else if (error) {
 				res.json(500, { message: 'Error finding user. ' + error });
 			} else {

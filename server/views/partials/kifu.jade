@@ -1,6 +1,6 @@
 .container-fluid
 	.row
-		.kifu-banner.col-lg-12
+		.kifu-banner.col-xs-12
 			.white
 				.name {{ info.white.name || 'Anonymous' }}
 				= ' '
@@ -19,16 +19,11 @@
 					tooltip='Black’s captured prisoners'
 				) {{ captures.black }}
 
+	.row
 		.player-container.col-xs-12.col-sm-6.col-md-5.col-md-push-3(
 			ng-swipe-left='swipeLeft($event)'
 			ng-swipe-right='swipeRight($event)'
 		)
-			.result(
-				ng-if='kifu.game.info.result'
-				ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
-				ng-click='hideResult = true'
-			)
-				.inner {{ kifu.game.info.result }}
 			sgf(
 				sticky
 				src='kifu.game.sgf'
@@ -39,13 +34,79 @@
 				coordinates
 				ng-class='{ "variation-mode": variationMode, "edit-mode": editMode }'
 			)
+				.result(
+					ng-if='kifu.game.info.result'
+					ng-show='lastMove && !editMode && !variationMode && !player.temporarySequence && !hideResult'
+					ng-click='hideResult = true'
+				)
+					.inner {{ kifu.game.info.result }}
 
 			//-button.btn.btn-default(ng-click='toggleEditMode()') Edit
 			//-button.btn.btn-default(ng-click='getSgf()') SGF
 
 		.sgf-comments.col-xs-12.col-sm-6.col-md-3.col-md-pull-5
+			.row
+				.col-xs-12
+					.btn-group.bottom-buffer.pull-right
+						.btn-group(
+							dropdown
+						)
+							button.btn.btn-default.btn-md.dropdown-toggle(
+								type='button'
+								dropdown-toggle
+							) SGF
+								span.fa.icon-share
+								= ' '
+								span.caret
+
+							ul.dropdown-menu.pull-right(
+								role='menu'
+							)
+								li
+									a(
+										ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
+										target='_self'
+									) With comments
+									a(
+										ng-href='/api/kifu/{{ kifu.shortid }}/sgf?nocomments=true'
+										target='_self'
+									) Without comments
+
+						.btn-group(
+							dropdown
+						)
+							button.btn.btn-default.btn-md.dropdown-toggle(
+								type='button'
+								dropdown-toggle
+							) Share
+								span.fa.icon-share
+								= ' '
+								span.caret
+
+							ul.dropdown-menu.pull-right(
+								role='menu'
+							)
+								li
+									a(
+										href='#'
+										socialshare
+										socialshare-provider='twitter'
+										socialshare-hashtags='gokibitz'
+										socialshare-text='{{ info.white.name || "Anonymous" }} vs. {{ info.black.name || "Anonymous" }}'
+									) Twitter
+								li
+									a(
+										href='#'
+										socialshare
+										socialshare-provider='facebook'
+									) Facebook
+								li
+									a(
+										ng-click='embed(kifu.shortid)'
+									) Embed
+
 			div.panel.panel-default(
-				ng-hide='kifu.path.m !== 0'
+				ng-class='{ "hidden-xs": kifu.path.m !== 0 }'
 			)
 				.panel-heading
 					span.fui-info
@@ -55,31 +116,58 @@
 					table.table-condensed.game-info
 						tbody
 							tr(ng-if='kifu.game.info.comment')
-								th Game Comment:
+								th Game Comment
 								td.text {{ kifu.game.info.comment }}
 							tr(ng-if='kifu.game.info.source')
-								th Source:
+								th Source
 								td {{ kifu.game.info.source }}
 							tr(ng-if='kifu.game.info.komi')
-								th Komi:
+								th Komi
 								td {{ kifu.game.info.komi }}
 							tr(ng-if='kifu.game.info.result')
-								th Result:
+								th Result
 								td {{ kifu.game.info.result }}
 							tr(ng-if='kifu.game.info.date')
-								th Date:
+								th Date
 								td {{ kifu.game.info.date }}
 							tr(ng-if='kifu.game.info.place')
-								th Place:
+								th Place
 								td {{ kifu.game.info.place }}
 							tr(ng-if='kifu.game.info.rules')
-								th Rules:
+								th Rules
 								td {{ kifu.game.info.rules }}
 							tr(ng-if='kifu.game.info.timeLimit')
-								th Time Limit:
+								th Time Limit
 								td {{ kifu.game.info.timeLimit }}
+							tr
+								th Uploader
+								td
+									a(href='' ng-href='/user/{{ kifu.owner.username }}') {{ kifu.owner.username }}
 
-			div.panel.panel-default
+			div.panel.panel-default.hidden-xs(
+				ng-if='kifu.path.m !== 0 && (clock.WL && clock.BL)'
+			)
+				.panel-heading
+					span.fui-time
+					= ' '
+					| Clock
+				.panel-body
+					p White:
+						= ' '
+						time {{ clock.WL }}
+					p Black:
+						= ' '
+						time {{ clock.BL }}
+					p Time spent on last move:
+						= ' '
+						time {{ clock.timeSpent }}
+
+
+		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
+
+			div.panel.panel-default(
+				ng-if='sgfComment || kifu.owner.username === currentUser.username'
+			)
 				div.panel-heading
 					span.fui-document
 					= ' '
@@ -95,10 +183,17 @@
 						textarea.form-control.bottom-buffer(
 							msd-elastic='\\n'
 							rows='6'
-							ng-model='nodeComment'
+							ng-model='kifu.nodeComment'
 							ng-disabled='savingGameComment'
+							gk-comment-box='saveGameComment(), cancelGameComment()'
+							gk-comment-submit='saveGameComment()'
+							gk-comment-cancel='cancelGameComment()'
 							gk-focus-me='editGameComment'
 						)
+
+						span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
+							| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
+
 					div(ng-show='kifu.owner.username === currentUser.username')
 						div(ng-show='!editGameComment')
 							button.btn.btn-sm.btn-default(
@@ -115,70 +210,6 @@
 							button.btn.btn-sm.btn-warning(
 								ng-click='cancelGameComment()'
 							) Cancel
-
-
-
-			.btn-group.bottom-buffer.pull-right
-				.btn-group(
-					dropdown
-				)
-					button.btn.btn-default.dropdown-toggle(
-						type='button'
-						dropdown-toggle
-					) SGF
-						span.fa.icon-share
-						= ' '
-						span.caret
-
-					ul.dropdown-menu.pull-right(
-						role='menu'
-					)
-						li
-							a(
-								ng-href='/api/kifu/{{ kifu.shortid }}/sgf'
-								target='_self'
-							) With comments
-							a(
-								ng-href='/api/kifu/{{ kifu.shortid }}/sgf?nocomments=true'
-								target='_self'
-							) Without comments
-
-				.btn-group(
-					dropdown
-				)
-					button.btn.btn-default.dropdown-toggle(
-						type='button'
-						dropdown-toggle
-					) Share
-						span.fa.icon-share
-						= ' '
-						span.caret
-
-					ul.dropdown-menu.pull-right(
-						role='menu'
-					)
-						li
-							a(
-								href='#'
-								socialshare
-								socialshare-provider='twitter'
-								socialshare-hashtags='gokibitz'
-								socialshare-text='{{ info.white.name || "Anonymous" }} vs. {{ info.black.name || "Anonymous" }}'
-							) Twitter
-						li
-							a(
-								href='#'
-								socialshare
-								socialshare-provider='facebook'
-							) Facebook
-						li
-							a(
-								ng-click='embed(kifu.shortid)'
-							) Embed
-
-
-
-		.col-xs-12.col-sm-12.col-md-4(ng-controller='CommentController')
 
 			//-------------------------//
 			//- All-kifu comment list -//
@@ -446,4 +477,3 @@
 							.col-md-12
 								p.pull-right
 									button.btn.btn-primary.only-touch(ng-click='addComment()') Submit
-
