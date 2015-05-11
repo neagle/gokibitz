@@ -92,17 +92,18 @@ angular.module('gokibitz.directives')
 
 				refreshTimes();
 
-				params.since = since;
+				//params.since = since;
 				$http.get('/api/comment', { params:  params })
 					.then(function (response) {
-						var newComments = response.data;
-						if (newComments.length) {
-							// Remove the number of new comments from the end
-							$scope.comments.splice($scope.comments.length - newComments.length, newComments.length);
+						var newComments = serializeMoves(response.data);
+						$scope.comments = newComments;
+						//if (newComments.length) {
+							//// Remove the number of new comments from the end
+							//$scope.comments.splice($scope.comments.length - newComments.length, newComments.length);
 
-							// Add the new comments to the beginning
-							$scope.comments = newComments.concat($scope.comments);
-						}
+							//// Add the new comments to the beginning
+							//$scope.comments = newComments.concat($scope.comments);
+						//}
 						since = new Date();
 					});
       }, 10000);

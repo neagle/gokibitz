@@ -142,9 +142,9 @@ router.get('/', function (req, res) {
 			.skip(offset)
 			.limit(limit);
 
-		if (since) {
-			comments = comments.where('date').gt(since);
-		}
+		//if (since) {
+			//comments = comments.where('date').gt(since);
+		//}
 
 		if (user) {
 			comments = comments.where('user').equals(user._id);
