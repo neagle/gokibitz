@@ -1,9 +1,8 @@
 var _ = require('lodash');
-var mentio = require('ment.io');
 
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket, mentioUtil) {
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
@@ -41,7 +40,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.formData = {};
-
+			$scope.commentPreview = "";
 			$scope.highlightedComment = $location.search().comment;
 
 			var canceler;
@@ -417,6 +416,26 @@ angular.module('gokibitz.controllers')
 					$scope.toggleVariationMode();
 				}
 			};
+
+			$scope.getUsername = function (user) {
+				return '@' + user.username;
+			};
+
+			$scope.searchUsers = function (term) {
+				$http.get('api/user/list?search=' + term)
+                        		.success(function(data) {
+						
+						$scope.users = data.map( function (user) {
+							user.label = user.username;
+							return user;
+						});
+						console.log($scope.users);	
+					}).error(function(data, status, headers, config) {
+                                		console.log('Error retrieving kifu for new comments:', data.message);
+                        		});
+			};
+	
+			$scope.users = $scope.searchUsers("");
 
 
 		}

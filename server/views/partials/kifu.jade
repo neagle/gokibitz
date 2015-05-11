@@ -455,15 +455,18 @@
 										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
+										
+										mentio=""
+										mentio-items="users"
+										mentio-search="searchUsers(term)"
+									
 										rows=3
 										gk-comment-box
-										gk-comment-submit='addComment()'
-										gk-comment-preview='preview'
 									)
 						.row
 							.col-md-12
-								h5(ng-hide='!preview') Preview
-								.preview(dynamic='preview')
+								h5(ng-hide='!commentPreview') Preview
+								.preview(dynamic='commentPreview')
 						.row
 							.col-md-12
 								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit

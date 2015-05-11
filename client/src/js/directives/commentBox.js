@@ -8,12 +8,6 @@ angular.module('gokibitz.directives')
 	return {
 		restrict: 'A',
 		require: '?ngModel',
-		scope: {
-			submit: '&gkCommentSubmit',
-			cancel: '&gkCommentCancel',
-			preview: '=?gkCommentPreview',
-			model: '=ngModel'
-		},
 		link: function ($scope, element, attributes, ngModel) {
 			var text = element.val();
 			var canceler;
@@ -46,7 +40,7 @@ angular.module('gokibitz.directives')
 						timeout: canceler.promise
 					})
 						.success(function (data) {
-							$scope.preview = data.markup;
+							$scope.commentPreview = data.markup;
 						});
 				}
 			}
@@ -65,7 +59,7 @@ angular.module('gokibitz.directives')
 			}
 
 			// Watch the value of the comment and fetch a preview when it changes
-			$scope.$watch('model', function (newValue, oldValue) {
+			$scope.$watch('formData.content', function (newValue, oldValue) {
 				// @see http://stackoverflow.com/a/18915585/399077
 				if (newValue !== oldValue) {
 					preview();
@@ -84,8 +78,8 @@ angular.module('gokibitz.directives')
 					}
 
 
-					$scope.submit();
-					$scope.preview = '';
+					$scope.addComment();
+					$scope.commentPreview = '';
 				}
 			});
 
@@ -94,6 +88,7 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
+					//todo add cancel function
 					$scope.$apply('cancel()');
 				}
 			});

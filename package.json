@@ -113,7 +113,7 @@
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
     "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
-    "ment.io": "./node_modules/dist/mentio.js" 
+    "ment.io": "./node_modules/ment.io/dist/mentio.js" 
   },
   "browserify-shim": {
     "angular": "angular",
