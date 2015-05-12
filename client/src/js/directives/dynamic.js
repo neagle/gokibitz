@@ -4,10 +4,9 @@ angular.module('gokibitz.directives')
 .directive('dynamic', function ($compile) {
 	return {
 		restrict: 'A',
-		replace: true,
 		link: function ($scope, element, attributes) {
 			$scope.$watch(attributes.dynamic, function(html) {
-				element.html(html);
+				element.html(html || '');
 				$compile(element.contents())($scope);
 			});
 		}

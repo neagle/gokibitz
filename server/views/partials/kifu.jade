@@ -174,7 +174,7 @@
 					| Game Comments
 				div.panel-body
 					div(
-						ng-bind-html='sgfComment'
+						dynamic='sgfComment'
 						ng-hide='editGameComment'
 					)
 					div(ng-if='!sgfComment && kifu.owner.username !== currentUser.username && !editGameComment') &nbsp;
