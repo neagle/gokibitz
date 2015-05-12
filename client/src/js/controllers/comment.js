@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket, mentioUtil) {
+		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket) {
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
