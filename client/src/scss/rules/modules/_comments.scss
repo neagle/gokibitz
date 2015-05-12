@@ -86,23 +86,6 @@
 	}
 }
 
-sgf-label {
-	@extend code;
-	background-color: #fff;
-	color: $flat-pomegranate;
-	cursor: help;
-	transition: all 0.1s;
-
-	&[sequence] {
-		cursor: pointer;
-
-		&.active {
-			background-color: $flat-sunflower;
-			color: mix(white, $flat-sunflower, 80%);
-		}
-	}
-}
-
 .navigate-comments {
 	a {
 		color: transparentize($flat-clouds, 0.5);
