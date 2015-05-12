@@ -451,12 +451,23 @@
 											| &nbsp;
 											span
 									label Comment:
+									script#mentio-mentions(type="text/ng-template")
+										ul.list-group.user-search
+											li.list-group-item( 
+												mentio-menu-item="user"
+												ng-repeat="user in items"
+											)
+												a.text-primary(
+													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
+												
+												
 									textarea#main-comment-box.form-control(
 										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
 										
 										mentio=""
+										mentio-template-url="mentio-mentions"
 										mentio-items="users"
 										mentio-search="searchUsers(term)"
 									

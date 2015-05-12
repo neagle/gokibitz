@@ -9,6 +9,7 @@ var _ = require('lodash');
 router.get('/list', function(req, res) {
 	var regex = new RegExp('^' + req.query.search);
 	User.find({ username: regex })
+		.limit(5)
 		.select('-hashedPassword -salt')
 		.exec(function(error, users){
 			if(!error && users){

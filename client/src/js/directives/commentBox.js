@@ -4,7 +4,7 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http, $q, $document) {
+.directive('gkCommentBox', function ($http, $q, $document, pathFilter, Comment) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -66,6 +66,27 @@ angular.module('gokibitz.directives')
 				}
 			});
 
+			$scope.cancelComment = function () {
+				$scope.formData = '';
+				$scope.commentPreview = '';
+			};
+
+			$scope.addComment = function () {
+				$scope.disableAddComment = true;
+				
+				var data = $scope.formData;
+				data._id = $scope.kifu._id;
+				data.path = pathFilter($scope.kifu.path, 'string');
+				
+				var newComment = new Comment(data);
+				newComment.$save(function (response) {
+					$scope.disableAddComment = false;
+					$scope.formData = {};
+					$scope.listComments(true);
+				});
+			};
+
+
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;
@@ -77,7 +98,6 @@ angular.module('gokibitz.directives')
 						canceler.resolve();
 					}
 
-
 					$scope.addComment();
 					$scope.commentPreview = '';
 				}
@@ -88,8 +108,7 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
-					//todo add cancel function
-					$scope.$apply('cancel()');
+					$scope.$apply('cancelComment()');
 				}
 			});
 		}
