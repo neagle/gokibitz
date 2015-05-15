@@ -380,13 +380,7 @@
 
 									h5(ng-hide='!preview') Preview
 									.preview(dynamic='preview')
-
-									span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-										| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-									span.help-block= 'You can use '
-										a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-										= ' for formatting.'
+									include ../includes/comment-helptext.jade
 
 									button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
 										i.fui-check
@@ -466,12 +460,7 @@
 								.preview(dynamic='preview')
 						.row
 							.col-md-12
-								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-									| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-								span.help-block= 'You can use '
-									a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-									= ' for formatting.'
+								include ../includes/comment-helptext.jade
 
 						.row
 							.col-md-12
