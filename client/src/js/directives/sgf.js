@@ -58,12 +58,34 @@ angular.module('gokibitz.directives')
 				}
 			};
 
+			// An approximate test for being in a one-column layout
+			function isOneColumn () {
+				return (this.element.clientWidth / window.innerWidth > 0.9);
+			}
+
 			$scope.layout = $scope.layout || [
 				// Default
 				{
+					conditions: {
+						custom: function () {
+							return !isOneColumn.call(this);
+						}
+					},
 					className: 'wgo-onecol wgo-xsmall',
 					layout: {
 						bottom: ['Control']
+					}
+				},
+				// One-column
+				{
+					conditions: {
+						custom: function () {
+							return isOneColumn.call(this);
+						}
+					},
+					className: 'wgo-onecol wgo-xsmall',
+					layout: {
+						top: ['Control']
 					}
 				}
 			];
