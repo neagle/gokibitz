@@ -15,7 +15,8 @@ angular.module('gokibitz.controllers')
 	$interpolate,
 	$document,
 	$modal,
-	hotkeys
+	hotkeys,
+	$sce
 ) {
 	var smartgame = require('smartgame');
 	var smartgamer = require('smartgamer');
@@ -123,8 +124,10 @@ angular.module('gokibitz.controllers')
 			updateClock(event.node);
 
 			// Format game comments
-			$scope.kifu.nodeComment = event.node.comment;
-			$scope.sgfComment = comments.format(event.node.comment);
+			if (event.node.comment !== $scope.kifu.nodeComment) {
+				$scope.kifu.nodeComment = event.node.comment;
+				$scope.sgfComment = $sce.trustAsHtml(comments.format(event.node.comment));
+			}
 
 			updateCommentButtonStatus();
 		});

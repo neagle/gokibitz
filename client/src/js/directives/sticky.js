@@ -59,6 +59,7 @@ angular.module('gokibitz.directives')
 
 					if (totalHeight > bottomStick) {
 						elem[0].style.position = 'absolute';
+						elem[0].style.left = null;
 						elem[0].style.top = bottomStick + 'px';
 					}
 				} else if (elem[0].style.position = 'fixed') {

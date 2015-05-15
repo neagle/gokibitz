@@ -4,9 +4,10 @@ angular.module('gokibitz.controllers')
 
 	$scope.isCollapsed = true;
 
-	$scope.goToAndCollapse = function (item) {
+	$scope.goToAndCollapse = function ($event, item) {
+		$event.preventDefault();
 		$scope.isCollapsed = true;
-		$location.path('/' + item.link);
+		$location.path('/' + item.link).search('');
 	};
 
 	$scope.$watch('currentUser', function (newValue, oldValue) {
