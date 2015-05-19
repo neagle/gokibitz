@@ -62,7 +62,7 @@ angular.module('gokibitz.controllers')
 		if (isOpen) {
 			nav.$settings.lastSeenNotification = {
 				id: nav.mostRecentNotification.id,
-				date: nav.mostRecentNotification.date,
+				date: nav.mostRecentNotification.date
 			};
 			nav.$settings.$update();
 		}

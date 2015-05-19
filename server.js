@@ -9,11 +9,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var mongoStore = require('connect-mongo')(session);
+var MongoStore = require('connect-mongo')(session);
 var configDB = require('./server/config/database.js');
-
-var http = require('http');
-var httpProxy = require('http-proxy');
 
 var app = express();
 
@@ -44,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'client/public')));
 // express/mongo session storage
 app.use(session({
 	secret: 'thelanguageofhands',
-	store: new mongoStore({
+	store: new MongoStore({
 		url: configDB.url,
 		collection: 'sessions'
 	}),
@@ -74,7 +71,7 @@ app.use('/api/settings/', settings);
 app.use('*', routes);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
 	next(err);
@@ -85,7 +82,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(function(err, req, res, next) {
+	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('error', {
 			message: err.message,
@@ -96,7 +93,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error', {
 		message: err.message,
@@ -106,19 +103,22 @@ app.use(function(err, req, res, next) {
 
 // Let's fix our memory leak¬
 
-//var memwatch = require('memwatch-next');
-//var heapdump = require('heapdump');
+/*
+// Commented out because this impacts server performance, but we may need it again some day.
+var memwatch = require('memwatch-next');
+var heapdump = require('heapdump');
 
-//memwatch.on('leak', function (info) {
-	//console.error('Memory leak detected:', info);
-	//var file = '/tmp/gokibitz-' + process.pid + '-' + Date.now() + '.heapsnapshot';
-	//heapdump.writeSnapshot(file, function (err) {
-		//if (err) {
-			//console.error(err);
-		//} else {
-			//console.error('Wrote snapshot: ' + file);
-		//}
-	//});
-//});
+memwatch.on('leak', function (info) {
+	console.error('Memory leak detected:', info);
+	var file = '/tmp/gokibitz-' + process.pid + '-' + Date.now() + '.heapsnapshot';
+	heapdump.writeSnapshot(file, function (err) {
+		if (err) {
+			console.error(err);
+		} else {
+			console.error('Wrote snapshot: ' + file);
+		}
+	});
+});
+*/
 
 module.exports = app;

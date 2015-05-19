@@ -87,7 +87,7 @@ angular.module('gokibitz.controllers')
 				canceler = $q.defer();
 				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
 					timeout: canceler.promise
-	 })
+				})
 					.success(function (data) {
 
 						if (!alreadyRendered) {
@@ -330,7 +330,7 @@ angular.module('gokibitz.controllers')
 			}
 
 			$scope.variationKeyListener = function (event) {
-				switch(event.keyCode){
+				switch (event.keyCode) {
 					// Enter
 					case 13:
 						$scope.endVariationMode(event, true);

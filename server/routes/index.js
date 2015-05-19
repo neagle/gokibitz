@@ -20,7 +20,7 @@ router.delete('/auth/session', session.logout);
 
 router.get('/embed/:id', function (req, res) {
 	res.set('Content-Type', 'text/javascript');
-	var file='(function () {' +
+	var file = '(function () {' +
 		'"use strict";' +
 		'var method = window.addEventListener ? "addEventListener" : "attachEvent";' +
 		'var eventListener = window[method];' +

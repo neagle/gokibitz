@@ -86,7 +86,7 @@ angular.module('gokibitz.controllers')
 				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
 					.success(function (data, status, headers, config) {
 						$scope.user = data.user;
-            $scope.edit = false;
+						$scope.edit = false;
 					})
 					.error(function (data, status, headers, config) {
 						$scope.editError = data;
@@ -94,5 +94,5 @@ angular.module('gokibitz.controllers')
 					});
 			};
 
-    }
-  );
+		}
+	);

@@ -47,11 +47,11 @@ router.put('/:username', auth.ensureAuthenticated, function (req, res) {
 						}
 					});
 				}
-      } else if (error) {
-        res.json(500, { message: 'Error finding user. ' + error });
-      } else {
-        res.json(404, { message: 'No user with that username found.' });
-      }
+			} else if (error) {
+				res.json(500, { message: 'Error finding user. ' + error });
+			} else {
+				res.json(404, { message: 'No user with that username found.' });
+			}
 		});
 });
 

@@ -66,7 +66,7 @@ commentSchema.methods.isOwner = function (user) {
 // Return a list of users who should be notified about a comment
 commentSchema.methods.getRecipients = function (callback) {
 	var newComment = this;
-  var recipients = [];
+	var recipients = [];
 
 	return async.series({
 		populate: function (callback) {
