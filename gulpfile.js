@@ -88,4 +88,3 @@ gulp.task('sass', ['sass-includes'], function () {
 		)
 	.pipe(gulp.dest('./client/public/css'));
 });
-
