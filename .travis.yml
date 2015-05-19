@@ -2,14 +2,14 @@ env:
   global:
     - secure: RTWD9PrcJWxHQgs3dcrNGouQrEzpykC3VYXOddDEBgYoWffr0gUyMsF5YDkTK7XXYA2vI3bXiezJhe96AWkEj8OZP+Nv+wWZeRyOjMtnr4IVu+kA92EjN/+eWoIlzxlRoOtFygbBLIcwWC8M1Qrkp5kmWc18K/aJ3steyqEplC4=
     - secure: c/10di9Fbe1WXnlgG4y6lpku7Gd0ZfgJZUrk9V/MX6xmM/5anviC48L4R+9aqp7HDm6NYZXPyYuCZwRaJWRxw+zxdQtgAERetLS1ZUXnMOSMqArm3lwkgjwXIYrDJlPEtNSIm+2xt4obYqGBrEkwWOROR58823msrHzZzR5AXao=
+
 language: node_js
+
 node_js:
   - "0.12"
-before_script:
+
+before_install:
   - npm install -g gulp
+
 script:
   - gulp travis
-addons:
-  sauce_connect: true
-services:
-  - mongodb
