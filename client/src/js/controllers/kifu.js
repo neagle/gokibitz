@@ -141,7 +141,7 @@ angular.module('gokibitz.controllers')
 
 	// Set the page title
 	var titleTemplate = $interpolate(
-		'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
+		'{{ white.name || "Anonymous" }} {{ white.rank | rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank | rank }} – GoKibitz'
 	);
 	$scope.$watch('info', function () {
 		if ($scope.info) {
