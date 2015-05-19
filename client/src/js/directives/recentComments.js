@@ -1,6 +1,6 @@
 angular.module('gokibitz.directives')
 	.directive('recentComments',
-    function () {
+		function () {
 			return {
 				scope: {
 					username: '@',
@@ -11,8 +11,8 @@ angular.module('gokibitz.directives')
 				controller: 'RecentCommentsCtrl',
 				controllerAs: 'ctrl'
 			};
-    }
-  )
+		}
+	)
 	.controller('RecentCommentsCtrl',
 		function ($scope, $http, $filter, $sce) {
 			var moment = require('moment');
@@ -97,16 +97,9 @@ angular.module('gokibitz.directives')
 					.then(function (response) {
 						var newComments = serializeMoves(response.data);
 						$scope.comments = newComments;
-						//if (newComments.length) {
-							//// Remove the number of new comments from the end
-							//$scope.comments.splice($scope.comments.length - newComments.length, newComments.length);
-
-							//// Add the new comments to the beginning
-							//$scope.comments = newComments.concat($scope.comments);
-						//}
 						since = new Date();
 					});
-      }, 10000);
+			}, 10000);
 
 			$scope.$on('$destroy', function () {
 				clearInterval(commentPoll);

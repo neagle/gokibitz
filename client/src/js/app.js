@@ -1,8 +1,9 @@
+// TODO: Look at replacing this with requiredir. On the surface, requiredir
+// seems more straightforward.
 var bulk = require('bulk-require');
-var angular = require('angular');
-
 
 // WGo
+// TODO: Is it worth abstracting this into its own module?
 require('./lib/wgo/wgo.js');
 require('./lib/wgo/kifu.js');
 require('./lib/wgo/sgfparser.js');

@@ -141,7 +141,8 @@ angular.module('gokibitz.controllers')
 
 	// Set the page title
 	var titleTemplate = $interpolate(
-		'{{ white.name || "Anonymous" }} {{ white.rank | rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank | rank }} – GoKibitz'
+		'{{ white.name || "Anonymous" }} {{ white.rank | rank }} ' +
+		'vs. {{ black.name || "Anonymous" }} {{ black.rank | rank }} – GoKibitz'
 	);
 	$scope.$watch('info', function () {
 		if ($scope.info) {
@@ -179,7 +180,7 @@ angular.module('gokibitz.controllers')
 				return a - b;
 			});
 
-			while (obj[keys[0]] == 0){
+			while (Number(obj[keys[0]]) === 0){
 				keys.shift();
 			}
 			return keys;
@@ -279,7 +280,6 @@ angular.module('gokibitz.controllers')
 		while (i < $scope.uniqComments.length) {
 			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
 				$scope.player.goTo($scope.uniqComments[i]);
-				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
 				return;
 			}
 			i += 1;

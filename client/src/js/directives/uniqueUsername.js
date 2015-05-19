@@ -18,7 +18,7 @@ angular.module('gokibitz.directives')
 				});
 			}
 
-			scope.$watch( function () {
+			scope.$watch(function () {
 				return ngModel.$viewValue;
 			}, validate);
 		}

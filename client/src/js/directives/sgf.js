@@ -51,16 +51,16 @@ angular.module('gokibitz.directives')
 					coordinatesColor: 'hsla(30, 40%, 25%, 0.5)',
 					font: 'Righteous',
 					gridLinesColor: 'hsl(50, 50%, 30%)',
-					gridLinesWidth: function(board) {
-						return board.stoneRadius/15;
+					gridLinesWidth: function (board) {
+						return board.stoneRadius / 15;
 					},
-					starColor: 'hsl(50, 50%, 30%)',
+					starColor: 'hsl(50, 50%, 30%)'
 				}
 			};
 
 			// An approximate test for being in a one-column layout
-			function isOneColumn () {
-				return (this.element.clientWidth / window.innerWidth > 0.9);
+			function isOneColumn() {
+				return (this.element.clientWidth / $window.innerWidth > 0.9);
 			}
 
 			$scope.layout = $scope.layout || [
@@ -172,7 +172,7 @@ angular.module('gokibitz.directives')
 
 			// Turn a3 into { x: 2, y: 16 }
 			// TODO: This function obviously belongs some place universal.
-			normalizeCoordinates = function (move) {
+			var normalizeCoordinates = function (move) {
 				var x, y;
 				var numRegExp = /[0-1]?[0-9]/;
 
@@ -197,7 +197,7 @@ angular.module('gokibitz.directives')
 			};
 
 			// Add a marker to the goban
-			$scope.player.mark = function(move, options) {
+			$scope.player.mark = function (move, options) {
 				var defaults = {
 					type: 'MA' // Default mark is: X
 				};
@@ -216,7 +216,7 @@ angular.module('gokibitz.directives')
 			};
 
 			// Remove the temporary marker from the goban
-			$scope.player.unmark = function() {
+			$scope.player.unmark = function () {
 				$scope.player.board.removeObject($scope.player.temporaryMarker);
 				delete $scope.player.temporaryMarker;
 			};

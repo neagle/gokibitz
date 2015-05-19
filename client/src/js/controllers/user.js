@@ -20,13 +20,14 @@ angular.module('gokibitz.controllers')
 
 			// Valid ranks are 30-1k, 1-9d, and 1-9p
 			$scope.isValidRank = function (rank) {
+				var rankArr;
 				var suffixes = ['k', 'd', 'p'];
 
 				var i = 0;
 				do {
 					rankArr = rank.split(suffixes[i]);
-				}
-				while (rankArr.length < 2 && suffixes[++i]);
+					i += 1;
+				} while (rankArr.length < 2 && i < suffixes.length);
 
 				if (rankArr.length !== 2) {
 					return false;
@@ -38,7 +39,7 @@ angular.module('gokibitz.controllers')
 				// first part has to be a number
 				if (isNaN(number)) {
 					return false;
-				};
+				}
 
 				// k, d, or p, not kyu, dan, or pro
 				if (rankArr[1].length) {
@@ -89,7 +90,8 @@ angular.module('gokibitz.controllers')
 					})
 					.error(function (data, status, headers, config) {
 						$scope.editError = data;
-					})
+						console.log('hey');
+					});
 			};
 
     }

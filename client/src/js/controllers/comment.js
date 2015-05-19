@@ -2,7 +2,22 @@ var _ = require('lodash');
 
 angular.module('gokibitz.controllers')
 	.controller('CommentController',
-		function ($rootScope, $scope, $http, $routeParams, Comment, pathFilter, $timeout, $interval, $q, $location, $document, $sce, $compile, socket) {
+		function (
+			$rootScope,
+			$scope,
+			$http,
+			$routeParams,
+			Comment,
+			pathFilter,
+			$timeout,
+			$interval,
+			$q,
+			$location,
+			$document,
+			$sce,
+			$compile,
+			socket
+		) {
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
@@ -113,55 +128,11 @@ angular.module('gokibitz.controllers')
 						$scope.numComments = data.length;
 
 						if (!alreadyRendered) {
-							// Avoid causing massive delays in rendering with long lists
-							// by rendering the first 10, then progressively rendering rest
-							// It'd be great, obviously, to figure out how to get ng-repeat
-							// to be more performant, but to be fair to it, the DOM for these
-							// items is relatively complicated.
-
-							// Add an initial chunk of comments
-							//$scope.comments = $scope.comments.concat(data.splice(0, 10));
 							$scope.comments = data;
-							//$scope.displayComments = data;
 							$scope.displayComments = [];
 							$scope.addMoreComments();
 
 							$scope.loading = false;
-							//console.log('$scope.comments', $scope.comments);
-
-							// ...then add the rest iteratively
-							var delay = 50;
-							var rate = 1;
-
-							function addCommentsToScope(data) {
-								$scope.comments = $scope.comments.concat(data.splice(0, rate));
-
-								if (data.length) {
-									// Make sure we don't keep loading comments for a move we're
-									// not currently on
-									if (
-										!angular.equals($scope.kifu.path, data[0].pathObject) &&
-										$scope.kifu.path.m !== 0
-									) {
-										return;
-									}
-
-									addCommentsTimer = $timeout(function () {
-										// Recurse!
-										addCommentsToScope(data);
-									}, delay);
-								} else {
-									$timeout(function () {
-										$scope.loading = false;
-
-										if ($scope.highlightedComment) {
-											$scope.goToComment($scope.highlightedComment);
-										}
-									}, 0);
-								}
-							}
-
-							//addCommentsToScope(data);
 						} else {
 							$scope.loading = false;
 							$scope.comments = data;
