@@ -13,6 +13,7 @@ var path = require('path');
 var requireDir = require('require-dir');
 
 // Require all tasks in gulp/tasks, including subfolders
+// Eventually, all tasks in this file should be moved to individual task files
  requireDir('./gulp/tasks', { recurse: true });
 
 gulp.task('bootstrap-assets', function () {
@@ -88,14 +89,3 @@ gulp.task('sass', ['sass-includes'], function () {
 	.pipe(gulp.dest('./client/public/css'));
 });
 
-gulp.task('default', [
-	'lint',
-	'sass',
-	'uglify',
-	'fonts',
-	'js-assets',
-	'images',
-	'bootstrap-assets'
-], function () {
-	// Nothing!
-});
