@@ -49,7 +49,21 @@ angular.module('gokibitz.directives')
 			// school.
 			function serializeMoves(comments) {
 				comments.forEach(function (comment, i) {
+					var verboseNumbers = true;
+
 					if (Array.isArray(comment.path)) {
+
+						// Find the max number in a series
+						var max = Math.max.apply(null, comment.path.map(function (obj) {
+							return obj.path;
+						}));
+
+						// If any number in the series is above ten, or a variation path
+						// don't use verbose numbers for any number in the series
+						if (max > 9 || isNaN(max)) {
+							verboseNumbers = false;
+						}
+
 						var pathString = 'moves ';
 						comment.path.forEach(function (move, j) {
 							var pathArr = [
@@ -57,9 +71,14 @@ angular.module('gokibitz.directives')
 								comment.kifu.shortid,
 								'?path=',
 								$filter('path')(move.path, 'string'),
-								'">',
-								$filter('verboseNumbers')(move.path)
+								'">'
 							];
+
+							if (verboseNumbers) {
+								pathArr.push($filter('verboseNumbers')(move.path));
+							} else {
+								pathArr.push(move.path);
+							}
 
 							var first = (j === 0);
 							var last = (j === comment.path.length - 1);
