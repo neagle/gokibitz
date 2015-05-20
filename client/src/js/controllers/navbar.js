@@ -4,12 +4,6 @@ angular.module('gokibitz.controllers')
 
 	$scope.isCollapsed = true;
 
-	$scope.goToAndCollapse = function ($event, item) {
-		$event.preventDefault();
-		$scope.isCollapsed = true;
-		$location.path('/' + item.link).search('');
-	};
-
 	$scope.$watch('currentUser', function (newValue, oldValue) {
 		if (newValue) {
 			nav.$settings = new Settings();

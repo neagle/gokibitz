@@ -28,7 +28,6 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					ng-repeat='item in menu'
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
-					ng-click='goToAndCollapse($event, item)'
 				)
 					a(href='/{{ item.link }}') {{ item.title }}
 
@@ -37,7 +36,6 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					ng-show='currentUser'
 					ui-route='/{{ item.link }}'
 					ng-class='{ active: $uiRoute }'
-					ng-click='goToAndCollapse($event, item)'
 				)
 					a(href='/{{ item.link }}') {{ item.title }}
 
