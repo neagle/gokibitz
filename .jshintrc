@@ -48,7 +48,7 @@
 	"passfail": false,
 	"white": true,
 	"node": true,
-	"predef": [
-		"angular"
-	]
+	"globals": {
+		"angular": true
+	}
 }

@@ -1,6 +1,7 @@
 // TODO: Look at replacing this with requiredir. On the surface, requiredir
 // seems more straightforward.
 var bulk = require('bulk-require');
+var angular = require('angular');
 
 // WGo
 // TODO: Is it worth abstracting this into its own module?
