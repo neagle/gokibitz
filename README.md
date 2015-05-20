@@ -1,4 +1,4 @@
-GoKibitz: Move-by-move conversations about go games
+GoKibitz: Move-by-move conversations about go games [![Build Status](https://travis-ci.org/neagle/gokibitz.svg?branch=master)](https://travis-ci.org/neagle/gokibitz)
 ===================================================
 
 [GoKibitz](http://gokibitz.com) is a web app that lets users upload and review kifu (go game records in [sgf](http://www.red-bean.com/sgf/) format) and leave comments on individual moves.
@@ -64,7 +64,7 @@ $ npm install
 $ mongod
 ```
 
-**Note:** If you see the following error - "ERROR: dbpath (/data/db) does not exist," you need to setup a directory path for Mongo. The following commands will help you setup the standard directory: 
+**Note:** If you see the following error - "ERROR: dbpath (/data/db) does not exist," you need to setup a directory path for Mongo. The following commands will help you setup the standard directory:
 
 ```sh
 sudo mkdir -p /data/db/
