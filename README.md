@@ -64,11 +64,11 @@ $ npm install
 $ mongod
 ```
 
-**Note:** If you see the following error - "ERROR: dbpath (/data/db) does not exist," you need to setup a directory path for Mongo. The following commands will help you setup the standard directory:
+**Note:** If you see the following error - "`ERROR: dbpath (/data/db) does not exist`," you need to create a directory path for Mongo. The following commands will help you setup the standard directory:
 
 ```sh
-sudo mkdir -p /data/db/
-sudo chown `id -u` /data/db
+$ sudo mkdir -p /data/db/
+$ sudo chown `id -u` /data/db
 ```
 
 #### 5. Run gulp to build your files:
