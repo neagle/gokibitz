@@ -93,7 +93,7 @@ properties["TM"] =  function(kifu, node, value, ident) {
 }
 
 var reg_seq = /\(|\)|(;(\s*[A-Za-z]+\s*((\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\])))+)*)/g;
-var reg_node = /[A-Z]+\s*((\[\])|(\[(.|\s)*?([^\\]\])))+/g;
+var reg_node = /[A-Z]+\s*((\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\])))+/g;
 var reg_ident = /[A-Z]+/;
 var reg_props = /(\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\]))/g;
 
