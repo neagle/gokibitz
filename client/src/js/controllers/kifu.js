@@ -67,7 +67,7 @@ angular.module('gokibitz.controllers')
 	initialPath = pathFilter(initialPath, 'object');
 	$scope.kifu.path = initialPath;
 
-	var updateCommentButtonStatus = function() {
+	var updateCommentButtonStatus = function () {
 		if ($scope.uniqComments && $scope.uniqComments.length) {
 			var firstUniq = $scope.uniqComments[0];
 			var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
@@ -141,7 +141,8 @@ angular.module('gokibitz.controllers')
 
 	// Set the page title
 	var titleTemplate = $interpolate(
-		'{{ white.name || "Anonymous" }} {{ white.rank }} vs. {{ black.name || "Anonymous" }} {{ black.rank }} – GoKibitz'
+		'{{ white.name || "Anonymous" }} {{ white.rank | rank }} ' +
+		'vs. {{ black.name || "Anonymous" }} {{ black.rank | rank }} – GoKibitz'
 	);
 	$scope.$watch('info', function () {
 		if ($scope.info) {
@@ -170,16 +171,16 @@ angular.module('gokibitz.controllers')
 		$scope.player.previous();
 	};
 
-	$scope.comparePaths = function(a, b){
-		var getKeys = function(obj){
-			var keys = Object.keys(obj).filter(function(key) {
+	$scope.comparePaths = function (a, b) {
+		var getKeys = function (obj) {
+			var keys = Object.keys(obj).filter(function (key) {
 				return !isNaN(parseInt(key));
 			});
-			keys.sort(function (a, b){
+			keys.sort(function (a, b) {
 				return a - b;
 			});
 
-			while (obj[keys[0]] == 0){
+			while (Number(obj[keys[0]]) === 0) {
 				keys.shift();
 			}
 			return keys;
@@ -202,7 +203,7 @@ angular.module('gokibitz.controllers')
 					aKeys.shift();
 					bKeys.shift();
 
-					if(aKeys.length === 0 && bKeys.length === 0){
+					if (aKeys.length === 0 && bKeys.length === 0) {
 						//These are on the same branch. Check to see which move is higher.
 						return a.m - b.m;
 					} else {
@@ -230,13 +231,13 @@ angular.module('gokibitz.controllers')
 		} else {
 			return minKeyA - minKeyB;
 		}
-	 };
+	};
 
-	$scope.updateUniqComments = function() {
+	$scope.updateUniqComments = function () {
 		var paths = [];
 
 		$http.get('api/kifu/' + $scope.kifu.shortid)
-			.success(function(data) {
+			.success(function (data) {
 				var comments = data.comments;
 
 				if (comments) {
@@ -256,7 +257,7 @@ angular.module('gokibitz.controllers')
 				paths.sort($scope.comparePaths);
 				$scope.uniqComments = paths;
 				updateCommentButtonStatus();
-			}).error(function(data, status, headers, config) {
+			}).error(function (data, status, headers, config) {
 				console.log('Error retrieving kifu for new comments:', data.message);
 			});
 	};
@@ -279,7 +280,6 @@ angular.module('gokibitz.controllers')
 		while (i < $scope.uniqComments.length) {
 			if ($scope.comparePaths($scope.kifu.path, $scope.uniqComments[i]) < 0) {
 				$scope.player.goTo($scope.uniqComments[i]);
-				var lastUniq = $scope.uniqComments[$scope.uniqComments.length - 1];
 				return;
 			}
 			i += 1;
@@ -381,7 +381,7 @@ angular.module('gokibitz.controllers')
 	};
 
 	function formatTime(time) {
-		var duration= moment.duration(Number(time), 'seconds');
+		var duration = moment.duration(Number(time), 'seconds');
 		// @see https://github.com/moment/moment/issues/1048
 		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
 	}

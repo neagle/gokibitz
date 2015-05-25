@@ -1,6 +1,5 @@
 {
 	"bitwise": false,
-	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
 	"forin": true,
@@ -17,7 +16,6 @@
 	"unused": "vars",
 	"strict": false,
 	"trailing": true,
-	"maxparams": "6",
 	"maxdepth": false,
 	"maxstatements": false,
 	"maxcomplexity": false,
@@ -50,7 +48,7 @@
 	"passfail": false,
 	"white": true,
 	"node": true,
-	"predef": [
-		"angular"
-	]
+	"globals": {
+		"angular": true
+	}
 }

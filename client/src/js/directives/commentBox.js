@@ -4,13 +4,21 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http, $q, $document, pathFilter, Comment) {
+.directive('gkCommentBox', function ($http, $q, $document, $parse) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
+
 		link: function ($scope, element, attributes, ngModel) {
+			var submit = $parse(attributes.gkCommentSubmit);
+			var cancel = $parse(attributes.gkCommentCancel);
+			var preview = attributes.gkCommentPreview;
+
 			var text = element.val();
 			var canceler;
+
+			// Only display a preview if the preview attribute has been set
+			var displayPreview = (attributes.gkCommentPreview) ? true : false;
 
 			// Check if the element currently has focus
 			var hasFocus = function () {
@@ -18,7 +26,7 @@ angular.module('gokibitz.directives')
 			};
 
 			// Get a preview of rendered HTML from comment markdown
-			function preview() {
+			function getPreview() {
 				if (element.val() !== text) {
 
 					// Cancel any previous markdown calls
@@ -40,7 +48,7 @@ angular.module('gokibitz.directives')
 						timeout: canceler.promise
 					})
 						.success(function (data) {
-							$scope.commentPreview = data.markup;
+							$scope[preview] = data.markup;
 						});
 				}
 			}
@@ -59,12 +67,15 @@ angular.module('gokibitz.directives')
 			}
 
 			// Watch the value of the comment and fetch a preview when it changes
-			$scope.$watch('formData.content', function (newValue, oldValue) {
-				// @see http://stackoverflow.com/a/18915585/399077
-				if (newValue !== oldValue) {
-					preview();
-				}
-			});
+			if (displayPreview) {
+				ngModel.$viewChangeListeners.push(function () {
+					var value = ngModel.$modelValue;
+
+					if (value !== $scope[preview]) {
+						getPreview();
+					}
+				});
+			}
 
 			$scope.cancelComment = function () {
 				$scope.formData = '';
@@ -98,8 +109,11 @@ angular.module('gokibitz.directives')
 						canceler.resolve();
 					}
 
-					$scope.addComment();
-					$scope.commentPreview = '';
+					submit($scope);
+
+					if (displayPreview) {
+						$scope[preview] = '';
+					}
 				}
 			});
 
@@ -108,7 +122,11 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
-					$scope.$apply('cancelComment()');
+					cancel($scope);
+
+					// It's slightly mysterious to me why this is needed, but without it
+					// there is sometimes (?) a delay in the cancel taking effect.
+					$scope.$apply();
 				}
 			});
 		}

@@ -1,6 +1,6 @@
 angular.module('gokibitz.directives')
 	.directive('recentComments',
-    function () {
+		function () {
 			return {
 				scope: {
 					username: '@',
@@ -11,8 +11,8 @@ angular.module('gokibitz.directives')
 				controller: 'RecentCommentsCtrl',
 				controllerAs: 'ctrl'
 			};
-    }
-  )
+		}
+	)
 	.controller('RecentCommentsCtrl',
 		function ($scope, $http, $filter, $sce) {
 			var moment = require('moment');
@@ -49,7 +49,21 @@ angular.module('gokibitz.directives')
 			// school.
 			function serializeMoves(comments) {
 				comments.forEach(function (comment, i) {
+					var verboseNumbers = true;
+
 					if (Array.isArray(comment.path)) {
+
+						// Find the max number in a series
+						var max = Math.max.apply(null, comment.path.map(function (obj) {
+							return obj.path;
+						}));
+
+						// If any number in the series is above ten, or a variation path
+						// don't use verbose numbers for any number in the series
+						if (max > 9 || isNaN(max)) {
+							verboseNumbers = false;
+						}
+
 						var pathString = 'moves ';
 						comment.path.forEach(function (move, j) {
 							var pathArr = [
@@ -57,9 +71,14 @@ angular.module('gokibitz.directives')
 								comment.kifu.shortid,
 								'?path=',
 								$filter('path')(move.path, 'string'),
-								'">',
-								$filter('verboseNumbers')(move.path)
+								'">'
 							];
+
+							if (verboseNumbers) {
+								pathArr.push($filter('verboseNumbers')(move.path));
+							} else {
+								pathArr.push(move.path);
+							}
 
 							var first = (j === 0);
 							var last = (j === comment.path.length - 1);
@@ -92,20 +111,14 @@ angular.module('gokibitz.directives')
 
 				refreshTimes();
 
-				params.since = since;
+				//params.since = since;
 				$http.get('/api/comment', { params:  params })
 					.then(function (response) {
-						var newComments = response.data;
-						if (newComments.length) {
-							// Remove the number of new comments from the end
-							$scope.comments.splice($scope.comments.length - newComments.length, newComments.length);
-
-							// Add the new comments to the beginning
-							$scope.comments = newComments.concat($scope.comments);
-						}
+						var newComments = serializeMoves(response.data);
+						$scope.comments = newComments;
 						since = new Date();
 					});
-      }, 10000);
+			}, 10000);
 
 			$scope.$on('$destroy', function () {
 				clearInterval(commentPoll);

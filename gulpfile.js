@@ -4,14 +4,17 @@ var debug = require('gulp-debug');
 var sass = require('gulp-sass');
 var bourbon = require('node-bourbon');
 var autoprefix = require('gulp-autoprefixer');
-var jshint = require('gulp-jshint');
-var stylish = require('jshint-stylish');
 var notify = require('gulp-notify');
 var imagemin = require('gulp-imagemin');
 var newer = require('gulp-newer');
 var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
+var requireDir = require('require-dir');
+
+// Require all tasks in gulp/tasks, including subfolders
+// Eventually, all tasks in this file should be moved to individual task files
+ requireDir('./gulp/tasks', { recurse: true });
 
 gulp.task('bootstrap-assets', function () {
 	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
@@ -84,44 +87,4 @@ gulp.task('sass', ['sass-includes'], function () {
 			}))
 		)
 	.pipe(gulp.dest('./client/public/css'));
-});
-
-require('./gulp/tasks/browserify');
-require('./gulp/tasks/watchify');
-require('./gulp/tasks/uglify');
-require('./gulp/tasks/dev-server');
-
-// Lint our server-side JS
-gulp.task('lint-server-js', function () {
-	return gulp.src('./server/**/*.js')
-	.pipe(jshint('./.jshintrc'))
-	.pipe(jshint.reporter(stylish));
-});
-
-gulp.task('default', [
-	'lint-server-js',
-	'sass',
-	'uglify',
-	'fonts',
-	'js-assets',
-	'images',
-	'bootstrap-assets'
-], function () {
-	// Nothing!
-});
-
-gulp.task('watch', ['server:start', 'watchify'], function () {
-	gulp.watch('client/src/scss/**/!(_all).scss', ['sass']);
-	gulp.watch('client/src/assets/fonts/**/*', ['fonts']);
-	gulp.watch('client/src/assets/images/**/*', ['images']);
-	gulp.watch('client/src/assets/js/**/*', ['js-assets']);
-
-	gulp.watch([
-		'server/**/*',
-		'server.js'
-	], ['server:restart']);
-
-	//gulp.watch('client/public/**').on('change', function (file) {
-		//server.changed(file.path);
-	//});
 });

@@ -11,7 +11,7 @@ module.exports = function (markdown) {
 		'([a-hj-tA-HJ-T][0-1]?[0-9]\\b[,; ]{0,2}){2,}',
 
 		// Capture individual moves
-		'|(\\b[a-hj-tA-HJ-T][0-1]?[0-9]\\b)',
+		'|(\\b[a-hj-tA-HJ-T][0-1]?[0-9]\\b)'
 	].join(''), 'g');
 
 	output = markdown.replace(

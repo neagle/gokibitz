@@ -14,7 +14,7 @@ exports.session = function (req, res) {
  * returns nothing
  */
 exports.logout = function (req, res) {
-	if(req.user) {
+	if (req.user) {
 		req.logout();
 		res.send(200);
 	} else {
@@ -27,11 +27,16 @@ exports.logout = function (req, res) {
  *  requires: {email, password}
  */
 exports.login = function (req, res, next) {
-	passport.authenticate('local', function(err, user, info) {
+	passport.authenticate('local', function (err, user, info) {
 		var error = err || info;
-		if (error) { return res.json(400, error); }
-		req.logIn(user, function(err) {
-			if (err) { return res.send(err); }
+		if (error) {
+			return res.json(400, error);
+		}
+
+		req.logIn(user, function (err) {
+			if (err) {
+				return res.send(err);
+			}
 			res.json(req.user.userInfo);
 		});
 	})(req, res, next);

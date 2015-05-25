@@ -5,9 +5,9 @@
 WGo.Board.drawHandlers.FLAT = {
 	stone: {
 		draw: function (args, board) {
-			var xr = board.getX(args.x),
-				yr = board.getY(args.y),
-				sr = board.stoneRadius - 0.5;
+			var xr = board.getX(args.x);
+			var yr = board.getY(args.y);
+			var sr = board.stoneRadius - 0.5;
 
 			if (args.c === WGo.W) {
 				this.fillStyle = 'hsl(0, 0%, 95%)';

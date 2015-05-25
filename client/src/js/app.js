@@ -1,8 +1,10 @@
+// TODO: Look at replacing this with requiredir. On the surface, requiredir
+// seems more straightforward.
 var bulk = require('bulk-require');
 var angular = require('angular');
 
-
 // WGo
+// TODO: Is it worth abstracting this into its own module?
 require('./lib/wgo/wgo.js');
 require('./lib/wgo/kifu.js');
 require('./lib/wgo/sgfparser.js');
@@ -144,7 +146,7 @@ gokibitz.config(
 					kifu: function ($http, $route) {
 						var shortid = $route.current.params.shortid;
 						return $http.get('/api/kifu/' + shortid);
-          }
+					}
 				}
 			})
 			.when('/user/:username', {
@@ -171,17 +173,19 @@ gokibitz.config(
 	}
 );
 
-//gokibitz.config([
-	//'$httpProvider',
-	//function ($httpProvider) {
-		//$httpProvider.interceptors.push([
-			//'$injector',
-			//function ($injector) {
-				//return $injector.get('AuthInterceptor');
-			//}
-		//]);
-	//}
-//]);
+/*
+gokibitz.config([
+	'$httpProvider',
+	function ($httpProvider) {
+		$httpProvider.interceptors.push([
+			'$injector',
+			function ($injector) {
+				return $injector.get('AuthInterceptor');
+			}
+		]);
+	}
+]);
+*/
 
 gokibitz.run(
 	function ($rootScope, $location, Auth, $route, $window) {
@@ -196,7 +200,7 @@ gokibitz.run(
 		});
 
 		//watching the value of the currentUser variable.
-		$rootScope.$watch('currentUser', function(currentUser) {
+		$rootScope.$watch('currentUser', function (currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
 			var path = $location.path().split('/');

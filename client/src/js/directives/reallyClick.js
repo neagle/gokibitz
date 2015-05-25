@@ -1,12 +1,12 @@
 angular.module('gokibitz.directives')
 .directive('gkReallyClick',
 	function ($modal) {
-		var ModalInstanceCtrl = function($scope, $modalInstance) {
-			$scope.ok = function() {
+		var ModalInstanceCtrl = function ($scope, $modalInstance) {
+			$scope.ok = function () {
 				$modalInstance.close();
 			};
 
-			$scope.cancel = function() {
+			$scope.cancel = function () {
 				$modalInstance.dismiss('cancel');
 			};
 		};
@@ -17,7 +17,7 @@ angular.module('gokibitz.directives')
 				gkReallyClick: '&'
 			},
 			link: function (scope, element, attrs) {
-				element.bind('click', function() {
+				element.bind('click', function () {
 					var message = attrs.gkReallyMessage || 'Are you sure?';
 					var btnClass = attrs.gkReallyClass || 'btn-primary';
 					var verb = attrs.gkReallyVerb || 'OK';
@@ -34,9 +34,9 @@ angular.module('gokibitz.directives')
 						controller: ModalInstanceCtrl
 					});
 
-					modalInstance.result.then(function() {
+					modalInstance.result.then(function () {
 						scope.gkReallyClick();
-					}, function() {
+					}, function () {
 						// Modal dismissed
 					});
 

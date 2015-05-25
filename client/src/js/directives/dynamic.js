@@ -5,7 +5,7 @@ angular.module('gokibitz.directives')
 	return {
 		restrict: 'A',
 		link: function ($scope, element, attributes) {
-			$scope.$watch(attributes.dynamic, function(html) {
+			$scope.$watch(attributes.dynamic, function (html) {
 				element.html(html || '');
 				$compile(element.contents())($scope);
 			});
