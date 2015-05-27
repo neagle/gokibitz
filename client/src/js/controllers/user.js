@@ -22,13 +22,15 @@ angular.module('gokibitz.controllers')
 			$scope.isValidRank = function (rank) {
 				var rankArr;
 				var suffixes = ['k', 'd', 'p'];
+				var suffix;
 
-				var i = 0;
-				do {
-					rankArr = rank.split(suffixes[i]);
-					i += 1;
-				} while (rankArr.length < 2 && i < suffixes.length);
+				// Try to split the rank string by any of the known suffixes
+				for (var i = 0; rankArr.length < 2 && i < suffixes.length; i += 1) {
+					suffix = suffixes[i];
+					rankArr = rank.split(suffix);
+				}
 
+				// Rank wasn't split by any of the suffixes, so it's definitely not valid
 				if (rankArr.length !== 2) {
 					return false;
 				}
@@ -46,12 +48,14 @@ angular.module('gokibitz.controllers')
 					return false;
 				}
 
+				// Valid kyu ranks are between 30 and 1
 				if (suffix === 'k') {
 					if (number > 30 || number < 1) {
 						return false;
 					}
 				}
 
+				// Valid dan ranks are between 1 and 9
 				if (suffix === 'd' || suffix === 'p') {
 					if (number > 9 || number < 1) {
 						return false;
