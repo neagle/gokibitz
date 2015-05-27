@@ -20,7 +20,7 @@ angular.module('gokibitz.controllers')
 
 			// Valid ranks are 30-1k, 1-9d, and 1-9p
 			$scope.isValidRank = function (rank) {
-				var rankArr;
+				var rankArr = [];
 				var suffixes = ['k', 'd', 'p'];
 				var suffix;
 
@@ -36,7 +36,6 @@ angular.module('gokibitz.controllers')
 				}
 
 				var number = Number(rankArr[0]);
-				var suffix = suffixes[i];
 
 				// first part has to be a number
 				if (isNaN(number)) {
