@@ -96,7 +96,7 @@ angular.module('gokibitz.directives')
 
 			$scope.cancelComment = function () {
 				$scope.formData = '';
-				$scope.commentPreview = '';
+				$scope[preview] = '';
 			};
 
 			$scope.addComment = function () {
@@ -140,7 +140,7 @@ angular.module('gokibitz.directives')
 				// Escape cancels
 				if (key === 27) {
 					cancel($scope);
-
+					$scope.cancelComment();
 					// It's slightly mysterious to me why this is needed, but without it
 					// there is sometimes (?) a delay in the cancel taking effect.
 					$scope.$apply();
