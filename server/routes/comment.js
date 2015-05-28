@@ -8,7 +8,8 @@ var Comment = require('../models/comment').Comment;
 var async = require('async');
 var io = require('../io');
 var _ = require('lodash');
-
+var notificationHelper = require('../utils/notificationHelper');
+	
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
 		_id: req.body._id
@@ -34,17 +35,6 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 						kifu.game.original = kifu.game.sgf;
 					}
 
-					var newNotification = function (cause, to) {
-						// Send a notification to the mentioned user
-						var notification = new Notification();
-						notification.cause = cause;
-						notification.to = to;
-						notification.from = comment.user;
-						notification.kifu = comment.kifu;
-						notification.path = comment.path;
-						notification.comment = comment._id;					
-						notification.save();
-					};
 					kifu.save(function (error) {
 						if (!error) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
@@ -52,30 +42,12 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							// Send notifications
 							comment.getRecipients(function (recipients) {
 								recipients.forEach(function (recipient) {
-									// Send a notification to the kifu owner
-									newNotification('new comment', recipient);
+									notificationHelper.newNotification(comment, 'new comment', recipient);
 								});
 							});
 
-							var usernames = comment.content.markdown.match(/@[a-z0-9_-]*/g);
-
-							if(usernames){
-								usernames.map(function(x) { 
-									return x.replace('@', ''); 
-								}).filter(function(username) { 
-									return username.length !== 0 && comment.user.username !== username; 
-								});
-								//Send out a notification to each user
-								usernames.forEach(function(username) {
-									User.findOne({ username: username }, function (error, user) {
-										if (!error && user) {
-											newNotification('mention', user);
-										} else {
-											console.log(error, user);
-										}
-									});
-								});
-							}
+							notificationHelper.notifyMentionedUsers(comment);
+	
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
 									change: 'new',
@@ -457,8 +429,11 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					res.json(550, { message: 'You can\'t edit another user\'s comment.' });
 				} else {
 					comment.content.markdown = markdown;
+					
 					comment.save(function (error) {
 						if (!error) {
+							
+							notificationHelper.notifyMentionedUsers(comment);
 							res.json(200, {
 								message: 'Comment updated.',
 								comment: comment

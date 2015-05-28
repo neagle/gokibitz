@@ -4,7 +4,7 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http, $q, $document, $parse) {
+.directive('gkCommentBox', function ($http, $q, $document, $parse, pathFilter, Comment) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -76,6 +76,23 @@ angular.module('gokibitz.directives')
 					}
 				});
 			}
+
+			$scope.getUsername = function (user) {
+				return '@' + user.username;
+			}
+
+			$scope.searchUsers = function (term) {
+				$http.get('api/user/list?search=' + term)
+					.success(function(data) {
+						$scope.users = data.map( function (user) {
+							user.label = user.username;
+							return user;
+						});
+						console.log($scope.users);
+					}).error(function(data, status, headers, config) {
+						console.log('Error retrieving kifu for new comments:', data.message);
+					});
+                        };
 
 			$scope.cancelComment = function () {
 				$scope.formData = '';

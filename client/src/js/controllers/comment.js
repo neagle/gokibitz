@@ -373,26 +373,5 @@ angular.module('gokibitz.controllers')
 				}
 			};
 
-			$scope.getUsername = function (user) {
-				return '@' + user.username;
-			};
-
-			$scope.searchUsers = function (term) {
-				$http.get('api/user/list?search=' + term)
-                        		.success(function(data) {
-						
-						$scope.users = data.map( function (user) {
-							user.label = user.username;
-							return user;
-						});
-						console.log($scope.users);	
-					}).error(function(data, status, headers, config) {
-                                		console.log('Error retrieving kifu for new comments:', data.message);
-                        		});
-			};
-	
-			$scope.users = $scope.searchUsers("");
-
-
 		}
 	);

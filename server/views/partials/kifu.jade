@@ -364,12 +364,25 @@
 										dynamic='comment.content.html'
 									)
 
+									script#mentio-mentions(type="text/ng-template")
+										ul.list-group.user-search
+											li.list-group-item( 
+												mentio-menu-item="user"
+												ng-repeat="user in items"
+											)
+												a.text-primary(
+													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
 										msd-elastic='\\n'
 										rows='3'
 										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
+										mentio=''
+										mentio-id='comment.id'
+										mentio-template-url="mentio-mentions"
+										mentio-items="users"
+										mentio-search="searchUsers(term)"
 										gk-comment-box='updateComment(comment), cancelEdit(comment)'
 										gk-comment-submit='updateComment(comment)'
 										gk-comment-cancel='cancelEdit(comment)'
@@ -445,14 +458,6 @@
 											| &nbsp;
 											span
 									label Comment:
-									script#mentio-mentions(type="text/ng-template")
-										ul.list-group.user-search
-											li.list-group-item( 
-												mentio-menu-item="user"
-												ng-repeat="user in items"
-											)
-												a.text-primary(
-													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
 												
 												
 									textarea#main-comment-box.form-control(
@@ -467,11 +472,13 @@
 									
 										rows=3
 										gk-comment-box
+										gk-comment-submit='addComment()'
+										gk-comment-preview='preview'
 									)
 						.row
 							.col-md-12
-								h5(ng-hide='!commentPreview') Preview
-								.preview(dynamic='commentPreview')
+								h5(ng-hide='!preview') Preview
+								.preview(dynamic='preview')
 						.row
 							.col-md-12
 								include ../includes/comment-helptext.jade
