@@ -366,12 +366,13 @@
 
 									script#mentio-mentions(type="text/ng-template")
 										ul.list-group.user-search
-											li.list-group-item( 
+											li.list-group-item(
 												mentio-menu-item="user"
 												ng-repeat="user in items"
 											)
 												a.text-primary(
 													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
+
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
 										msd-elastic='\\n'
@@ -383,6 +384,7 @@
 										mentio-template-url="mentio-mentions"
 										mentio-items="users"
 										mentio-search="searchUsers(term)"
+										mentio-require-leading-space="true"
 										gk-comment-box='updateComment(comment), cancelEdit(comment)'
 										gk-comment-submit='updateComment(comment)'
 										gk-comment-cancel='cancelEdit(comment)'
@@ -458,18 +460,18 @@
 											| &nbsp;
 											span
 									label Comment:
-												
-												
+
 									textarea#main-comment-box.form-control(
 										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
-										
+
 										mentio=""
 										mentio-template-url="mentio-mentions"
 										mentio-items="users"
 										mentio-search="searchUsers(term)"
-									
+										mentio-require-leading-space="true"
+
 										rows=3
 										gk-comment-box
 										gk-comment-submit='addComment()'

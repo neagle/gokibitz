@@ -82,17 +82,22 @@ angular.module('gokibitz.directives')
 			}
 
 			$scope.searchUsers = function (term) {
+				// Don't search until we have at least two characters to go on
+				if (term.length < 2) {
+					$scope.users = null;
+					return false;
+				}
+
 				$http.get('api/user/list?search=' + term)
-					.success(function(data) {
-						$scope.users = data.map( function (user) {
+					.success(function (data) {
+						$scope.users = data.map(function (user) {
 							user.label = user.username;
 							return user;
 						});
-						console.log($scope.users);
-					}).error(function(data, status, headers, config) {
-						console.log('Error retrieving kifu for new comments:', data.message);
+					}).error(function (data, status, headers, config) {
+						console.log('Error searching for users:', data.message);
 					});
-                        };
+			};
 
 			$scope.cancelComment = function () {
 				$scope.formData = '';
@@ -101,11 +106,11 @@ angular.module('gokibitz.directives')
 
 			$scope.addComment = function () {
 				$scope.disableAddComment = true;
-				
+
 				var data = $scope.formData;
 				data._id = $scope.kifu._id;
 				data.path = pathFilter($scope.kifu.path, 'string');
-				
+
 				var newComment = new Comment(data);
 				newComment.$save(function (response) {
 					$scope.disableAddComment = false;

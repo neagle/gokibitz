@@ -3,13 +3,18 @@ var router = express.Router();
 var auth = require('../config/auth');
 var marked = require('marked');
 var parseLabels = require('../utils/parseLabels.js');
+var linkUsers = require('../utils/linkUsers.js');
 
 marked.setOptions({
 	smartypants: true
 });
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
-	var html = marked(parseLabels(req.body.markdown)) || '';
+	var text = req.body.markdown;
+	text = parseLabels(text);
+	text = linkUsers(text);
+
+	var html = marked(text) || '';
 	res.json({
 		markup: html
 	});
