@@ -55,7 +55,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.formData = {};
-
+			$scope.commentPreview = "";
 			$scope.highlightedComment = $location.search().comment;
 
 			var canceler;
@@ -161,21 +161,6 @@ angular.module('gokibitz.controllers')
 				if ($scope.comments.length > position) {
 					$scope.displayComments = $scope.displayComments.concat($scope.comments.slice(position, position + num));
 				}
-			};
-
-			$scope.addComment = function () {
-				$scope.disableAddComment = true;
-				var data = $scope.formData;
-				data._id = $scope.kifu._id;
-				data.path = pathFilter($scope.kifu.path, 'string');
-				//console.log('checking data', data);
-
-				var newComment = new Comment(data);
-				newComment.$save(function (response) {
-					$scope.disableAddComment = false;
-					$scope.formData = {};
-					$scope.listComments(true);
-				});
 			};
 
 			$scope.updateComment = function (comment) {
@@ -387,7 +372,6 @@ angular.module('gokibitz.controllers')
 					$scope.toggleVariationMode();
 				}
 			};
-
 
 		}
 	);

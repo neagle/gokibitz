@@ -5,6 +5,26 @@ var User = require('../models/user').User;
 var Kifu = require('../models/kifu').Kifu;
 var _ = require('lodash');
 
+//get a list of 
+router.get('/list', function(req, res) {
+	var regex = new RegExp('^' + req.query.search);
+	User.find({ username: regex })
+		.limit(5)
+		.select('-hashedPassword -salt')
+		.exec(function(error, users){
+			if(!error && users){
+				var usersObj = users.map( function (user) {
+					return user.toObject();	
+				})
+				res.json(200, users);
+			} else if (error) {
+				res.json(500, { message: 'Error finding users for search term: ' + req.query.search + error });
+			} else {
+				res.json(404, { message: 'No users with that search term found.' });
+			}
+		})
+}); 
+
 // Get a user
 router.get('/:username', function (req, res) {
 	User.findOne({ username: req.params.username })

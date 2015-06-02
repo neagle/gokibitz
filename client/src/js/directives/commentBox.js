@@ -4,7 +4,7 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http, $q, $document, $parse) {
+.directive('gkCommentBox', function ($http, $q, $document, $parse, pathFilter, Comment) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
@@ -77,6 +77,44 @@ angular.module('gokibitz.directives')
 				});
 			}
 
+			$scope.getUsername = function (user) {
+				return '@' + user.username;
+			}
+
+			$scope.searchUsers = function (term) {
+				$http.get('api/user/list?search=' + term)
+					.success(function(data) {
+						$scope.users = data.map( function (user) {
+							user.label = user.username;
+							return user;
+						});
+						console.log($scope.users);
+					}).error(function(data, status, headers, config) {
+						console.log('Error retrieving kifu for new comments:', data.message);
+					});
+                        };
+
+			$scope.cancelComment = function () {
+				$scope.formData = '';
+				$scope[preview] = '';
+			};
+
+			$scope.addComment = function () {
+				$scope.disableAddComment = true;
+				
+				var data = $scope.formData;
+				data._id = $scope.kifu._id;
+				data.path = pathFilter($scope.kifu.path, 'string');
+				
+				var newComment = new Comment(data);
+				newComment.$save(function (response) {
+					$scope.disableAddComment = false;
+					$scope.formData = {};
+					$scope.listComments(true);
+				});
+			};
+
+
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;
@@ -102,7 +140,7 @@ angular.module('gokibitz.directives')
 				// Escape cancels
 				if (key === 27) {
 					cancel($scope);
-
+					$scope.cancelComment();
 					// It's slightly mysterious to me why this is needed, but without it
 					// there is sometimes (?) a delay in the cancel taking effect.
 					$scope.$apply();

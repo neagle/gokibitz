@@ -73,6 +73,7 @@
     "http-proxy": "^1.8.1",
     "jshint-stylish": "^0.2.0",
     "lodash": "^2.4.1",
+    "ment.io": "^0.9.23",
     "mocha": "^2.2.1",
     "node-bourbon": "^1.2.3",
     "pretty-hrtime": "^1.0.0",
@@ -112,7 +113,8 @@
     "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
-    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
+    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
+    "ment.io": "./node_modules/ment.io/dist/mentio.js" 
   },
   "browserify-shim": {
     "angular": "angular",
