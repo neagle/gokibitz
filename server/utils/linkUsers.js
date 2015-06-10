@@ -1,35 +1,24 @@
-//var User = require('../models/user').User;
+var User = require('../models/user').User;
+var asyncReplace = require('async-replace');
 
-module.exports = function (text) {
-	var output;
-	var userRegEx = /@[a-zA-Z0-9_-]*/g;
-	var matches = [];
-	var match = userRegEx.exec(text);
-	while (match !== null) {
-		matches.push(match);
-		match = userRegEx.exec(text);
-	}
+module.exports = function (text, callback) {
+	function replacer(match, offset, string, done) {
+		var username = match.substring(1);
 
-	//console.log(matches);
-
-	if (matches) {
-		matches.forEach(function (match) {
-			console.log('match', match);
-		});
-	}
-
-	//var usernames = comment.content.markdown.match(/@[a-z0-9_-]*/g);
-
-	/*
-	if (usernames) {
-		usernames.forEach(function (username) {
+		if (username) {
 			User.findOne({ username: username }, function (error, user) {
-				if (error && user) {
+				if (!error && user) {
+					done(null, '<a href="/user/' + username + '">' + match + '</a>');
+				} else {
+					done(null, match);
 				}
 			});
-		});
+		}
 	}
-	*/
 
-	return output;
+	asyncReplace(text, /@[a-zA-Z0-9_-]*/g, replacer, function (error, output) {
+		if (!error) {
+			callback(output);
+		}
+	});
 };

@@ -15,7 +15,7 @@ module.exports = {
 	},
 
 	notifyMentionedUsers: function (comment) {
-		var usernames = comment.content.markdown.match(/@[a-z0-9_-]*/g);
+		var usernames = comment.content.markdown.match(/@[a-zA-Z0-9_-]*/g);
 		var me = this;
 
 		if (usernames) {
