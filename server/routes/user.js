@@ -26,13 +26,13 @@ router.get('/list', auth.ensureAuthenticated, function (req, res) {
 					return user.toObject();
 				});
 
-				res.json(200, users);
+				res.json(200, usersObj);
 			} else if (error) {
 				res.json(500, { message: 'Error finding users for search term: ' + req.query.search + error });
 			} else {
 				res.json(404, { message: 'No users with that search term found.' });
 			}
-		})
+		});
 });
 
 // Get a user

@@ -79,7 +79,7 @@ angular.module('gokibitz.directives')
 
 			$scope.getUsername = function (user) {
 				return '@' + user.username;
-			}
+			};
 
 			$scope.searchUsers = function (term) {
 				// Don't search until we have at least two characters to go on

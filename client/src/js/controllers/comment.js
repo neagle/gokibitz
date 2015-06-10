@@ -55,7 +55,7 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.formData = {};
-			$scope.commentPreview = "";
+			$scope.commentPreview = '';
 			$scope.highlightedComment = $location.search().comment;
 
 			var canceler;

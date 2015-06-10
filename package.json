@@ -27,7 +27,7 @@
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.2.0",
     "shortid": "^2.0.0",
-    "smartgame": "^0.1.2",
+    "smartgame": "^0.1.4",
     "smartgamer": "^0.1.4",
     "socket.io": "^1.3.2"
   },
@@ -114,7 +114,7 @@
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
     "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
-    "ment.io": "./node_modules/ment.io/dist/mentio.js" 
+    "ment.io": "./node_modules/ment.io/dist/mentio.js"
   },
   "browserify-shim": {
     "angular": "angular",
