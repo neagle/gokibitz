@@ -12,11 +12,11 @@ marked.setOptions({
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	var text = req.body.markdown;
 	text = parseLabels(text);
-	text = linkUsers(text);
-
-	var html = marked(text) || '';
-	res.json({
-		markup: html
+	linkUsers(text, function (text) {
+		var html = marked(text) || '';
+		res.json({
+			markup: html
+		});
 	});
 });
 
