@@ -9,7 +9,7 @@ var async = require('async');
 var io = require('../io');
 var _ = require('lodash');
 var notificationHelper = require('../utils/notificationHelper');
-	
+
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
 		_id: req.body._id
@@ -47,7 +47,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							});
 
 							notificationHelper.notifyMentionedUsers(comment);
-	
+
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
 									change: 'new',
@@ -429,10 +429,10 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					res.json(550, { message: 'You can\'t edit another user\'s comment.' });
 				} else {
 					comment.content.markdown = markdown;
-					
+
 					comment.save(function (error) {
 						if (!error) {
-							
+
 							notificationHelper.notifyMentionedUsers(comment);
 							res.json(200, {
 								message: 'Comment updated.',

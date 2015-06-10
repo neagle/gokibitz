@@ -20,14 +20,16 @@ module.exports = function (text) {
 
 	//var usernames = comment.content.markdown.match(/@[a-z0-9_-]*/g);
 
-	//if (usernames) {
-		//usernames.forEach(function (username) {
-			//User.findOne({ username: username }, function (error, user) {
-				//if (error && user) {
-				//}
-			//});
-		//});
-	//}
+	/*
+	if (usernames) {
+		usernames.forEach(function (username) {
+			User.findOne({ username: username }, function (error, user) {
+				if (error && user) {
+				}
+			});
+		});
+	}
+	*/
 
 	return output;
 };
