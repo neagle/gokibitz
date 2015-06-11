@@ -4,6 +4,7 @@ var marked = require('marked');
 var moment = require('moment');
 var async = require('async');
 var parseLabels = require('../utils/parseLabels.js');
+var linkUsers = require('../utils/linkUsers.js');
 
 marked.setOptions({
 	smartypants: true
@@ -32,6 +33,9 @@ var commentSchema = new Schema({
 		markdown: {
 			type: String,
 			required: true
+		},
+		html: {
+			type: String
 		}
 	},
 	stars: [{
@@ -47,12 +51,23 @@ var commentSchema = new Schema({
 	}
 });
 
-commentSchema.virtual('content.html')
-	.get(function () {
-		if (this.content.markdown) {
-			return marked(parseLabels(this.content.markdown));
-		}
+function htmlFromMarkdown(markdown, callback) {
+	var html = parseLabels(markdown);
+
+	linkUsers(html, function (html) {
+		html = marked(html) || '';
+		callback(html);
 	});
+}
+
+commentSchema.pre('save', function (next) {
+	var self = this;
+
+	htmlFromMarkdown(this.content.markdown, function (html) {
+		self.content.html = html;
+		next();
+	});
+});
 
 commentSchema.virtual('relativeDate')
 	.get(function () {

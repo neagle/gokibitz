@@ -344,6 +344,27 @@ router.patch('/:id/unstar', function (req, res) {
 		});
 });
 
+// This route gets all the comments (ALL OF THEM) and saves them
+// This basically needs to be used a single time to make sure all saved
+// comments have parsed HTML attributes. In the future, all comment saves
+// should create this on their own.
+router.get('/updatemarkdown', function (req, res) {
+	var comments = Comment.find();
+
+	comments
+		.exec(function (error, comments) {
+			if (!error) {
+				comments.forEach(function (comment) {
+					comment.save();
+				});
+				res.json('200', comments);
+			} else {
+				res.json('500', { message: error });
+			}
+		});
+});
+
+
 router.get('/:id', function (req, res) {
 	var id = req.params.id;
 
