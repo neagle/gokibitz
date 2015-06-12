@@ -20,37 +20,41 @@ angular.module('gokibitz.controllers')
 
 			// Valid ranks are 30-1k, 1-9d, and 1-9p
 			$scope.isValidRank = function (rank) {
+				var rankArr = [];
 				var suffixes = ['k', 'd', 'p'];
+				var suffix;
 
-				var i = 0;
-				do {
-					rankArr = rank.split(suffixes[i]);
+				// Try to split the rank string by any of the known suffixes
+				for (var i = 0; rankArr.length < 2 && i < suffixes.length; i += 1) {
+					suffix = suffixes[i];
+					rankArr = rank.split(suffix);
 				}
-				while (rankArr.length < 2 && suffixes[++i]);
 
+				// Rank wasn't split by any of the suffixes, so it's definitely not valid
 				if (rankArr.length !== 2) {
 					return false;
 				}
 
 				var number = Number(rankArr[0]);
-				var suffix = suffixes[i];
 
 				// first part has to be a number
 				if (isNaN(number)) {
 					return false;
-				};
+				}
 
 				// k, d, or p, not kyu, dan, or pro
 				if (rankArr[1].length) {
 					return false;
 				}
 
+				// Valid kyu ranks are between 30 and 1
 				if (suffix === 'k') {
 					if (number > 30 || number < 1) {
 						return false;
 					}
 				}
 
+				// Valid dan ranks are between 1 and 9
 				if (suffix === 'd' || suffix === 'p') {
 					if (number > 9 || number < 1) {
 						return false;
@@ -85,12 +89,13 @@ angular.module('gokibitz.controllers')
 				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
 					.success(function (data, status, headers, config) {
 						$scope.user = data.user;
-            $scope.edit = false;
+						$scope.edit = false;
 					})
 					.error(function (data, status, headers, config) {
 						$scope.editError = data;
-					})
+						console.log('hey');
+					});
 			};
 
-    }
-  );
+		}
+	);

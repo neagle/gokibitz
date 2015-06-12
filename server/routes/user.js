@@ -5,6 +5,36 @@ var User = require('../models/user').User;
 var Kifu = require('../models/kifu').Kifu;
 var _ = require('lodash');
 
+// Get a list of users
+router.get('/list', auth.ensureAuthenticated, function (req, res) {
+	var limit = req.query.limit || 5;
+	var caseSensitive = (typeof req.query.caseSensitive === 'undefined') ? false : req.query.caseSensitive;
+	var regex;
+
+	if (caseSensitive) {
+		regex = new RegExp('^' + req.query.search);
+	} else {
+		regex = new RegExp('^' + req.query.search, 'i');
+	}
+
+	User.find({ username: regex })
+		.limit(limit)
+		.select('-hashedPassword -salt')
+		.exec(function (error, users) {
+			if (!error && users) {
+				var usersObj = users.map(function (user) {
+					return user.toObject();
+				});
+
+				res.json(200, usersObj);
+			} else if (error) {
+				res.json(500, { message: 'Error finding users for search term: ' + req.query.search + error });
+			} else {
+				res.json(404, { message: 'No users with that search term found.' });
+			}
+		});
+});
+
 // Get a user
 router.get('/:username', function (req, res) {
 	User.findOne({ username: req.params.username })
@@ -47,11 +77,11 @@ router.put('/:username', auth.ensureAuthenticated, function (req, res) {
 						}
 					});
 				}
-      } else if (error) {
-        res.json(500, { message: 'Error finding user. ' + error });
-      } else {
-        res.json(404, { message: 'No user with that username found.' });
-      }
+			} else if (error) {
+				res.json(500, { message: 'Error finding user. ' + error });
+			} else {
+				res.json(404, { message: 'No user with that username found.' });
+			}
 		});
 });
 

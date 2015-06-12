@@ -60,13 +60,13 @@ var UserSchema = new Schema({
  */
 UserSchema
 	.virtual('password')
-	.set(function(password) {
+	.set(function (password) {
 		console.log('setting password');
 		this._password = password;
 		this.salt = this.makeSalt();
 		this.hashedPassword = this.encryptPassword(password);
 	})
-	.get(function() {
+	.get(function () {
 		return this._password;
 	});
 
@@ -80,20 +80,21 @@ UserSchema
 	.virtual('gravatar')
 	.get(function () {
 		if (this.email) {
-      var hash = md5(this.email.trim().toLowerCase());
-      return '//www.gravatar.com/avatar/' + hash;
-    } else {
+			var hash = md5(this.email.trim().toLowerCase());
+			return '//www.gravatar.com/avatar/' + hash;
+		} else {
 			return '';
 		}
 	});
 
-	UserSchema
-		.virtual('totalComments')
-		.get(function () {
-			//console.log('Comment.find', Comment.find({}));
-			return this._id;
-			//return Comment.find().count();
-		});
+// Incomplete
+UserSchema
+	.virtual('totalComments')
+	.get(function () {
+		//console.log('Comment.find', Comment.find({}));
+		return this._id;
+		//return Comment.find().count();
+	});
 
 
 /**
@@ -139,7 +140,7 @@ UserSchema.path('username').validate(function (value, respond) {
 		return respond(true);
 	}
 
-	mongoose.models.User.findOne({ username: value }, function(err, user) {
+	mongoose.models.User.findOne({ username: value }, function (err, user) {
 		if (err) {
 			throw err;
 		}
@@ -164,8 +165,7 @@ UserSchema.pre('save', function (next) {
 
 	if (!validatePresenceOf(this.password)) {
 		next(new Error('Invalid password'));
-	}
-	else {
+	} else {
 		next();
 	}
 });
@@ -180,7 +180,7 @@ UserSchema.methods = {
 	 * Authenticate - check if the passwords are the same
 	 */
 
-	authenticate: function(plainText) {
+	authenticate: function (plainText) {
 		return this.encryptPassword(plainText) === this.hashedPassword;
 	},
 
@@ -188,7 +188,7 @@ UserSchema.methods = {
 	 * Make salt
 	 */
 
-	makeSalt: function() {
+	makeSalt: function () {
 		return crypto.randomBytes(16).toString('base64');
 	},
 
@@ -196,7 +196,7 @@ UserSchema.methods = {
 	 * Encrypt password
 	 */
 
-	encryptPassword: function(password) {
+	encryptPassword: function (password) {
 		if (!password || !this.salt) {
 			return '';
 		}

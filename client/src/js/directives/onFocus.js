@@ -6,7 +6,7 @@ angular.module('gokibitz.directives')
 		return {
 			restrict: 'A',
 			require: 'ngModel',
-			link: function(scope, element, attrs, ngModel) {
+			link: function (scope, element, attrs, ngModel) {
 				ngModel.$focused = false;
 				element
 					.bind('focus', function (event) {

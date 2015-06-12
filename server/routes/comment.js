@@ -8,6 +8,7 @@ var Comment = require('../models/comment').Comment;
 var async = require('async');
 var io = require('../io');
 var _ = require('lodash');
+var notificationHelper = require('../utils/notificationHelper');
 
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
@@ -41,18 +42,11 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							// Send notifications
 							comment.getRecipients(function (recipients) {
 								recipients.forEach(function (recipient) {
-									// Send a notification to the kifu owner
-									var notification = new Notification();
-									notification.cause = 'new comment';
-									notification.to = recipient;
-									notification.from = comment.user;
-									notification.kifu = comment.kifu;
-									notification.path = comment.path;
-									notification.comment = comment._id;
-
-									notification.save();
+									notificationHelper.newNotification(comment, 'new comment', recipient);
 								});
 							});
+
+							notificationHelper.notifyMentionedUsers(comment);
 
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
@@ -142,10 +136,6 @@ router.get('/', function (req, res) {
 			.skip(offset)
 			.limit(limit);
 
-		if (since) {
-			comments = comments.where('date').gt(since);
-		}
-
 		if (user) {
 			comments = comments.where('user').equals(user._id);
 		}
@@ -157,7 +147,10 @@ router.get('/', function (req, res) {
 				if (!error) {
 					if (chunk) {
 						// Transform a Mongoose document into a JavaScript object
-						comments = comments.map(function (comment) { return comment.toObject(); });
+						comments = comments.map(function (comment) {
+							return comment.toObject();
+						});
+
 						comments = _.filter(comments, function (comment) {
 							return comment.kifu.public;
 						});
@@ -180,61 +173,61 @@ router.get('/', function (req, res) {
 					res.json('500', { message: error });
 				}
 			});
+	}
+
+	// Turn a flat array of comments into one where comments by the same user
+	// on the same kifu are combined
+	function chunkify(comments) {
+		function pathPresent(path) {
+			return path.path === comment.path;
 		}
 
-		// Turn a flat array of comments into one where comments by the same user
-		// on the same kifu are combined
-		function chunkify(comments) {
-			function pathPresent(path) {
-				return path.path === comment.path;
-			}
+		function pathSorter(a, b) {
+			return a.path - b.path;
+		}
 
-			function pathSorter(a, b) {
-				return a.path - b.path;
-			}
+		// For each comment...
+		for (
+			var i = 0, length = comments.length;
+			i < length && chunkedComments.length < limit;
+			i += 1
+		) {
+			var comment = comments[i];
 
-			// For each comment...
-			for (
-				var i = 0, length = comments.length;
-				i < length && chunkedComments.length < limit;
-				i += 1
+			// If this comment has the same user and kifu as the last one...
+			if (
+				lastComment &&
+				lastUser === String(comment.user._id) &&
+				lastKifu === String(comment.kifu._id)
 			) {
-				var comment = comments[i];
 
-				// If this comment has the same user and kifu as the last one...
-				if (
-					lastComment &&
-					lastUser === String(comment.user._id) &&
-					lastKifu === String(comment.kifu._id)
-				) {
-
-					// Don't add multiple notifications for multiple comments on the same move
-					if (lastComment.path !== comment.path) {
-						// If the last comment's path isn't already an array, turn it into one
-						if (!Array.isArray(lastComment.path)) {
-							lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
-						}
-
-						var alreadyPresent = lastComment.path.some(pathPresent);
-
-						if (!alreadyPresent) {
-							// Push the current comment's path to the last object
-							lastComment.path.push({ _id: comment._id, path: comment.path });
-
-							lastComment.path.sort(pathSorter);
-						}
+				// Don't add multiple notifications for multiple comments on the same move
+				if (lastComment.path !== comment.path) {
+					// If the last comment's path isn't already an array, turn it into one
+					if (!Array.isArray(lastComment.path)) {
+						lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
 					}
 
-				} else {
-					// This comment becomes the last comment
-					lastComment = comment;
-					lastUser = String(comment.user._id);
-					lastKifu = String(comment.kifu._id);
+					var alreadyPresent = lastComment.path.some(pathPresent);
 
-					chunkedComments.push(comment);
+					if (!alreadyPresent) {
+						// Push the current comment's path to the last object
+						lastComment.path.push({ _id: comment._id, path: comment.path });
+
+						lastComment.path.sort(pathSorter);
+					}
 				}
+
+			} else {
+				// This comment becomes the last comment
+				lastComment = comment;
+				lastUser = String(comment.user._id);
+				lastKifu = String(comment.kifu._id);
+
+				chunkedComments.push(comment);
 			}
 		}
+	}
 
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments
@@ -351,6 +344,27 @@ router.patch('/:id/unstar', function (req, res) {
 		});
 });
 
+// This route gets all the comments (ALL OF THEM) and saves them
+// This basically needs to be used a single time to make sure all saved
+// comments have parsed HTML attributes. In the future, all comment saves
+// should create this on their own.
+router.get('/updatemarkdown', function (req, res) {
+	var comments = Comment.find();
+
+	comments
+		.exec(function (error, comments) {
+			if (!error) {
+				comments.forEach(function (comment) {
+					comment.save();
+				});
+				res.json('200', comments);
+			} else {
+				res.json('500', { message: error });
+			}
+		});
+});
+
+
 router.get('/:id', function (req, res) {
 	var id = req.params.id;
 
@@ -436,8 +450,11 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					res.json(550, { message: 'You can\'t edit another user\'s comment.' });
 				} else {
 					comment.content.markdown = markdown;
+
 					comment.save(function (error) {
 						if (!error) {
+
+							notificationHelper.notifyMentionedUsers(comment);
 							res.json(200, {
 								message: 'Comment updated.',
 								comment: comment

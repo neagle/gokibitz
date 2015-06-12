@@ -8,6 +8,7 @@
   "dependencies": {
     "MD5": "^1.2.1",
     "async": "^0.9.0",
+    "async-replace": "^1.0.0",
     "body-parser": "~1.0.0",
     "compression": "^1.3.0",
     "connect-mongo": "^0.4.1",
@@ -27,7 +28,7 @@
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.2.0",
     "shortid": "^2.0.0",
-    "smartgame": "^0.1.2",
+    "smartgame": "^0.1.4",
     "smartgamer": "^0.1.4",
     "socket.io": "^1.3.2"
   },
@@ -61,6 +62,7 @@
     "gulp-debug": "^0.3.0",
     "gulp-develop-server": "^0.4.2",
     "gulp-imagemin": "^2.1.0",
+    "gulp-jscs": "^1.6.0",
     "gulp-jshint": "^1.6.1",
     "gulp-livereload": "^1.5.0",
     "gulp-newer": "^0.3.0",
@@ -72,12 +74,13 @@
     "http-proxy": "^1.8.1",
     "jshint-stylish": "^0.2.0",
     "lodash": "^2.4.1",
+    "ment.io": "^0.9.23",
     "mocha": "^2.2.1",
     "node-bourbon": "^1.2.3",
     "pretty-hrtime": "^1.0.0",
     "protractor": "^2.0.0",
+    "require-dir": "^0.3.0",
     "scsslint": "0.0.3",
-    "smartgamer": "^0.1.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
@@ -111,7 +114,8 @@
     "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
-    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
+    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
+    "ment.io": "./node_modules/ment.io/dist/mentio.js"
   },
   "browserify-shim": {
     "angular": "angular",

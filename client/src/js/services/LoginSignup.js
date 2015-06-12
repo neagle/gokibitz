@@ -5,17 +5,17 @@ angular.module('gokibitz.services')
 
 		return {
 			loginModal: function () {
-        $modal.open({
-          templateUrl: '/partials/login',
-          controller: 'LoginController'
-        });
-      },
+				$modal.open({
+					templateUrl: '/partials/login',
+					controller: 'LoginController'
+				});
+			},
 
-      signupModal: function () {
-        $modal.open({
-          templateUrl: '/partials/signup',
-          controller: 'SignupController'
-        });
-      }
+			signupModal: function () {
+				$modal.open({
+					templateUrl: '/partials/signup',
+					controller: 'SignupController'
+				});
+			}
 		};
 	});

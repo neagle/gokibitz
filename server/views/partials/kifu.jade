@@ -4,7 +4,7 @@
 			.white
 				.name {{ info.white.name || 'Anonymous' }}
 				= ' '
-				.rank {{ info.white.rank }}
+				.rank {{ info.white.rank | rank }}
 				.captures(
 					tooltip-placement='right'
 					tooltip='White’s captured prisoners'
@@ -13,7 +13,7 @@
 			.black
 				.name {{ info.black.name || 'Anonymous' }}
 				= ' '
-				.rank {{ info.black.rank }}
+				.rank {{ info.black.rank | rank }}
 				.captures(
 					tooltip-placement='left'
 					tooltip='Black’s captured prisoners'
@@ -174,7 +174,7 @@
 					| Game Comments
 				div.panel-body
 					div(
-						ng-bind-html='sgfComment'
+						dynamic='sgfComment'
 						ng-hide='editGameComment'
 					)
 					div(ng-if='!sgfComment && kifu.owner.username !== currentUser.username && !editGameComment') &nbsp;
@@ -364,12 +364,27 @@
 										dynamic='comment.content.html'
 									)
 
+									script#mentio-mentions(type="text/ng-template")
+										ul.list-group.user-search
+											li.list-group-item(
+												mentio-menu-item="user"
+												ng-repeat="user in items"
+											)
+												a.text-primary(
+													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
+
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
 										msd-elastic='\\n'
 										rows='3'
 										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
+										mentio=''
+										mentio-id='comment.id'
+										mentio-template-url="mentio-mentions"
+										mentio-items="users"
+										mentio-search="searchUsers(term)"
+										mentio-require-leading-space="true"
 										gk-comment-box='updateComment(comment), cancelEdit(comment)'
 										gk-comment-submit='updateComment(comment)'
 										gk-comment-cancel='cancelEdit(comment)'
@@ -380,13 +395,7 @@
 
 									h5(ng-hide='!preview') Preview
 									.preview(dynamic='preview')
-
-									span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-										| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-									span.help-block= 'You can use '
-										a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-										= ' for formatting.'
+									include ../includes/comment-helptext.jade
 
 									button.btn.btn-xs.btn-primary(ng-click='updateComment(comment)')
 										i.fui-check
@@ -451,10 +460,18 @@
 											| &nbsp;
 											span
 									label Comment:
+
 									textarea#main-comment-box.form-control(
 										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
+
+										mentio=""
+										mentio-template-url="mentio-mentions"
+										mentio-items="users"
+										mentio-search="searchUsers(term)"
+										mentio-require-leading-space="true"
+
 										rows=3
 										gk-comment-box
 										gk-comment-submit='addComment()'
@@ -466,12 +483,7 @@
 								.preview(dynamic='preview')
 						.row
 							.col-md-12
-								span.help-block.pull-right <kbd>&lt;enter&gt;</kbd> to submit
-									| <br><kbd>&lt;shift&gt; + &lt;enter&gt;</kbd> to add a return
-
-								span.help-block= 'You can use '
-									a(href='http://daringfireball.net/projects/markdown/syntax' target='_blank') Markdown
-									= ' for formatting.'
+								include ../includes/comment-helptext.jade
 
 						.row
 							.col-md-12

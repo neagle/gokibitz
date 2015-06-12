@@ -14,12 +14,12 @@ exports.create = function (req, res, next) {
 	var newUser = new User(req.body);
 	newUser.provider = 'local';
 
-	newUser.save(function(err) {
+	newUser.save(function (err) {
 		if (err) {
 			return res.json(400, err);
 		}
 
-		req.logIn(newUser, function(err) {
+		req.logIn(newUser, function (err) {
 			if (err) {
 				return next(err);
 			}
@@ -101,7 +101,7 @@ exports.exists = function (req, res, next) {
 			return next(new Error('Failed to load User ' + username));
 		}
 
-		if(user) {
+		if (user) {
 			res.json({exists: true});
 		} else {
 			res.json({exists: false});

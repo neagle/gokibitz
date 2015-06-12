@@ -17,7 +17,6 @@ var config = require('../config').browserify;
 var _ = require('lodash');
 
 var browserifyTask = function(callback, devMode) {
-
 	var bundleQueue = config.bundleConfigs.length;
 
 	var browserifyThis = function(bundleConfig) {
@@ -93,4 +92,4 @@ var browserifyTask = function(callback, devMode) {
 gulp.task('browserify', browserifyTask);
 
 // Exporting the task so we can call it directly in our watch task, with the 'devMode' option
-module.exports = browserifyTask
+module.exports = browserifyTask;

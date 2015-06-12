@@ -1,8 +1,9 @@
-// Taken from WGo.js's commentbox plugin, since we're injecting comments on our own
+var parseLabels = require('../../../../server/utils/parseLabels.js');
+
 module.exports = {
 	format: function (comment) {
-		// to avoid XSS we must transform < and > to entities, it is highly recommended not to change it
-		//.replace(/</g,"&lt;").replace(/>/g,"&gt;") : "";
+		// to avoid XSS we must transform < and > to entities, it is highly
+		// recommended not to change it
 		if (!comment || typeof comment !== 'string') {
 			return comment;
 		} else {
@@ -18,8 +19,8 @@ module.exports = {
 				'<p><span class="wgo-comments-nick">$2</span> '
 			);
 
-			// Format moves
-			html = html.replace(/\b[a-zA-Z]1?\d\b/g, '<b class="wgo-move-link">$&</b>');
+			// Format move and sequence labels
+			html = parseLabels(html);
 
 			return html;
 		}

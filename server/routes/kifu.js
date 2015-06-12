@@ -182,7 +182,9 @@ router.get('/:shortid/sgf', function (req, res) {
 					.populate('user')
 					.exec(function (error, comments) {
 						// Transform a Mongoose document into a JavaScript object
-						comments = comments.map(function (comment) { return comment.toObject(); });
+						comments = comments.map(function (comment) {
+							return comment.toObject();
+						});
 
 						var gamer = smartgamer(smartgame.parse(kifu.game.sgf));
 

@@ -4,11 +4,6 @@ angular.module('gokibitz.controllers')
 
 	$scope.isCollapsed = true;
 
-	$scope.goToAndCollapse = function (item) {
-		$scope.isCollapsed = true;
-		$location.path('/' + item.link);
-	};
-
 	$scope.$watch('currentUser', function (newValue, oldValue) {
 		if (newValue) {
 			nav.$settings = new Settings();
@@ -70,7 +65,7 @@ angular.module('gokibitz.controllers')
 		if (isOpen) {
 			nav.$settings.lastSeenNotification = {
 				id: nav.mostRecentNotification.id,
-				date: nav.mostRecentNotification.date,
+				date: nav.mostRecentNotification.date
 			};
 			nav.$settings.$update();
 		}

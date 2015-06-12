@@ -4,19 +4,21 @@ angular.module('gokibitz.directives')
  * Enter to submit, shift + enter for a regular carriage return,
  * and escape to cancel.
  */
-.directive('gkCommentBox', function ($http, $q, $document) {
+.directive('gkCommentBox', function ($http, $q, $document, $parse, pathFilter, Comment) {
 	return {
 		restrict: 'A',
 		require: '?ngModel',
-		scope: {
-			submit: '&gkCommentSubmit',
-			cancel: '&gkCommentCancel',
-			preview: '=?gkCommentPreview',
-			model: '=ngModel'
-		},
+
 		link: function ($scope, element, attributes, ngModel) {
+			var submit = $parse(attributes.gkCommentSubmit);
+			var cancel = $parse(attributes.gkCommentCancel);
+			var preview = attributes.gkCommentPreview;
+
 			var text = element.val();
 			var canceler;
+
+			// Only display a preview if the preview attribute has been set
+			var displayPreview = (attributes.gkCommentPreview) ? true : false;
 
 			// Check if the element currently has focus
 			var hasFocus = function () {
@@ -24,7 +26,7 @@ angular.module('gokibitz.directives')
 			};
 
 			// Get a preview of rendered HTML from comment markdown
-			function preview() {
+			function getPreview() {
 				if (element.val() !== text) {
 
 					// Cancel any previous markdown calls
@@ -46,7 +48,7 @@ angular.module('gokibitz.directives')
 						timeout: canceler.promise
 					})
 						.success(function (data) {
-							$scope.preview = data.markup;
+							$scope[preview] = data.markup;
 						});
 				}
 			}
@@ -65,12 +67,58 @@ angular.module('gokibitz.directives')
 			}
 
 			// Watch the value of the comment and fetch a preview when it changes
-			$scope.$watch('model', function (newValue, oldValue) {
-				// @see http://stackoverflow.com/a/18915585/399077
-				if (newValue !== oldValue) {
-					preview();
+			if (displayPreview) {
+				ngModel.$viewChangeListeners.push(function () {
+					var value = ngModel.$modelValue;
+
+					if (value !== $scope[preview]) {
+						getPreview();
+					}
+				});
+			}
+
+			$scope.getUsername = function (user) {
+				return '@' + user.username;
+			};
+
+			$scope.searchUsers = function (term) {
+				// Don't search until we have at least two characters to go on
+				if (term.length < 2) {
+					$scope.users = null;
+					return false;
 				}
-			});
+
+				$http.get('api/user/list?search=' + term)
+					.success(function (data) {
+						$scope.users = data.map(function (user) {
+							user.label = user.username;
+							return user;
+						});
+					}).error(function (data, status, headers, config) {
+						console.log('Error searching for users:', data.message);
+					});
+			};
+
+			$scope.cancelComment = function () {
+				$scope.formData = '';
+				$scope[preview] = '';
+			};
+
+			$scope.addComment = function () {
+				$scope.disableAddComment = true;
+
+				var data = $scope.formData;
+				data._id = $scope.kifu._id;
+				data.path = pathFilter($scope.kifu.path, 'string');
+
+				var newComment = new Comment(data);
+				newComment.$save(function (response) {
+					$scope.disableAddComment = false;
+					$scope.formData = {};
+					$scope.listComments(true);
+				});
+			};
+
 
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
@@ -83,9 +131,11 @@ angular.module('gokibitz.directives')
 						canceler.resolve();
 					}
 
+					submit($scope);
 
-					$scope.submit();
-					$scope.preview = '';
+					if (displayPreview) {
+						$scope[preview] = '';
+					}
 				}
 			});
 
@@ -94,7 +144,11 @@ angular.module('gokibitz.directives')
 				var key = event.keyCode || event.which;
 				// Escape cancels
 				if (key === 27) {
-					$scope.$apply('cancel()');
+					cancel($scope);
+					$scope.cancelComment();
+					// It's slightly mysterious to me why this is needed, but without it
+					// there is sometimes (?) a delay in the cancel taking effect.
+					$scope.$apply();
 				}
 			});
 		}

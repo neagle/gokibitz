@@ -18,7 +18,6 @@ angular.module('gokibitz.directives')
 			var rect, elemHeight;
 			function recalc() {
 				rect = elem[0].getBoundingClientRect();
-				console.log('rect', rect);
 				elemHeight = elem[0].offsetHeight;
 				elem[0].parentNode.style.minHeight = elemHeight + 10 + 'px';
 			}
@@ -59,9 +58,10 @@ angular.module('gokibitz.directives')
 
 					if (totalHeight > bottomStick) {
 						elem[0].style.position = 'absolute';
+						elem[0].style.left = null;
 						elem[0].style.top = bottomStick + 'px';
 					}
-				} else if (elem[0].style.position = 'fixed') {
+				} else if (elem[0].style.position === 'fixed') {
 					elem[0].style.position = 'relative';
 					elem[0].style.top = 0;
 					elem[0].style.left = null;

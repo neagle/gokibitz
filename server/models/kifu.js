@@ -204,12 +204,6 @@ kifuSchema.virtual('game.info.date')
  * Comment Information
  */
 
-//kifuSchema.virtual('game.obj')
-	//.get(function () {
-		//console.log(smartgame.parse(this.game.sgf));
-		//return this.game.sgf;
-		////return smartgame.parse(this.game.sgf);
-	//});
 kifuSchema.methods.isOwner = function (user) {
 	return String(this.owner) === String(user._id);
 };

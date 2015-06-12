@@ -9,6 +9,17 @@ module.exports = {
 			outputName: 'app.js'
 		}]
 	},
+	js: {
+		jshintrc: './.jshintrc',
+		files: [
+			'./server.js',
+			'./server/**/*.js',
+			'./client/src/js/**/*.js',
+			// Third-party scripts in lib get a pass: they don't have
+			// to play by our rules!
+			'!./client/src/js/lib/**'
+		]
+	},
 	production: {
 		cssSrc: dest + '/css/*.css',
 		cssDest: dest + '/css',
