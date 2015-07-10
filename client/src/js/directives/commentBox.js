@@ -99,27 +99,6 @@ angular.module('gokibitz.directives')
 					});
 			};
 
-			$scope.cancelComment = function () {
-				$scope.formData = '';
-				$scope[preview] = '';
-			};
-
-			$scope.addComment = function () {
-				$scope.disableAddComment = true;
-
-				var data = $scope.formData;
-				data._id = $scope.kifu._id;
-				data.path = pathFilter($scope.kifu.path, 'string');
-
-				var newComment = new Comment(data);
-				newComment.$save(function (response) {
-					$scope.disableAddComment = false;
-					$scope.formData = {};
-					$scope.listComments(true);
-				});
-			};
-
-
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;
@@ -145,7 +124,6 @@ angular.module('gokibitz.directives')
 				// Escape cancels
 				if (key === 27) {
 					cancel($scope);
-					$scope.cancelComment();
 					// It's slightly mysterious to me why this is needed, but without it
 					// there is sometimes (?) a delay in the cancel taking effect.
 					$scope.$apply();

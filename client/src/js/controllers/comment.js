@@ -163,6 +163,22 @@ angular.module('gokibitz.controllers')
 				}
 			};
 
+			$scope.addComment = function () {
+				$scope.disableAddComment = true;
+
+				var data = $scope.formData;
+				data._id = $scope.kifu._id;
+				data.path = pathFilter($scope.kifu.path, 'string');
+
+				var newComment = new Comment(data);
+				newComment.$save(function (response) {
+					$scope.disableAddComment = false;
+					$scope.formData = {};
+					$scope.listComments(true);
+				});
+			};
+
+
 			$scope.updateComment = function (comment) {
 				$scope.disableUpdateComment = true;
 				var self = this;
