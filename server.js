@@ -1,3 +1,6 @@
+// Load the .env file
+require('dotenv').load();
+
 var express = require('express');
 var compression = require('compression');
 var session = require('express-session');
@@ -79,6 +82,7 @@ app.use(function (req, res, next) {
 
 /// error handlers
 
+//console.log('app.get("env")', app.get("env"));
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
