@@ -11,6 +11,8 @@ var Comment = require('../models/comment').Comment;
 var Notification = require('../models/notification').Notification;
 var _ = require('lodash');
 var http = require('http');
+var https = require('https');
+var url = require('url');
 
 router.get('/', function (req, res) {
 	var offset = req.query.offset || 0;
@@ -345,7 +347,19 @@ router.post('/upload', auth.ensureAuthenticated, function (req, res) {
 		createKifu(req.body.rawSgf, req.body.public);
 	} else if (req.body.url) {
 		// Create a new Kifu from an SGF fetched from a URL
-		http.get(req.body.url, function (fetchRes) {
+		var targetUrl = url.parse(req.body.url);
+		var protocolHandler = targetUrl.protocol === 'https:' ? https : http;
+
+		// Game links from OGS will fetch the SGF file directly without having to look up some obscure API link
+		if (targetUrl.hostname === 'online-go.com' && targetUrl.pathname.indexOf('/game/') === 0) {
+			var splitUrl = targetUrl.pathname.split('/');
+			if (splitUrl.length >= 3) {
+				targetUrl.pathname = '/api/v1/games/' + splitUrl[2] + '/sgf';
+				req.body.url = url.format(targetUrl);
+			}
+		}
+
+		protocolHandler.get(req.body.url, function (fetchRes) {
 			var request = this;
 			var sgf = '';
 			fetchRes.on('data', function (chunk) {
