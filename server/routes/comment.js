@@ -101,15 +101,19 @@ router.get('/', function (req, res) {
 		if (totalComments) {
 			callback();
 		} else {
-			var criteria;
+			var criteria = {};
 
 			if (user) {
 				criteria.user = user;
 			}
 
 			Comment.count(criteria, function (error, count) {
-				totalComments = count;
-				callback();
+				if (error) {
+					console.log('error', error);
+				} else {
+					totalComments = count;
+					callback();
+				}
 			});
 		}
 	}
@@ -163,6 +167,10 @@ router.get('/', function (req, res) {
 							if (offset >= totalComments) {
 								res.json('200', chunkedComments);
 							} else {
+								// Preserve this log to remind that this logic can be the
+								// source of excess CPU usage if logic is not correct for
+								// various exigencies
+								//console.log('getting comments again', offset, totalComments);
 								getComments();
 							}
 						}
@@ -231,12 +239,13 @@ router.get('/', function (req, res) {
 
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments
-	var funcs = [getTotal];
+	var funcs = [];
 
 	if (username) {
 		funcs.push(getUser);
 	}
 
+	funcs.push(getTotal);
 	funcs.push(getComments);
 	async.series(funcs);
 });
