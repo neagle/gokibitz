@@ -5,8 +5,6 @@ GoKibitz: Move-by-move conversations about go games [![Build Status](https://tra
 
 I developed this app because I found it frustrating to try to comment on games other players would post for review: instructions like "on move 140, black should consider e14..." are frustrating to write and to read.
 
-GoKibitz solves the per-move comment issue pretty well, but it doesn't yet solve the need to be able to suggest variations in an easy to read and understand way. Hopefully I can address that in the future.
-
 License
 =======
 GoKibitz is currently free to all users, and its code is [open source](https://github.com/neagle/gokibitz/blob/master/LICENSE).

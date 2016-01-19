@@ -8,13 +8,15 @@
   "dependencies": {
     "MD5": "^1.2.1",
     "async": "^0.9.0",
+    "async-replace": "^1.0.0",
     "body-parser": "~1.0.0",
     "compression": "^1.3.0",
-    "connect-mongo": "^0.4.1",
+    "connect-mongo": "^0.4.2",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
+    "dotenv": "^1.2.0",
     "express": "~4.2.0",
-    "express-session": "^1.2.0",
+    "express-session": "^1.11.3",
     "heapdump": "^0.3.5",
     "jade": "~1.3.0",
     "marked": "^0.3.2",
@@ -27,7 +29,7 @@
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.2.0",
     "shortid": "^2.0.0",
-    "smartgame": "^0.1.2",
+    "smartgame": "^0.1.4",
     "smartgamer": "^0.1.4",
     "socket.io": "^1.3.2"
   },
@@ -55,7 +57,7 @@
     "chalk": "^0.5.1",
     "folderify": "^0.6.0",
     "glob": "^4.0.0",
-    "gulp": "^3.8.11",
+    "gulp": "^3.9.0",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "^2.2.0",
     "gulp-debug": "^0.3.0",
@@ -114,7 +116,7 @@
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
     "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
-    "ment.io": "./node_modules/ment.io/dist/mentio.js" 
+    "ment.io": "./node_modules/ment.io/dist/mentio.js"
   },
   "browserify-shim": {
     "angular": "angular",

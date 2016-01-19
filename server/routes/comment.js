@@ -9,7 +9,7 @@ var async = require('async');
 var io = require('../io');
 var _ = require('lodash');
 var notificationHelper = require('../utils/notificationHelper');
-	
+
 router.post('/', auth.ensureAuthenticated, function (req, res) {
 	Kifu.findOne({
 		_id: req.body._id
@@ -47,7 +47,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							});
 
 							notificationHelper.notifyMentionedUsers(comment);
-	
+
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
 									change: 'new',
@@ -101,15 +101,19 @@ router.get('/', function (req, res) {
 		if (totalComments) {
 			callback();
 		} else {
-			var criteria;
+			var criteria = {};
 
 			if (user) {
 				criteria.user = user;
 			}
 
 			Comment.count(criteria, function (error, count) {
-				totalComments = count;
-				callback();
+				if (error) {
+					console.log('error', error);
+				} else {
+					totalComments = count;
+					callback();
+				}
 			});
 		}
 	}
@@ -163,6 +167,10 @@ router.get('/', function (req, res) {
 							if (offset >= totalComments) {
 								res.json('200', chunkedComments);
 							} else {
+								// Preserve this log to remind that this logic can be the
+								// source of excess CPU usage if logic is not correct for
+								// various exigencies
+								//console.log('getting comments again', offset, totalComments);
 								getComments();
 							}
 						}
@@ -231,12 +239,13 @@ router.get('/', function (req, res) {
 
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments
-	var funcs = [getTotal];
+	var funcs = [];
 
 	if (username) {
 		funcs.push(getUser);
 	}
 
+	funcs.push(getTotal);
 	funcs.push(getComments);
 	async.series(funcs);
 });
@@ -344,6 +353,27 @@ router.patch('/:id/unstar', function (req, res) {
 		});
 });
 
+// This route gets all the comments (ALL OF THEM) and saves them
+// This basically needs to be used a single time to make sure all saved
+// comments have parsed HTML attributes. In the future, all comment saves
+// should create this on their own.
+router.get('/updatemarkdown', function (req, res) {
+	var comments = Comment.find();
+
+	comments
+		.exec(function (error, comments) {
+			if (!error) {
+				comments.forEach(function (comment) {
+					comment.save();
+				});
+				res.json('200', comments);
+			} else {
+				res.json('500', { message: error });
+			}
+		});
+});
+
+
 router.get('/:id', function (req, res) {
 	var id = req.params.id;
 
@@ -429,10 +459,10 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					res.json(550, { message: 'You can\'t edit another user\'s comment.' });
 				} else {
 					comment.content.markdown = markdown;
-					
+
 					comment.save(function (error) {
 						if (!error) {
-							
+
 							notificationHelper.notifyMentionedUsers(comment);
 							res.json(200, {
 								message: 'Comment updated.',

@@ -54,6 +54,9 @@ properties["PL"] = function(kifu, node, value) {
 // Node annotation properties
 properties["C"] = function(kifu, node, value) {
 	node.comment = value.join();
+
+	// Unescape special characters
+	node.comment = node.comment.replace(/\\([\\:\]])/g, '$1');
 }
 
 // Markup properties
@@ -92,10 +95,10 @@ properties["TM"] =  function(kifu, node, value, ident) {
 	node.WL = value[0];
 }
 
-var reg_seq = /\(|\)|(;(\s*[A-Za-z]+\s*((\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\])))+)*)/g;
-var reg_node = /[A-Z]+\s*((\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\])))+/g;
+var reg_seq = /\(|\)|(;(\s*[A-Za-z]+\s*((\[\])|(\[(.|\s)*?(([^\\\]]|\\(.|\n|\r))*\])))+)*)/g;
+var reg_node = /[A-Z]+\s*((\[\])|(\[(.|\s)*?(([^\\\]]|\\(.|\n|\r))*\])))+/g;
 var reg_ident = /[A-Z]+/;
-var reg_props = /(\[\])|(\[(.|\s)*?(([^\\]|[^\\]\\\\)\]))/g;
+var reg_props = /(\[\])|(\[(.|\s)*?(([^\\\]]|\\(.|\n|\r))*\]))/g;
 
 // parse SGF string, return WGo.Kifu object
 WGo.SGF.parse = function(str) {
@@ -134,7 +137,10 @@ WGo.SGF.parse = function(str) {
 				vals = props[j].match(reg_props);
 
 				// remove additional braces [ and ]
-				for(var k in vals) vals[k] = vals[k].substring(1, vals[k].length-1).replace(/\\(?!\\)/g, "");
+				for (var k in vals) {
+					//vals[k] = vals[k].substring(1, vals[k].length-1).replace(/\\(?!\\)/g, "");
+					vals[k] = vals[k].substring(1, vals[k].length-1);
+				}
 
 				// call property handler if any
 				if(WGo.SGF.properties[ident]) WGo.SGF.properties[ident](kifu, node, vals, ident);

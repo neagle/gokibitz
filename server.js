@@ -1,3 +1,6 @@
+// Load the .env file
+require('dotenv').load();
+
 var express = require('express');
 var compression = require('compression');
 var session = require('express-session');
@@ -46,7 +49,11 @@ app.use(session({
 		collection: 'sessions'
 	}),
 	resave: false,
-	saveUninitialized: true
+	saveUninitialized: true,
+	cookie: {
+		// Expire in a year
+		maxAge: 365 * 24 * 60 * 60 * 1000
+	}
 }));
 
 // use passport session

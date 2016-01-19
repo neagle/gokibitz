@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var md5 = require('MD5');
-var Comment = require('./comment').Comment;
 
 var UserSchema = new Schema({
 	email: {
@@ -196,6 +195,8 @@ UserSchema.methods = {
 	 * Get total number of stars given to this user's comments
 	 */
 	getStars: function (callback) {
+		var Comment = mongoose.model('Comment');
+
 		Comment.aggregate({
 			$match: {
 				user: mongoose.Types.ObjectId(this._id),

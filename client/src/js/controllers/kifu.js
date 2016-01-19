@@ -361,7 +361,7 @@ angular.module('gokibitz.controllers')
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf
 		})
-			.success(function () {
+			.success(function (response) {
 				$scope.savingGameComment = false;
 				$scope.editGameComment = false;
 
