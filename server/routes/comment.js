@@ -81,6 +81,7 @@ router.get('/', function (req, res) {
 	var user;
 	var username = req.query.username || '';
 	var since = req.query.since || null;
+	var chunkify;
 
 	// Bundle successive comments by the same user about the same kifu into a
 	// single comment with an array of paths (moves)
@@ -185,7 +186,9 @@ router.get('/', function (req, res) {
 
 	// Turn a flat array of comments into one where comments by the same user
 	// on the same kifu are combined
-	function chunkify(comments) {
+	chunkify = function (comments) {
+		var comment;
+
 		function pathPresent(path) {
 			return path.path === comment.path;
 		}
@@ -200,7 +203,7 @@ router.get('/', function (req, res) {
 			i < length && chunkedComments.length < limit;
 			i += 1
 		) {
-			var comment = comments[i];
+			comment = comments[i];
 
 			// If this comment has the same user and kifu as the last one...
 			if (
@@ -235,7 +238,7 @@ router.get('/', function (req, res) {
 				chunkedComments.push(comment);
 			}
 		}
-	}
+	};
 
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments

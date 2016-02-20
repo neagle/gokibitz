@@ -32,6 +32,8 @@ angular.module('gokibitz.directives')
 		},
 		template: '<div></div><ng-transclude></ng-transclude>',
 		link: function ($scope, element, attributes) {
+			var normalizeCoordinates;
+
 			if (!$scope.src) {
 				return;
 			}
@@ -172,7 +174,7 @@ angular.module('gokibitz.directives')
 
 			// Turn a3 into { x: 2, y: 16 }
 			// TODO: This function obviously belongs some place universal.
-			var normalizeCoordinates = function (move) {
+			normalizeCoordinates = function (move) {
 				var x, y;
 				var numRegExp = /[0-1]?[0-9]/;
 

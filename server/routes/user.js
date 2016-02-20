@@ -87,11 +87,13 @@ router.put('/:username', auth.ensureAuthenticated, function (req, res) {
 
 // Get a user's kifu
 router.get('/:user/kifu', function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = Number(req.query.offset) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var search = req.query.search || '';
+	var findUser;
+	var listKifu;
 
-	function findUser(username) {
+	findUser = function (username) {
 		User.findOne({
 			username: username
 		}, function (error, user) {
@@ -103,9 +105,9 @@ router.get('/:user/kifu', function (req, res) {
 				res.json(404, { message: 'No user with that username found.' });
 			}
 		});
-	}
+	};
 
-	function listKifu(user) {
+	listKifu = function (user) {
 		// Get the total count of kifu
 		var criteria = {
 			owner: user,
@@ -144,7 +146,7 @@ router.get('/:user/kifu', function (req, res) {
 					}
 				});
 		});
-	}
+	};
 
 	findUser(req.params.user);
 });

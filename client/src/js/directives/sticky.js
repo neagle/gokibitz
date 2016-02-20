@@ -10,6 +10,7 @@ angular.module('gokibitz.directives')
 			var $win = angular.element($window);
 			var document = $document[0];
 			var doc = document.documentElement;
+			var scroll;
 
 			// Allocate space for the header and the footer
 			var topSpace = 70;
@@ -44,7 +45,7 @@ angular.module('gokibitz.directives')
 				}
 			}
 
-			function scroll() {
+			scroll = function () {
 				var top = ($window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
 				var totalHeight = top - topSpace;
 
@@ -67,7 +68,7 @@ angular.module('gokibitz.directives')
 					elem[0].style.left = null;
 					elem[0].style.bottom = null;
 				}
-			}
+			};
 
 			$win.on('resize', debounce(20, resize));
 
