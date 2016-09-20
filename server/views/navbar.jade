@@ -92,4 +92,6 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					li
 						a(href='/user/{{ currentUser.username }}') Profile
 					li
+						a(ng-click='passwordModal()') Change Password
+					li
 						a(ng-click='logout()') Log Out

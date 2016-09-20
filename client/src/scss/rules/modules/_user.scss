@@ -45,11 +45,11 @@ p.gravatar-help {
 
 .display {
 //	@extend .debug;
-	@extend .fade-in;
+	@extend .fade-in-fade-out;
 }
 
 .edit {
 //	@extend .debug;
-	@extend .fade-in;
+	@extend .fade-in-fade-out;
 	//foo
 }

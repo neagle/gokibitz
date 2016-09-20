@@ -90,6 +90,41 @@ exports.update = function (req, res, next) {
 	//});
 };
 
+// An admin-only way of changing user passwords
+exports.externalPasswordChange = function (req, res, next) {
+	// res.send(200, 'We are making progress, ' + req.user.admin);
+	if (!req.user.admin) {
+		res.send(403, 'This is an admin-only feature');
+	}
+
+	if (req.params.username) {
+		User.findOne({ username: req.params.username }, function (err, user) {
+			if (err) {
+				return next(new Error('Failed to load User'));
+			}
+			if (user) {
+
+				if (!req.query.newPassword) {
+					res.send(500, 'Please provide a new password')
+				} else {
+					user.password = req.query.newPassword;
+					user.save(function (error) {
+						if (error) {
+							res.json(500, error);
+						} else {
+							res.send(200, 'Password successfully changed');
+						}
+					});
+				}
+			} else {
+				res.send(404, 'USER_NOT_FOUND');
+			}
+		});
+	} else {
+		res.send(500, 'Please provide a username');
+	}
+};
+
 /**
  *  Username exists
  *  returns {exists}

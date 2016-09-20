@@ -19,7 +19,10 @@ var UserSchema = new Schema({
 	hashedPassword: String,
 	salt: String,
 	name: String,
-	admin: Boolean,
+	admin: {
+		type: Boolean,
+		default: false
+	},
 	guest: Boolean,
 	provider: String,
 	realName: String,
@@ -73,7 +76,12 @@ UserSchema
 UserSchema
 	.virtual('userInfo')
 	.get(function () {
-		return { '_id': this._id, 'username': this.username, 'email': this.email, 'admin': this.admin };
+		return {
+			'_id': this._id,
+			'username': this.username,
+			'email': this.email,
+			'admin': this.admin
+		};
 	});
 
 UserSchema

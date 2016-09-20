@@ -47,7 +47,7 @@ angular.module('gokibitz.controllers')
 		});
 	};
 
-	$scope.passwordModal();
+	// $scope.passwordModal();
 
 	$scope.logout = function () {
 		Auth.logout(function (err) {
