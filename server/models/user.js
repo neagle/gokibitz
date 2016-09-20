@@ -18,7 +18,10 @@ var UserSchema = new Schema({
 	hashedPassword: String,
 	salt: String,
 	name: String,
-	admin: Boolean,
+	admin: {
+		type: Boolean,
+		default: false
+	},
 	guest: Boolean,
 	provider: String,
 	realName: String,
@@ -60,6 +63,7 @@ var UserSchema = new Schema({
 UserSchema
 	.virtual('password')
 	.set(function (password) {
+		console.log('setting password');
 		this._password = password;
 		this.salt = this.makeSalt();
 		this.hashedPassword = this.encryptPassword(password);
@@ -71,7 +75,12 @@ UserSchema
 UserSchema
 	.virtual('userInfo')
 	.get(function () {
-		return { '_id': this._id, 'username': this.username, 'email': this.email, 'admin': this.admin };
+		return {
+			'_id': this._id,
+			'username': this.username,
+			'email': this.email,
+			'admin': this.admin
+		};
 	});
 
 UserSchema
@@ -109,6 +118,12 @@ UserSchema.path('email').validate(function (email) {
 }, 'The specified email is invalid.');
 
 UserSchema.path('email').validate(function (value, respond) {
+	console.log('validating email...');
+	console.log('this.isNew', this.isNew);
+	if (!this.isNew) {
+		return respond(true);
+	}
+
 	mongoose.models.User.findOne({ email: value }, function (err, user) {
 		if (err) {
 			throw err;
@@ -128,6 +143,10 @@ UserSchema.path('username').validate(function (username) {
 }, 'Usernames can only be made up of upper and lowercase letters, numbers, hyphens, and underscores.');
 
 UserSchema.path('username').validate(function (value, respond) {
+	if (!this.isNew) {
+		return respond(true);
+	}
+
 	mongoose.models.User.findOne({ username: value }, function (err, user) {
 		if (err) {
 			throw err;
@@ -146,6 +165,7 @@ UserSchema.path('username').validate(function (value, respond) {
  */
 
 UserSchema.pre('save', function (next) {
+	console.log('PRE SAVE');
 	if (!this.isNew) {
 		return next();
 	}

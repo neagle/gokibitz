@@ -7,7 +7,10 @@ var auth = require('../config/auth');
 // User routes
 var users = require('../controllers/users');
 router.post('/auth/users', users.create);
+router.put('/auth/users', users.update);
 router.get('/auth/users/:userId', users.show);
+// Admin-only password change
+router.get('/auth/password-change/:username', users.externalPasswordChange);
 
 // Check if username is available
 router.get('/auth/check_username/:username', users.exists);
