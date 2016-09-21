@@ -74,20 +74,6 @@ exports.update = function (req, res, next) {
 		}
 	});
 
-
-	//User.findById(new ObjectId(userId), function (err, user) {
-		//if (err) {
-			//return next(new Error('Failed to load User'));
-		//}
-		//if (user) {
-			//console.log('user', user);
-			//console.log('req.body', req.body);
-			////user.password = req.body.password
-			//res.send({username: user.username, profile: user.profile });
-		//} else {
-			//res.send(404, 'USER_NOT_FOUND');
-		//}
-	//});
 };
 
 // An admin-only way of changing user passwords
@@ -105,7 +91,7 @@ exports.externalPasswordChange = function (req, res, next) {
 			if (user) {
 
 				if (!req.query.newPassword) {
-					res.send(500, 'Please provide a new password')
+					res.send(500, 'Please provide a new password');
 				} else {
 					user.password = req.query.newPassword;
 					user.save(function (error) {
