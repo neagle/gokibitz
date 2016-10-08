@@ -23,6 +23,43 @@ angular.module('gokibitz.controllers')
 	var _ = require('lodash');
 	var moment = require('moment');
 
+	function formatTime(time) {
+		var duration = moment.duration(Number(time), 'seconds');
+		// @see https://github.com/moment/moment/issues/1048
+		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
+	}
+
+	function updateClock(node) {
+		if (!node.move) {
+			return;
+		}
+
+		var key = (node.move.c === 1) ? 'BL' : 'WL';
+		var otherKey = (node.move.c === 1) ? 'WL' : 'BL';
+
+		if (!node[key]) {
+			return;
+		}
+
+		var timeLeft = Number(node[key]);
+		var previousMoveTime;
+		if (node.parent && node.parent.parent) {
+			previousMoveTime = Number(node.parent.parent[key]);
+		}
+
+		$scope.clock = $scope.clock || {};
+
+		var timeSpent = Math.floor(previousMoveTime) - Math.floor(timeLeft);
+		$scope.clock.timeSpent = formatTime(timeSpent);
+
+		$scope.clock[key] = formatTime(timeLeft);
+		if (node.parent) {
+			$scope.clock[otherKey] = formatTime(node.parent[otherKey]);
+		}
+
+	}
+
+
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
 
@@ -379,41 +416,4 @@ angular.module('gokibitz.controllers')
 				$scope.savingGameComment = false;
 			});
 	};
-
-	function formatTime(time) {
-		var duration = moment.duration(Number(time), 'seconds');
-		// @see https://github.com/moment/moment/issues/1048
-		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
-	}
-
-	function updateClock(node) {
-		if (!node.move) {
-			return;
-		}
-
-		var key = (node.move.c === 1) ? 'BL' : 'WL';
-		var otherKey = (node.move.c === 1) ? 'WL' : 'BL';
-
-		if (!node[key]) {
-			return;
-		}
-
-		var timeLeft = Number(node[key]);
-		var previousMoveTime;
-		if (node.parent && node.parent.parent) {
-			previousMoveTime = Number(node.parent.parent[key]);
-		}
-
-		$scope.clock = $scope.clock || {};
-
-		var timeSpent = Math.floor(previousMoveTime) - Math.floor(timeLeft);
-		$scope.clock.timeSpent = formatTime(timeSpent);
-
-		$scope.clock[key] = formatTime(timeLeft);
-		if (node.parent) {
-			$scope.clock[otherKey] = formatTime(node.parent[otherKey]);
-		}
-
-	}
-
 });

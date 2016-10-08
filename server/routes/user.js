@@ -91,20 +91,6 @@ router.get('/:user/kifu', function (req, res) {
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var search = req.query.search || '';
 
-	function findUser(username) {
-		User.findOne({
-			username: username
-		}, function (error, user) {
-			if (!error && user) {
-				listKifu(user);
-			} else if (error) {
-				res.json(500, { message: 'Error finding user. ' + error });
-			} else {
-				res.json(404, { message: 'No user with that username found.' });
-			}
-		});
-	}
-
 	function listKifu(user) {
 		// Get the total count of kifu
 		var criteria = {
@@ -143,6 +129,20 @@ router.get('/:user/kifu', function (req, res) {
 						res.json(404, { message: 'No kifu found.' });
 					}
 				});
+		});
+	}
+
+	function findUser(username) {
+		User.findOne({
+			username: username
+		}, function (error, user) {
+			if (!error && user) {
+				listKifu(user);
+			} else if (error) {
+				res.json(500, { message: 'Error finding user. ' + error });
+			} else {
+				res.json(404, { message: 'No user with that username found.' });
+			}
 		});
 	}
 

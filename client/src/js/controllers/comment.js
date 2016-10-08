@@ -279,6 +279,33 @@ angular.module('gokibitz.controllers')
 				}
 			});
 
+			// TODO: This function obviously belongs some place universal.
+			function humanCoordinates(move) {
+				// Note the missing i
+				var letters = 'abcdefghjklmnopqrst';
+
+				var x = letters.substring(move.x, move.x + 1).toUpperCase();
+				var y = $scope.player.kifuReader.game.size - move.y;
+				return x + y;
+			}
+
+			function translateMovesToCoordinates(event) {
+				var move;
+				if (event.change.add && event.change.add.length) {
+					move = event.change.add[0];
+
+					if (!$scope.player.gkVariationArr.length) {
+						var str = (move.c === 1) ? 'b' : 'w';
+						str += humanCoordinates(move);
+						$scope.player.gkVariationArr.push(str);
+					} else {
+						$scope.player.gkVariationArr.push(humanCoordinates(move));
+					}
+				} else if (event.change.remove && event.change.remove.length) {
+					$scope.player.gkVariationArr.pop();
+				}
+			}
+
 			// Wait for the player object to become available, since it's not
 			// initialized till domready
 			$scope.$watch('scope.player', function () {
@@ -303,32 +330,6 @@ angular.module('gokibitz.controllers')
 					}
 				});
 			});
-
-			function translateMovesToCoordinates(event) {
-				var move;
-				if (event.change.add && event.change.add.length) {
-					move = event.change.add[0];
-
-					if (!$scope.player.gkVariationArr.length) {
-						var str = (move.c === 1) ? 'b' : 'w';
-						str += humanCoordinates(move);
-						$scope.player.gkVariationArr.push(str);
-					} else {
-						$scope.player.gkVariationArr.push(humanCoordinates(move));
-					}
-				} else if (event.change.remove && event.change.remove.length) {
-					$scope.player.gkVariationArr.pop();
-				}
-			}
-			// TODO: This function obviously belongs some place universal.
-			function humanCoordinates(move) {
-				// Note the missing i
-				var letters = 'abcdefghjklmnopqrst';
-
-				var x = letters.substring(move.x, move.x + 1).toUpperCase();
-				var y = $scope.player.kifuReader.game.size - move.y;
-				return x + y;
-			}
 
 			$scope.variationKeyListener = function (event) {
 				switch (event.keyCode) {

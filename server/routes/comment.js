@@ -144,6 +144,62 @@ router.get('/', function (req, res) {
 			comments = comments.where('user').equals(user._id);
 		}
 
+		// Turn a flat array of comments into one where comments by the same user
+		// on the same kifu are combined
+		var chunkify = function (comments) {
+			var comment;
+
+			function pathPresent(path) {
+				return path.path === comment.path;
+			}
+
+			function pathSorter(a, b) {
+				return a.path - b.path;
+			}
+
+			// For each comment...
+			for (
+				var i = 0, length = comments.length;
+				i < length && chunkedComments.length < limit;
+				i += 1
+			) {
+				comment = comments[i];
+
+				// If this comment has the same user and kifu as the last one...
+				if (
+					lastComment &&
+					lastUser === String(comment.user._id) &&
+					lastKifu === String(comment.kifu._id)
+				) {
+
+					// Don't add multiple notifications for multiple comments on the same move
+					if (lastComment.path !== comment.path) {
+						// If the last comment's path isn't already an array, turn it into one
+						if (!Array.isArray(lastComment.path)) {
+							lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
+						}
+
+						var alreadyPresent = lastComment.path.some(pathPresent);
+
+						if (!alreadyPresent) {
+							// Push the current comment's path to the last object
+							lastComment.path.push({ _id: comment._id, path: comment.path });
+
+							lastComment.path.sort(pathSorter);
+						}
+					}
+
+				} else {
+					// This comment becomes the last comment
+					lastComment = comment;
+					lastUser = String(comment.user._id);
+					lastKifu = String(comment.kifu._id);
+
+					chunkedComments.push(comment);
+				}
+			}
+		};
+
 		comments
 			.populate('user', 'username email gravatar rank')
 			.populate('kifu', 'shortid game public')
@@ -182,61 +238,6 @@ router.get('/', function (req, res) {
 				}
 			});
 	}
-
-	// Turn a flat array of comments into one where comments by the same user
-	// on the same kifu are combined
-	function chunkify(comments) {
-		function pathPresent(path) {
-			return path.path === comment.path;
-		}
-
-		function pathSorter(a, b) {
-			return a.path - b.path;
-		}
-
-		// For each comment...
-		for (
-			var i = 0, length = comments.length;
-			i < length && chunkedComments.length < limit;
-			i += 1
-		) {
-			var comment = comments[i];
-
-			// If this comment has the same user and kifu as the last one...
-			if (
-				lastComment &&
-				lastUser === String(comment.user._id) &&
-				lastKifu === String(comment.kifu._id)
-			) {
-
-				// Don't add multiple notifications for multiple comments on the same move
-				if (lastComment.path !== comment.path) {
-					// If the last comment's path isn't already an array, turn it into one
-					if (!Array.isArray(lastComment.path)) {
-						lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
-					}
-
-					var alreadyPresent = lastComment.path.some(pathPresent);
-
-					if (!alreadyPresent) {
-						// Push the current comment's path to the last object
-						lastComment.path.push({ _id: comment._id, path: comment.path });
-
-						lastComment.path.sort(pathSorter);
-					}
-				}
-
-			} else {
-				// This comment becomes the last comment
-				lastComment = comment;
-				lastUser = String(comment.user._id);
-				lastKifu = String(comment.kifu._id);
-
-				chunkedComments.push(comment);
-			}
-		}
-	}
-
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments
 	var funcs = [];

@@ -63,7 +63,7 @@ var UserSchema = new Schema({
 UserSchema
 	.virtual('password')
 	.set(function (password) {
-		console.log('setting password');
+		// console.log('setting password');
 		this._password = password;
 		this.salt = this.makeSalt();
 		this.hashedPassword = this.encryptPassword(password);
@@ -118,8 +118,8 @@ UserSchema.path('email').validate(function (email) {
 }, 'The specified email is invalid.');
 
 UserSchema.path('email').validate(function (value, respond) {
-	console.log('validating email...');
-	console.log('this.isNew', this.isNew);
+	// console.log('validating email...');
+	// console.log('this.isNew', this.isNew);
 	if (!this.isNew) {
 		return respond(true);
 	}
@@ -165,7 +165,7 @@ UserSchema.path('username').validate(function (value, respond) {
  */
 
 UserSchema.pre('save', function (next) {
-	console.log('PRE SAVE');
+	// console.log('PRE SAVE');
 	if (!this.isNew) {
 		return next();
 	}
