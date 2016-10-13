@@ -15,7 +15,7 @@ var https = require('https');
 var url = require('url');
 
 router.get('/', function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = parseInt(req.query.offset, 10) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var search = req.query.search || '';
 

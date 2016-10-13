@@ -76,7 +76,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 
 // Get a list of comments in reverse cron
 router.get('/', function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = parseInt(req.query.offset, 10) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var user;
 	var username = req.query.username || '';
