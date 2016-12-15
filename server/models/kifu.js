@@ -74,6 +74,10 @@ function getProp(prop, str) {
 /**
  * Game Information
  */
+kifuSchema.virtual('uploadedRelative')
+	.get(function () {
+		return moment(this.uploaded).fromNow();
+	});
 kifuSchema.virtual('game.info.black.name')
 	.get(function () {
 		return getProp('PB', this.game.sgf);
