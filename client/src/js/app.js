@@ -89,7 +89,7 @@ bulk(__dirname, [
 ]);
 
 gokibitz.config(
-	function ($routeProvider, $locationProvider, lockerProvider) {
+	function ($qProvider, $routeProvider, $locationProvider, lockerProvider) {
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/index',
@@ -166,6 +166,9 @@ gokibitz.config(
 			.setDefaultNamespace('gokibitz')
 			.setSeparator('.')
 			.setEventsEnabled('true');
+
+		// @see https://github.com/angular-ui/ui-router/issues/2889
+		$qProvider.errorOnUnhandledRejections(false);
 	}
 );
 
