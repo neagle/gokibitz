@@ -18,9 +18,6 @@ require('./lib/wgo/player.editable.js');
 require('./lib/wgo/scoremode.js');
 require('./lib/wgo/player.permalink.js');
 
-//mentio provides the mention directive
-require('ment.io');
-
 // GoKibitz WGo files
 require('./wgo/gokibitz.wgo.js');
 
@@ -48,8 +45,7 @@ var gokibitz = angular.module('gokibitz', [
 	'btford.socket-io',
 	'cfp.hotkeys',
 	'infinite-scroll',
-	'monospaced.elastic',
-	'mentio'
+	'monospaced.elastic'
 ]);
 
 require('angular-ui-router');

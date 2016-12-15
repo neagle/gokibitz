@@ -364,33 +364,19 @@
 										dynamic='comment.content.html'
 									)
 
-									script#mentio-mentions(type="text/ng-template")
-										ul.list-group.user-search
-											li.list-group-item(
-												mentio-menu-item="user"
-												ng-repeat="user in items"
-											)
-												a.text-primary(
-													ng-bind-html="user.username | mentioHighlight:typedTerm:'menu-highlighted' | unsafe") user.username
-
 								.comment.media-body(ng-hide='!edit')
 									textarea.form-control(
 										msd-elastic='\\n'
 										rows='3'
 										ng-disabled='disableUpdateComment'
 										ng-model='comment.content.markdown'
-										mentio=''
-										mentio-id='comment.id'
-										mentio-template-url="mentio-mentions"
-										mentio-items="users"
-										mentio-search="searchUsers(term)"
-										mentio-require-leading-space="true"
 										gk-comment-box='updateComment(comment), cancelEdit(comment)'
 										gk-comment-submit='updateComment(comment)'
 										gk-comment-cancel='cancelEdit(comment)'
 										gk-comment-preview='preview'
 										gk-comment-oneway
 										gk-focus-me='edit'
+										gk-mention
 									)
 
 									h5(ng-hide='!preview') Preview
@@ -465,17 +451,11 @@
 										msd-elastic='\\n'
 										ng-disabled='disableAddComment || variationMode'
 										ng-model='formData.content'
-
-										mentio=""
-										mentio-template-url="mentio-mentions"
-										mentio-items="users"
-										mentio-search="searchUsers(term)"
-										mentio-require-leading-space="true"
-
 										rows=3
 										gk-comment-box
 										gk-comment-submit='addComment()'
 										gk-comment-preview='preview'
+										gk-mention
 									)
 						.row
 							.col-md-12

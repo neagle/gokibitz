@@ -11,7 +11,7 @@
     "async-replace": "^1.0.0",
     "body-parser": "~1.0.0",
     "compression": "^1.3.0",
-    "connect-mongo": "^0.4.2",
+    "connect-mongo": "^1.3.2",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
     "dotenv": "^1.2.0",
@@ -61,7 +61,7 @@
     "gulp-autoprefixer": "^3.1.1",
     "gulp-concat": "^2.2.0",
     "gulp-debug": "^2.1.2",
-    "gulp-develop-server": "^0.4.2",
+    "gulp-develop-server": "^0.5.2",
     "gulp-imagemin": "^2.1.0",
     "gulp-jscs": "^1.6.0",
     "gulp-jshint": "^1.6.1",
@@ -83,6 +83,7 @@
     "protractor": "^2.0.0",
     "require-dir": "^0.3.0",
     "scsslint": "0.0.3",
+    "textarea-caret": "^3.0.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
@@ -116,8 +117,7 @@
     "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
     "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
     "WGo": "./client/src/js/lib/wgo/wgo.js",
-    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js",
-    "ment.io": "./node_modules/ment.io/dist/mentio.js"
+    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
   },
   "browserify-shim": {
     "angular": "angular",

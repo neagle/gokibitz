@@ -77,28 +77,6 @@ angular.module('gokibitz.directives')
 				});
 			}
 
-			$scope.getUsername = function (user) {
-				return '@' + user.username;
-			};
-
-			$scope.searchUsers = function (term) {
-				// Don't search until we have at least two characters to go on
-				if (term.length < 2) {
-					$scope.users = null;
-					return false;
-				}
-
-				$http.get('api/user/list?search=' + term)
-					.success(function (data) {
-						$scope.users = data.map(function (user) {
-							user.label = user.username;
-							return user;
-						});
-					}).error(function (data, status, headers, config) {
-						console.log('Error searching for users:', data.message);
-					});
-			};
-
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;
