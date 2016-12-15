@@ -47,8 +47,8 @@ angular.module('gokibitz.directives')
 					}, {
 						timeout: canceler.promise
 					})
-						.success(function (data) {
-							$scope[preview] = data.markup;
+						.then(function (response) {
+							$scope[preview] = response.data.markup;
 						});
 				}
 			}

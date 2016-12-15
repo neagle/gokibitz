@@ -82,12 +82,12 @@ angular.module('gokibitz.controllers')
 				$http.post('/api/kifu/upload', {
 					rawSgf: $scope.rawSgf,
 					public: $scope.rawPublic
-				}).success(function (data) {
+				}).then(function (data) {
 					$scope.uploading = false;
 					$scope.rawSuccess = data;
 					// Reset the SGF textarea
 					$scope.rawSgf = '';
-				}).error(function (error) {
+				}, function (error) {
 					$scope.uploading = false;
 					$scope.rawError = error;
 				});
@@ -101,12 +101,12 @@ angular.module('gokibitz.controllers')
 				$http.post('/api/kifu/upload', {
 					url: $scope.sgfUrl,
 					public: $scope.urlPublic
-				}).success(function (data) {
+				}).then(function (data) {
 					$scope.urlSuccess = data;
 					$scope.uploading = false;
 					// Reset the URL input
 					$scope.sgfUrl = '';
-				}).error(function (error) {
+				}, function (error) {
 					$scope.urlError = error;
 					$scope.uploading = false;
 				});

@@ -87,13 +87,11 @@ angular.module('gokibitz.controllers')
 
 			$scope.save = function () {
 				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
-					.success(function (data, status, headers, config) {
-						$scope.user = data.user;
+					.then(function (response) {
+						$scope.user = response.data.user;
 						$scope.edit = false;
-					})
-					.error(function (data, status, headers, config) {
-						$scope.editError = data;
-						console.log('hey');
+					}, function (response) {
+						$scope.editError = response.data;
 					});
 			};
 

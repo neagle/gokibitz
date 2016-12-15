@@ -88,7 +88,8 @@ angular.module('gokibitz.controllers')
 				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
 					timeout: canceler.promise
 				})
-					.success(function (data) {
+					.then(function (response) {
+						var data = response.data;
 
 						if (!alreadyRendered) {
 							//Clear existing comments
@@ -139,8 +140,7 @@ angular.module('gokibitz.controllers')
 							$scope.displayComments = $scope.comments;
 						}
 
-					})
-					.error(function (data) {
+					}, function (data) {
 						$scope.comments = [];
 						console.log('Error: ' + data);
 					});
@@ -187,14 +187,13 @@ angular.module('gokibitz.controllers')
 					$scope.deleteComment(comment);
 				} else {
 					$http.put('/api/comment/' + comment._id, comment)
-						.success(function (data) {
+						.then(function (response) {
 							$scope.disableUpdateComment = false;
-							angular.extend(comment, data.comment);
+							angular.extend(comment, response.data.comment);
 							delete self.edit;
-						})
-						.error(function (data) {
+						}, function (response) {
 							$scope.disableUpdateComment = false;
-							console.log('Error: ' + data);
+							console.log('Error: ' + response);
 						});
 				}
 			};
@@ -202,11 +201,10 @@ angular.module('gokibitz.controllers')
 			$scope.cancelEdit = function (comment) {
 				var self = this;
 				$http.get('/api/comment/' + comment._id)
-					.success(function (data) {
-						angular.extend(comment, data);
+					.then(function (response) {
+						angular.extend(comment, response.data);
 						delete self.edit;
-					})
-					.error(function (data) {
+					}, function (data) {
 						console.log('Error: ' + data);
 					});
 			};
@@ -214,10 +212,9 @@ angular.module('gokibitz.controllers')
 
 			$scope.deleteComment = function (comment) {
 				$http.delete('/api/comment/' + comment._id)
-					.success(function () {
+					.then(function () {
 						$scope.listComments(true);
-					})
-					.error(function (data) {
+					}, function (data) {
 						console.log('Error: ' + data);
 					});
 
@@ -229,20 +226,18 @@ angular.module('gokibitz.controllers')
 
 				if (index === -1) {
 					$http.patch('/api/comment/' + comment._id + '/star')
-						.success(function () {
+						.then(function () {
 							comment.stars.push($scope.currentUser._id);
 							comment.starredByMe = true;
-						})
-						.error(function (data) {
+						}, function (data) {
 							console.log('Error: ' + data);
 						});
 				} else {
 					$http.patch('/api/comment/' + comment._id + '/unstar')
-						.success(function () {
+						.then(function () {
 							comment.stars.splice(index, 1);
 							comment.starredByMe = false;
-						})
-						.error(function (data) {
+						}, function (data) {
 							console.log('Error: ' + data);
 						});
 				}
@@ -267,7 +262,6 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
-				//console.log(+new Date(), 'WATCH');
 				$scope.listComments();
 			}, true);
 

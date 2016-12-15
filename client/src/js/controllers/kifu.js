@@ -274,8 +274,8 @@ angular.module('gokibitz.controllers')
 		var paths = [];
 
 		$http.get('api/kifu/' + $scope.kifu.shortid)
-			.success(function (data) {
-				var comments = data.comments;
+			.then(function (response) {
+				var comments = response.data.comments;
 
 				if (comments) {
 					comments.forEach(function (comment) {
@@ -294,8 +294,8 @@ angular.module('gokibitz.controllers')
 				paths.sort($scope.comparePaths);
 				$scope.uniqComments = paths;
 				updateCommentButtonStatus();
-			}).error(function (data, status, headers, config) {
-				console.log('Error retrieving kifu for new comments:', data.message);
+			}, function (response) {
+				console.log('Error retrieving kifu for new comments:', response.data.message);
 			});
 	};
 
@@ -398,7 +398,7 @@ angular.module('gokibitz.controllers')
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf
 		})
-			.success(function (response) {
+			.then(function (response) {
 				$scope.savingGameComment = false;
 				$scope.editGameComment = false;
 
@@ -410,8 +410,7 @@ angular.module('gokibitz.controllers')
 
 				// Update WGO
 				$scope.player.kifuReader.node.comment = $scope.kifu.nodeComment;
-			})
-			.error(function () {
+			}, function () {
 				$scope.sgfComment = arguments;
 				$scope.savingGameComment = false;
 			});

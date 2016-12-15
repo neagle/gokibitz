@@ -35,7 +35,8 @@ angular.module('gokibitz.controllers')
 			$http.get(url, {
 				params: params
 			})
-				.success(function (data) {
+				.then(function (response) {
+					var data = response.data;
 					$scope.noKifu = false;
 
 					if (!replace) {
@@ -45,9 +46,8 @@ angular.module('gokibitz.controllers')
 					}
 					$scope.total = data.total;
 					//$scope.comments = data.comments;
-				})
-				.error(function (data) {
-					console.log('Error:', data);
+				}, function (response) {
+					console.log('Error:', response);
 					$scope.noKifu = true;
 					if (replace) {
 						$scope.kifu = {};
@@ -77,16 +77,15 @@ angular.module('gokibitz.controllers')
 
 		$scope.deleteKifu = function (kifu) {
 			$http.delete('/api/kifu/' + kifu._id)
-				.success(function (data) {
+				.then(function (response) {
 					for (var i = $scope.kifu.length - 1; i >= 0; i -= 1) {
 						var item = $scope.kifu[i];
 						if (item._id === kifu._id) {
 							$scope.kifu.splice(i, 1);
 						}
 					}
-				})
-				.error(function (data) {
-					console.log('Error:', data);
+				}, function (response) {
+					console.log('Error:', response);
 				});
 
 		};
@@ -107,10 +106,9 @@ angular.module('gokibitz.controllers')
 			$http.put('/api/kifu/' + item.shortid, {
 				public: item.public
 			})
-				.success(function () {
-				})
-				.error(function (data) {
-					console.log('Error:', data);
+				.then(function () {
+				}, function (response) {
+					console.log('Error:', response);
 				});
 
 		};
