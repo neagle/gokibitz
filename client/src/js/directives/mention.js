@@ -10,6 +10,7 @@ angular.module('gokibitz.directives')
 		restrict: 'A',
 		require: '?ngModel',
 		link: function ($scope, element, attributes, ngModel) {
+			var searchUsers, moveSelection;
 			var elementText = '';
 			var lastRegexp = /[^ ,.;'"\[\]\{\}]+$/;
 
@@ -31,11 +32,15 @@ angular.module('gokibitz.directives')
 			$compile(userList)($scope);
 			element.after(userList);
 
-			$scope.$watch('users', function(newValue, oldValue) {
-				if (_.isEmpty(newValue)) {
+			var boundMoveSelection;
+			$scope.$watch('users', function (newValue, oldValue) {
+				if (_.isEmpty(newValue) && boundMoveSelection) {
 					element.unbind('keydown', moveSelection);
-				} else {
-					element.bind('keydown', moveSelection);
+					boundMoveSelection = null;
+				}
+
+				if (!_.isEmpty(newValue) && !boundMoveSelection) {
+					boundMoveSelection = element.bind('keydown', moveSelection);
 				}
 			});
 
@@ -82,8 +87,7 @@ angular.module('gokibitz.directives')
 				};
 				var coordinates = getCaretCoordinates(element[0], cursor);
 
-				elementStyle = $window.getComputedStyle(element[0]);
-				listStyle = $window.getComputedStyle(userList[0]);
+				var elementStyle = $window.getComputedStyle(element[0]);
 
 				var lineHeight = parseInt(elementStyle.lineHeight, 10);
 				var elementWidth = element[0].clientWidth;
@@ -112,7 +116,7 @@ angular.module('gokibitz.directives')
 				}
 			}
 
-			function searchUsers() {
+			searchUsers = function () {
 				// Don't search until we have at least two characters to go on
 				if ($scope.searchText.length < 2) {
 					$scope.users = [];
@@ -120,8 +124,8 @@ angular.module('gokibitz.directives')
 				}
 
 				$http.get('api/user/list?search=' + $scope.searchText)
-					.success(function (data) {
-						$scope.users = data.map(function (user) {
+					.then(function (response) {
+						$scope.users = response.data.map(function (user) {
 							user.label = user.username;
 							return user;
 						});
@@ -136,9 +140,10 @@ angular.module('gokibitz.directives')
 
 						$scope.selected = 0;
 						positionList();
-					}).error(function (data, status, headers, config) {
-				});
-			}
+					}, function (response) {
+						console.log('Error:', response);
+					});
+			};
 
 			var selectUser = $scope.selectUser = function (user, extra) {
 				extra = typeof extra === 'undefined' ? '' : extra;
@@ -162,7 +167,7 @@ angular.module('gokibitz.directives')
 				}
 			};
 
-			function moveSelection(event) {
+			moveSelection = function (event) {
 				if (!_.isEmpty($scope.users)) {
 					var up = (event.which === 38);
 					var down = (event.which === 40);
@@ -171,16 +176,12 @@ angular.module('gokibitz.directives')
 
 					if (up) {
 						event.preventDefault();
-						$scope.selected = ($scope.selected === 0)
-							? $scope.users.length - 1
-							: $scope.selected - 1;
+						$scope.selected = ($scope.selected === 0) ? $scope.users.length - 1 : $scope.selected - 1;
 						$scope.$apply();
 					}
 					if (down) {
 						event.preventDefault();
-						$scope.selected = ($scope.selected === $scope.users.length - 1)
-							? 0
-							: $scope.selected + 1;
+						$scope.selected = ($scope.selected === $scope.users.length - 1) ? 0 : $scope.selected + 1;
 						$scope.$apply();
 					}
 
@@ -193,7 +194,7 @@ angular.module('gokibitz.directives')
 						selectUser($scope.users[$scope.selected], '');
 					}
 				}
-			}
+			};
 
 			element.bind('keyup', _.throttle(keyup, 100));
 		}
