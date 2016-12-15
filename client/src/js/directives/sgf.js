@@ -126,7 +126,9 @@ angular.module('gokibitz.directives')
 				rememberPath: false,
 				enableKeys: false,
 				update: function (event) {
-					$scope.update({ event: event });
+					if (typeof $scope.update === 'function') {
+						$scope.update({ event: event });
+					}
 				}
 			});
 
