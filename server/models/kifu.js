@@ -182,7 +182,7 @@ kifuSchema.virtual('game.info.date')
 				date[i] = year + '-' + month + '-' + date[i];
 			}
 
-			date[i] = moment(date[i]).format('MMMM Do, YYYY');
+			date[i] = moment(date[i], 'YYYY-MM-DD').format('MMMM Do, YYYY');
 		}
 
 		if (date.length <=  2) {
