@@ -76,7 +76,7 @@
 													count='item.comments.length'
 													when='{ "one": "Comment", "other": "Comments" }'
 												)
-									p(ng-if='item.game.info.date && item.game.info.date !== "Invalid Date"') Played on
+									p(ng-if='item.game.info.date && item.game.info.date !== "Invalid date"') Played on
 										= ' '
 										time(
 											datetime='{{ item.game.info.date }}'
