@@ -9,12 +9,8 @@ angular.module('gokibitz.directives')
 					ngModel.$setValidity('unique', true);
 					return;
 				}
-				$http.get('/auth/check_username/' + value).success(function (user) {
-					if (!user.exists) {
-						ngModel.$setValidity('unique', true);
-					} else {
-						ngModel.$setValidity('unique', false);
-					}
+				$http.get('/auth/check_username/' + value).then(function (user) {
+					ngModel.$setValidity('unique', !user.exists);
 				});
 			}
 
