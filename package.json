@@ -48,11 +48,9 @@
     "angular-socket-io": "^0.7.0",
     "angular-touch": "^1.3.8",
     "angular-ui-router": "^0.3.2",
-    "browserify": "^8.0.3",
-    "browserify-ngannotate": "^0.6.0",
-    "browserify-shim": "^3.8.2",
-    "bulk-require": "^0.2.0",
-    "bulkify": "^1.0.1",
+    "browserify": "^13.1.1",
+    "browserify-ngannotate": "^2.0.0",
+    "browserify-shim": "^3.8.12",
     "chai": "^2.1.2",
     "chai-as-promised": "^4.3.0",
     "chalk": "^0.5.1",
@@ -81,19 +79,19 @@
     "node-bourbon": "^4.2.8",
     "pretty-hrtime": "^1.0.0",
     "protractor": "^2.0.0",
-    "require-dir": "^0.3.0",
+    "require-globify": "^1.4.1",
     "scsslint": "0.0.3",
     "textarea-caret": "^3.0.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "vinyl-transform": "^1.0.0",
-    "watchify": "^3.7.0"
+    "watchify": "^3.8.0"
   },
   "browserify": {
     "transform": [
       "browserify-shim",
-      "bulkify",
-      "browserify-ngannotate"
+      "browserify-ngannotate",
+      "require-globify"
     ]
   },
   "browser": {

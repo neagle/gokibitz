@@ -1,6 +1,3 @@
-// TODO: Look at replacing this with requiredir. On the surface, requiredir
-// seems more straightforward.
-var bulk = require('bulk-require');
 var angular = require('angular');
 
 // WGo
@@ -81,12 +78,10 @@ angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);
 angular.module('gokibitz.services', []);
 angular.module('gokibitz.filters', []);
-bulk(__dirname, [
-	'./controllers/**/*.js',
-	'./directives/**/*.js',
-	'./services/**/*.js',
-	'./filters/**/*.js'
-]);
+require('./controllers/*.js', { mode: 'expand' });
+require('./directives/*.js', { mode: 'expand' });
+require('./services/*.js', { mode: 'expand' });
+require('./filters/*.js', { mode: 'expand' });
 
 gokibitz.config(
 	function ($qProvider, $routeProvider, $locationProvider, lockerProvider) {
