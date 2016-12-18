@@ -64,7 +64,7 @@
     "gulp-debug": "^2.1.2",
     "gulp-develop-server": "^0.5.2",
     "gulp-imagemin": "^2.1.0",
-    "gulp-jscs": "^1.6.0",
+    "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^1.6.1",
     "gulp-livereload": "^1.5.0",
     "gulp-newer": "^0.3.0",
