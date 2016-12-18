@@ -14,7 +14,7 @@ var requireDir = require('require-dir');
 
 // Require all tasks in gulp/tasks, including subfolders
 // Eventually, all tasks in this file should be moved to individual task files
- requireDir('./gulp/tasks', { recurse: true });
+requireDir('./gulp/tasks', { recurse: true });
 
 gulp.task('bootstrap-assets', function () {
 	return gulp.src('./client/src/bower_components/bootstrap-sass-official/vendor/assets/fonts/**')
