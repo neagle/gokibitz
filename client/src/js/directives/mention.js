@@ -16,18 +16,18 @@ angular.module('gokibitz.directives')
 
 			var userList = angular.element('<div class="mention-user-list" />');
 			userList.append(
-					'<div class="media" ng-class="{ selected: selected === $index }" ' +
-						'ng-repeat="user in users track by user._id" ' +
-						'ng-click="selectUser(user)">' +
-					'<div class="media-left">' +
-						'<img class="media-object" ng-src="{{:: user.gravatar }}?s=24&d=retro">' +
-					'</div>' +
-					'<div class="media-body">' +
-						'<h4 class="media-heading">' +
-							'<span class="name">{{ user.username }}</span>' +
-							'<span class="rank">{{ user.rank }}</span>' +
-						'</h4>' +
-					'</div>'
+				`<div class="media" ng-class="{ selected: selected === $index }" 
+					ng-repeat="user in users track by user._id" 
+					ng-click="selectUser(user)">
+				<div class="media-left">
+					<img class="media-object" ng-src="{{:: user.gravatar }}?s=24&d=retro">
+				</div>
+				<div class="media-body">
+					<h4 class="media-heading">
+						<span class="name">{{ user.username }}</span>
+						<span class="rank">{{ user.rank }}</span>
+					</h4>
+				</div>`
 			);
 			$compile(userList)($scope);
 			element.after(userList);
