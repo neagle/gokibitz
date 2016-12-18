@@ -48,6 +48,7 @@
 	"passfail": false,
 	"white": true,
 	"node": true,
+	"esversion": 6,
 	"globals": {
 		"angular": true
 	}

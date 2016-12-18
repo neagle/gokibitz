@@ -1,5 +1,5 @@
-var _ = require('lodash');
-var getCaretCoordinates = require('textarea-caret');
+import _ from 'lodash';
+import getCaretCoordinates from 'textarea-caret';
 
 angular.module('gokibitz.directives')
 /**

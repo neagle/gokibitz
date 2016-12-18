@@ -30,7 +30,8 @@ var browserifyTask = function(callback, devMode) {
 			bundleConfig = _.omit(bundleConfig, ['external', 'require']);
 		}
 
-		var b = browserify(bundleConfig);
+		var b = browserify(bundleConfig)
+			.transform('babelify', { presets: 'es2015'});
 
 		var bundle = function() {
 			// Log when bundling starts
