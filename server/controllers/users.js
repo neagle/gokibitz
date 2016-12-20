@@ -61,13 +61,13 @@ exports.update = function (req, res, next) {
 				user.password = req.body.newPassword;
 				user.save(function (error) {
 					if (error) {
-						res.json(500, error);
+						res.send(500, error);
 					} else {
 						res.send(200, 'Password successfully changed');
 					}
 				});
 			} else {
-				res.json(500, 'Old password is not correct');
+				res.send(500, 'Old password is not correct');
 			}
 		} else {
 			res.send(404, 'USER_NOT_FOUND');
@@ -96,7 +96,7 @@ exports.externalPasswordChange = function (req, res, next) {
 					user.password = req.query.newPassword;
 					user.save(function (error) {
 						if (error) {
-							res.json(500, error);
+							res.send(500, error);
 						} else {
 							res.send(200, 'Password successfully changed');
 						}
@@ -109,6 +109,64 @@ exports.externalPasswordChange = function (req, res, next) {
 	} else {
 		res.send(500, 'Please provide a username');
 	}
+};
+
+exports.requestPasswordReset = function (req, res, next) {
+	User.findOne({ username: req.params.username })
+		.exec(function (err, user) {
+			if (err) {
+				res.send(500, err);
+			} else {
+				if (user) {
+					user.resetPassword();
+					user.save(function (error) {
+						if (error) {
+							res.send(500, error);
+						} else {
+							res.send(200, 'Reset password token set. It expires in 24 hours.');
+						}
+					});
+				} else {
+					res.send(404, 'USER_NOT_FOUND');
+				}
+			}
+		});
+};
+
+exports.resetPassword = function (req, res, next) {
+	User.findOne({ username: req.params.username })
+		.exec(function (err, user) {
+			if (err) {
+				res.send(500, err);
+			} else {
+				if (user) {
+					if (req.body.token === user.reset.token) {
+						if (Date.now() < +new Date(user.reset.expires)) {
+							if (req.body.newPassword) {
+								user.password = req.body.newPassword;
+								user.reset.token = null;
+								user.reset.expires = null;
+								user.save(function (error) {
+									if (error) {
+										res.send(500, error);
+									} else {
+										res.send(200, 'Password successfully changed');
+									}
+								});
+							} else {
+								res.send(500, 'Please provide a new password');
+							}
+						} else {
+							res.send(500, 'Reset token has expired');
+						}
+					} else {
+						res.send(500, 'Invalid token');
+					}
+				} else {
+					res.send(404, 'USER_NOT_FOUND');
+				}
+			}
+		});
 };
 
 /**
