@@ -4,6 +4,9 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 //var passport = require('passport');
 var ObjectId = mongoose.Types.ObjectId;
+var nodemailer = require('nodemailer');
+var sesCredentials = require('../../.amazon-ses');
+var transporter = nodemailer.createTransport(Object.assign({}, { transport: 'ses' }, sesCredentials));
 
 /**
  * Create user
@@ -112,7 +115,7 @@ exports.externalPasswordChange = function (req, res, next) {
 };
 
 exports.requestPasswordReset = function (req, res, next) {
-	User.findOne({ username: req.params.username })
+	User.findOne({ email: req.params.email })
 		.exec(function (err, user) {
 			if (err) {
 				res.send(500, err);
@@ -123,11 +126,24 @@ exports.requestPasswordReset = function (req, res, next) {
 						if (error) {
 							res.send(500, error);
 						} else {
+							transporter.sendMail({
+								from: 'GoKibitz <admin@gokibitz.com>',
+								to: req.params.email,
+								subject: 'GoKibitz password reset link',
+								text: `Hey! I heard you need to reset your password.
+
+http://gokibitz.com/reset-password/${user.username}/${user.reset.token}
+
+The link will be valid for 24 hours.`
+							}, (err, info) => {
+								// Keep around for debugging email sending
+								//console.log('err, info', err, info);
+							});
 							res.send(200, 'Reset password token set. It expires in 24 hours.');
 						}
 					});
 				} else {
-					res.send(404, 'USER_NOT_FOUND');
+					res.send(404, 'Hmm: there doesn\'t seem to be a user with that email address.');
 				}
 			}
 		});
@@ -150,17 +166,17 @@ exports.resetPassword = function (req, res, next) {
 									if (error) {
 										res.send(500, error);
 									} else {
-										res.send(200, 'Password successfully changed');
+										res.send(200, 'Password successfully changed.');
 									}
 								});
 							} else {
-								res.send(500, 'Please provide a new password');
+								res.send(500, 'Please provide a new password.');
 							}
 						} else {
-							res.send(500, 'Reset token has expired');
+							res.send(500, 'Reset token has expired.');
 						}
 					} else {
-						res.send(500, 'Invalid token');
+						res.send(500, 'Invalid reset token.');
 					}
 				} else {
 					res.send(404, 'USER_NOT_FOUND');

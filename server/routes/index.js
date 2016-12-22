@@ -13,7 +13,10 @@ router.get('/auth/users/:userId', users.show);
 router.get('/auth/password-change/:username', users.externalPasswordChange);
 
 // Reset password
-router.get('/auth/reset-password/:username', users.requestPasswordReset);
+
+// This schizophrenia regarding whether to use email or username shows my
+// inconsistent thinking in implementing my first-ever password reset.
+router.get('/auth/reset-password/:email', users.requestPasswordReset);
 router.post('/auth/reset-password/:username', users.resetPassword);
 
 // Check if username is available
