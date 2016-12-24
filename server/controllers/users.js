@@ -121,6 +121,16 @@ exports.requestPasswordReset = function (req, res, next) {
 				res.send(500, err);
 			} else {
 				if (user) {
+					if (user.reset.token && user.reset.expires) {
+
+						// Don't allow password resets more frequently than once per hour
+						if (+new Date() < +new Date(user.reset.expires - (60 * 60 * 23 * 1000))) {
+							res.send(500, `A password reset was requested for ${req.params.email}
+ less than an hour ago. Try checking your spam filter for an email from
+  admin@gokibitz.com, with the subject "GoKibitz password reset link."`);
+						}
+					}
+
 					user.resetPassword();
 					user.save(function (error) {
 						if (error) {
@@ -130,7 +140,7 @@ exports.requestPasswordReset = function (req, res, next) {
 								from: 'GoKibitz <admin@gokibitz.com>',
 								to: req.params.email,
 								subject: 'GoKibitz password reset link',
-								text: `Hey! I heard you need to reset your password.
+								text: `Hey there! I heard you need to reset your password.
 
 http://gokibitz.com/reset-password/${user.username}/${user.reset.token}
 
