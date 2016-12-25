@@ -100,6 +100,20 @@ gokibitz.config(
 					//}
 				}
 			})
+			.when('/login', {
+				templateUrl: '/partials/index',
+				controller: 'IndexWithModalController',
+				resolve: {
+					modal: () => 'login'
+				}
+			})
+			.when('/reset-password/:username/:token', {
+				templateUrl: '/partials/index',
+				controller: 'IndexWithModalController',
+				resolve: {
+					modal: () => 'resetPassword'
+				}
+			})
 			.when('/notifications', {
 				templateUrl: '/partials/notifications',
 				controller: 'NotificationsController'
@@ -202,7 +216,7 @@ gokibitz.run(
 
 			if (
 				!currentUser &&
-				!~['/', '/login', '/logout', '/signup', '/kifu', '/user'].indexOf(path)
+				!~['/', '/login', '/logout', '/reset-password', '/signup', '/kifu', '/user'].indexOf(path)
 			) {
 				Auth.currentUser();
 			}

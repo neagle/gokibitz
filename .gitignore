@@ -45,3 +45,6 @@ ssl/
 .idea/
 
 err.out
+
+# Credentials
+.amazon-ses.js

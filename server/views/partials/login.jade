@@ -37,12 +37,13 @@
 					mongoose-error
 				)
 
-		.form-group
-			.col-sm-offset-4.col-sm-8
-
 		.form-group.has-error(ng-show='form.password.$error.mongoose')
 			.col-sm-offset-4.col-sm-8
 				p.help-block {{ error.other }}
+
+		.row
+			.col-sm-offset-4.col-sm-8
+				p.help-block: a(ng-click='forgotPassword()') Forgot your password?
 
 		//-p Don't have an account, yet?
 			//-= ' '

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var md5 = require('MD5');
+var base64url = require('base64url');
 
 var UserSchema = new Schema({
 	email: {
@@ -16,6 +17,10 @@ var UserSchema = new Schema({
 		required: true
 	},
 	hashedPassword: String,
+	reset: {
+		token: String,
+		expires: Date
+	},
 	salt: String,
 	name: String,
 	admin: {
@@ -209,6 +214,14 @@ UserSchema.methods = {
 		}
 		var salt = new Buffer(this.salt, 'base64');
 		return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+	},
+
+	resetPassword: function () {
+		// request password reset
+
+		this.reset.token = base64url(crypto.randomBytes(20));
+		const tomorrow = +new Date() + (60 * 60 * 24 * 1000);
+		this.reset.expires = tomorrow;
 	},
 
 	/**

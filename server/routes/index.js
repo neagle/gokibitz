@@ -12,7 +12,15 @@ router.get('/auth/users/:userId', users.show);
 // Admin-only password change
 router.get('/auth/password-change/:username', users.externalPasswordChange);
 
+// Reset password
+
+// This schizophrenia regarding whether to use email or username shows my
+// inconsistent thinking in implementing my first-ever password reset.
+router.get('/auth/reset-password/:email', users.requestPasswordReset);
+router.post('/auth/reset-password/:username', users.resetPassword);
+
 // Check if username is available
+// TODO: change underscore, bleah
 router.get('/auth/check_username/:username', users.exists);
 
 // Session Routes
