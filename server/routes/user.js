@@ -35,6 +35,7 @@ router.get('/list', auth.ensureAuthenticated, function (req, res) {
 		});
 });
 
+
 // Get a user
 router.get('/:username', function (req, res) {
 	User.findOne({ username: req.params.username })

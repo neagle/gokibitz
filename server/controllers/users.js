@@ -4,6 +4,9 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 //var passport = require('passport');
 var ObjectId = mongoose.Types.ObjectId;
+var nodemailer = require('nodemailer');
+var sesCredentials = require('../../.amazon-ses');
+var transporter = nodemailer.createTransport(Object.assign({}, { transport: 'ses' }, sesCredentials));
 
 /**
  * Create user
@@ -61,13 +64,13 @@ exports.update = function (req, res, next) {
 				user.password = req.body.newPassword;
 				user.save(function (error) {
 					if (error) {
-						res.json(500, error);
+						res.send(500, error);
 					} else {
 						res.send(200, 'Password successfully changed');
 					}
 				});
 			} else {
-				res.json(500, 'Old password is not correct');
+				res.send(500, 'Old password is not correct');
 			}
 		} else {
 			res.send(404, 'USER_NOT_FOUND');
@@ -96,7 +99,7 @@ exports.externalPasswordChange = function (req, res, next) {
 					user.password = req.query.newPassword;
 					user.save(function (error) {
 						if (error) {
-							res.json(500, error);
+							res.send(500, error);
 						} else {
 							res.send(200, 'Password successfully changed');
 						}
@@ -109,6 +112,87 @@ exports.externalPasswordChange = function (req, res, next) {
 	} else {
 		res.send(500, 'Please provide a username');
 	}
+};
+
+exports.requestPasswordReset = function (req, res, next) {
+	User.findOne({ email: req.params.email })
+		.exec(function (err, user) {
+			if (err) {
+				res.send(500, err);
+			} else {
+				if (user) {
+					if (user.reset.token && user.reset.expires) {
+
+						// Don't allow password resets more frequently than once per hour
+						if (+new Date() < +new Date(user.reset.expires - (60 * 60 * 23 * 1000))) {
+							res.send(500, `A password reset was requested for ${req.params.email}
+ less than an hour ago. Try checking your spam filter for an email from
+  admin@gokibitz.com, with the subject "GoKibitz password reset link."`);
+						}
+					}
+
+					user.resetPassword();
+					user.save(function (error) {
+						if (error) {
+							res.send(500, error);
+						} else {
+							transporter.sendMail({
+								from: 'GoKibitz <admin@gokibitz.com>',
+								to: req.params.email,
+								subject: 'GoKibitz password reset link',
+								text: `Hey there! I heard you need to reset your password.
+
+http://gokibitz.com/reset-password/${user.username}/${user.reset.token}
+
+The link will be valid for 24 hours.`
+							}, (err, info) => {
+								// Keep around for debugging email sending
+								//console.log('err, info', err, info);
+							});
+							res.send(200, 'Reset password token set. It expires in 24 hours.');
+						}
+					});
+				} else {
+					res.send(404, 'Hmm: there doesn\'t seem to be a user with that email address.');
+				}
+			}
+		});
+};
+
+exports.resetPassword = function (req, res, next) {
+	User.findOne({ username: req.params.username })
+		.exec(function (err, user) {
+			if (err) {
+				res.send(500, err);
+			} else {
+				if (user) {
+					if (req.body.token === user.reset.token) {
+						if (Date.now() < +new Date(user.reset.expires)) {
+							if (req.body.newPassword) {
+								user.password = req.body.newPassword;
+								user.reset.token = null;
+								user.reset.expires = null;
+								user.save(function (error) {
+									if (error) {
+										res.send(500, error);
+									} else {
+										res.send(200, 'Password successfully changed.');
+									}
+								});
+							} else {
+								res.send(500, 'Please provide a new password.');
+							}
+						} else {
+							res.send(500, 'Reset token has expired.');
+						}
+					} else {
+						res.send(500, 'Invalid reset token.');
+					}
+				} else {
+					res.send(404, 'USER_NOT_FOUND');
+				}
+			}
+		});
 };
 
 /**

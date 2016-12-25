@@ -1,5 +1,5 @@
 angular.module('gokibitz.controllers')
-	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location, locker) {
+	.controller('LoginController', function ($rootScope, $scope, $modalInstance, Auth, $location, locker, LoginSignup) {
 		$scope.error = {};
 		$scope.user = {
 			email: locker.get('email') || ''
@@ -25,6 +25,11 @@ angular.module('gokibitz.controllers')
 				}
 			});
 
+		};
+
+		$scope.forgotPassword = function () {
+			$modalInstance.dismiss('cancel');
+			LoginSignup.forgotPasswordModal();
 		};
 
 		$scope.cancel = function (callback) {
