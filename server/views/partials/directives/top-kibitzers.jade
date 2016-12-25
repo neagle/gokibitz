@@ -1,0 +1,29 @@
+div.panel.panel-default
+	div.panel-heading
+		span.fui-star-2
+		= ' '
+		| Top Kibitzers
+	div.panel-body
+		p(ng-if='!topKibitzers.length') &hellip;
+		ul.media-list
+			li.media.fade-in-fade-out(
+				ng-repeat='top in topKibitzers track by top._id'
+			)
+				a.media-left(
+					href='/user/{{ top.user.username }}'
+					target='{{ $rootScope-iframed ? "_blank" : "_self" }}'
+				)
+					img.media-object(
+						ng-src='{{:: top.user.gravatar }}?s=24&d=retro'
+						style='width: 24px; height: 24px'
+					)
+				.media-body
+					p.media-heading.compact
+						a(
+							href='/user/{{ top.user.username }}'
+						) {{ top.user.username }}
+							= ' '
+							span.rank(ng-if='user.rank') [{{ top.user.rank }}]
+
+						span.stars {{ top.stars }}
+

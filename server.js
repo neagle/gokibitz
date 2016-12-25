@@ -67,6 +67,7 @@ var comment = require('./server/routes/comment');
 var markdown = require('./server/routes/markdown');
 var notification = require('./server/routes/notification');
 var settings = require('./server/routes/settings');
+var list = require('./server/routes/list');
 
 app.use('/', routes);
 app.use('/api/user/', user);
@@ -75,6 +76,7 @@ app.use('/api/comment/', comment);
 app.use('/api/markdown/', markdown);
 app.use('/api/notification/', notification);
 app.use('/api/settings/', settings);
+app.use('/api/list/', list);
 app.use('*', routes);
 
 // catch 404 and forward to error handler
