@@ -126,6 +126,10 @@ gokibitz.config(
 				templateUrl: '/partials/upload',
 				controller: 'UploadController'
 			})
+			.when('/top-users', {
+				templateUrl: '/partials/top-users',
+				controller: 'TopUsersController'
+			})
 			.when('/kifu', {
 				templateUrl: '/partials/list-kifu',
 				controller: 'ListKifuController',

@@ -20,6 +20,11 @@ angular.module('gokibitz.controllers')
 			'link': 'kifu'
 		});
 
+		$scope.menu.push({
+			'title': 'Top Users',
+			'link': 'top-users'
+		});
+
 		$scope.authMenu.push({
 			'title': 'Upload',
 			'link': 'upload'
