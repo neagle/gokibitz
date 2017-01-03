@@ -13,6 +13,7 @@ var _ = require('lodash');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var drawGame = require('../utils/drawGame');
 
 router.get('/', function (req, res) {
 	var offset = parseInt(req.query.offset, 10) || 0;
@@ -97,6 +98,24 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 				res.json(404, { message: 'Could not find kifu.' });
 			} else {
 				res.json(403, { messgae: 'Could not delete comment. ' + error });
+			}
+		});
+});
+
+router.get('/image/:shortid', function (req, res) {
+	Kifu
+		.findOne({
+			shortid: req.params.shortid
+		})
+		.exec(function (error, kifu) {
+			if (!error && kifu) {
+				res.setHeader('Content-Type', 'image/png');
+				drawGame(kifu).pngStream().pipe(res);
+				//res.json(200, kifu);
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that shortid.' });
 			}
 		});
 });
