@@ -86,7 +86,9 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.save = function () {
-				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
+				let profile = $scope.profile;
+
+				$http.put('/api/user/' + $scope.user.username, profile)
 					.then(function (response) {
 						$scope.user = response.data.user;
 						$scope.edit = false;
