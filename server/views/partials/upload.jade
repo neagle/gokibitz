@@ -18,7 +18,7 @@
 
 						p Upload <abbr title="SmartGame Format">SGFs</abbr> for viewing on GoKibitz. They can be your games or others&rsquo;, but please be aware that games with commentary are generally copyrighted. Please don&rsquo;t upload them without the owner&rsquo;s permission.
 
-						p Please don&rsquo;t upload records for games that are in progress, as comments could influence and aid future moves.
+						p Please don&rsquo;t upload records for games that are still being played, as comments could influence and aid future moves.
 
 						hr
 
@@ -30,9 +30,17 @@
 						)
 
 						p.help-block You can also drag and drop SGF files here directly.
+
+			.panel.panel-default
+				.panel-heading Public / Private
+				.panel-body
+					p Games marked <b>public</b> are available for other users to find on GoKibitz. Games posted publically are considered to invite general comments from the rest of the community, though you can also clarify your intent as a comment on the first move of your game. A maximum of one game marked public will be shown in the <a href="/kifu">list of public kifu</a> per day. Comments on any public games will be shown in the recent comments list.
+					p Games marked <b>private</b> will only be visible in your personal list, and to anyone to whom you give the URL. Comments on private games will not be shown in the recent comments list.
 		.col-md-8
 			.row
 				.col-xs-12
+
+
 					.panel.panel-default
 						.panel-heading Upload Queue
 						.panel-body(
@@ -114,8 +122,6 @@
 							div(ng-show='notAnSgf')
 								p.text-danger Sorry! <code>{{ notAnSgf.name }}</code> doesn&rsquo;t appear to be an SGF file.
 
-							div(ng-show='uploader.queue.length')
-								p.help-block You can opt out of making your kifu public. Anyone can still view it and make comments if they have the URL, but neither it nor any comments made on it will show up elsewhere on the site.
 							//div
 								p Queue progress:
 									.progress

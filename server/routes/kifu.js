@@ -13,51 +13,106 @@ var _ = require('lodash');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var async = require('async');
 
 router.get('/', function (req, res) {
-	var offset = parseInt(req.query.offset, 10) || 0;
-	var limit = Math.min(req.query.limit, 100) || 20;
-	var search = req.query.search || '';
+	const offset = parseInt(req.query.offset, 10) || 0;
+	const limit = Math.min(req.query.limit, 100) || 20;
+	const search = req.query.search || '';
 
-	var criteria = {
+	let curated = req.query.curated;
+	if (typeof req.query.curated === 'undefined') {
+		if (!search) {
+			curated = true;
+		} else {
+			curated = false;
+		}
+	}
+
+	let aggregationPipeline = [];
+
+	// Basic criteria for a public search
+	let match = {
 		public: true,
 		deleted: false
 	};
 
+	// Add an optional text search of the SGF
 	if (search) {
-		search = new RegExp(search, 'gi');
-		criteria['game.sgf'] = search;
+		match['game.sgf'] = new RegExp(search, 'gi');
 	}
 
-	// Get the total count of kifu
-	Kifu.count(criteria, function (error, count) {
-		var kifuList = Kifu
-      .where('public').equals(true)
-      .where('deleted').equals(false);
+	aggregationPipeline.push({ $match: match });
 
-		if (search) {
-			kifuList = kifuList
-				.where('game.sgf').equals(search);
+	// If a user has uploaded more than one public game on a given day,
+	// only show the most recent one
+	if (curated) {
+		aggregationPipeline.push({
+			$group: {
+				_id: {
+					uploadedDay: {
+						$dayOfYear: '$uploaded'
+					},
+					uploadedYear: {
+						$year: '$uploaded'
+					},
+					owner: '$owner'
+				},
+				uploaded: { $last: '$uploaded' },
+				game: { $last: '$_id' },
+			}
+		});
+	} else {
+		// The only purpose of grouping other queries is so that they
+		// can be unspooled the same way our grouped query does
+		aggregationPipeline.push({
+			$group: {
+				_id: '$_id',
+				uploaded: { $last: '$uploaded' },
+				game: { $last: '$_id' },
+			}
+		});
+	}
+
+	aggregationPipeline.push({
+		// Sort by reverse cron
+		$sort: {
+			'uploaded': -1
 		}
+	});
 
-		kifuList
-			.sort({ uploaded: -1 })
-			.skip(offset)
-			.limit(limit)
-			.populate('owner', 'username')
-			.exec(function (error, kifu) {
-				if (!error && kifu.length) {
-					res.json(200, {
-						kifu: kifu,
-						total: count
-					});
-				} else if (error) {
-					res.json(500, { message: 'Error loading kifu. ' + error });
+	aggregationPipeline.push({
+		$skip: offset
+	});
+
+	aggregationPipeline.push({
+		$limit: limit
+	});
+
+	Kifu.aggregate(
+		...aggregationPipeline,
+		function (error, results) {
+			async.waterfall([
+				function (callback) {
+					Kifu.populate(results, { path: 'game' }, callback);
+				},
+				function (results, callback) {
+					results = results.map(result => result.game);
+
+					User.populate(results, { path: 'owner', select: 'username' }, callback);
+				}
+			], function (error, results) {
+				if (error) {
+					res.status(500).json({ message: 'Error loading kifu. ' + error });
+				} else if (!results.length) {
+					res.status(404).json({ message: 'No kifu found.' });
 				} else {
-					res.json(404, { message: 'No kifu found.' });
+					res.status(200).json({
+						kifu: results
+					});
 				}
 			});
-	});
+		});
 });
 
 router.delete('/:id', auth.ensureAuthenticated, function (req, res) {

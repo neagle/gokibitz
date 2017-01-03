@@ -24,7 +24,7 @@
     "marked": "^0.3.2",
     "memwatch-next": "git://github.com/marcominetti/node-memwatch.git",
     "moment": "^2.10.2",
-    "mongoose": "^4.6.3",
+    "mongoose": "^4.7.6",
     "morgan": "~1.0.0",
     "multiparty": "^3.2.6",
     "nodemailer": "^2.7.0",
