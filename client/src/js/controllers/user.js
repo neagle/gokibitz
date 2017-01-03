@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 angular.module('gokibitz.controllers')
 	.controller('UserController',
 		function ($rootScope, $scope, $routeParams, user, $http) {
