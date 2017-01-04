@@ -59,7 +59,7 @@ router.get('/', function (req, res) {
 					owner: '$owner'
 				},
 				uploaded: { $last: '$uploaded' },
-				game: { $last: '$_id' },
+				game: { $last: '$_id' }
 			}
 		});
 	} else {
@@ -69,7 +69,7 @@ router.get('/', function (req, res) {
 			$group: {
 				_id: '$_id',
 				uploaded: { $last: '$uploaded' },
-				game: { $last: '$_id' },
+				game: { $last: '$_id' }
 			}
 		});
 	}
@@ -80,6 +80,9 @@ router.get('/', function (req, res) {
 			'uploaded': -1
 		}
 	});
+
+	// Keep a reference to the pipeline with no limits for pagination
+	let countAggregationPipeline = aggregationPipeline.slice();
 
 	aggregationPipeline.push({
 		$skip: offset
@@ -107,8 +110,11 @@ router.get('/', function (req, res) {
 				} else if (!results.length) {
 					res.status(404).json({ message: 'No kifu found.' });
 				} else {
-					res.status(200).json({
-						kifu: results
+					Kifu.aggregate(...countAggregationPipeline, function (error, count) {
+						res.status(200).json({
+							kifu: results,
+							total: count.length
+						});
 					});
 				}
 			});
