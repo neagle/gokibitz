@@ -14,6 +14,7 @@ var http = require('http');
 var https = require('https');
 var url = require('url');
 var async = require('async');
+var contentDisposition = require('content-disposition');
 
 router.get('/', function (req, res) {
 	const offset = parseInt(req.query.offset, 10) || 0;
@@ -280,7 +281,7 @@ router.get('/:shortid/sgf', function (req, res) {
 						kifu.game.info.white.name +
 						'.sgf';
 					res.set({
-						'Content-Disposition': 'attachment; filename=' + filename,
+						'Content-Disposition': contentDisposition(filename),
 						'Content-Type': 'application/x-go-sgf'
 					});
 					res.send(200, sgf);
