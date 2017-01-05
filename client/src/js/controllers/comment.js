@@ -19,6 +19,11 @@ angular.module('gokibitz.controllers')
 			socket
 		) {
 
+			/* Check if a comment has been starred by the user */
+			let checkStarredByMe = function (comment) {
+				comment.starredByMe = comment.stars.indexOf($scope.currentUser._id) !== -1? true : false;
+			};
+
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
 				var pathString = pathFilter($scope.kifu.path, 'string');
@@ -40,9 +45,11 @@ angular.module('gokibitz.controllers')
 							break;
 						case 'star':
 							$scope.comments[index()].stars = data.comment.stars;
+							checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'unstar':
 							$scope.comments[index()].stars = data.comment.stars;
+							checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'delete':
 							$scope.comments = _.filter($scope.comments, function (n) {
@@ -110,7 +117,7 @@ angular.module('gokibitz.controllers')
 
 							// Set a flag on comments starred by the current user
 							if ($scope.currentUser) {
-								comment.starredByMe = (comment.stars.indexOf($scope.currentUser._id) !== -1);
+								checkStarredByMe(comment);
 							}
 
 							if (comment._id === highlightedComment) {
@@ -221,26 +228,11 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.toggleStar = function (comment) {
-				var userId = $scope.currentUser._id;
-				var index = comment.stars.indexOf(userId);
+				const userId = $scope.currentUser._id;
+				const index = comment.stars.indexOf(userId);
+				const url = `/api/comment/${comment._id}/${index === -1 ? 'star' : 'unstar'}`;
 
-				if (index === -1) {
-					$http.patch('/api/comment/' + comment._id + '/star')
-						.then(function () {
-							comment.stars.push($scope.currentUser._id);
-							comment.starredByMe = true;
-						}, function (data) {
-							console.log('Error: ' + data);
-						});
-				} else {
-					$http.patch('/api/comment/' + comment._id + '/unstar')
-						.then(function () {
-							comment.stars.splice(index, 1);
-							comment.starredByMe = false;
-						}, function (data) {
-							console.log('Error: ' + data);
-						});
-				}
+				$http.patch(url);
 			};
 
 			$scope.goToComment = function (commentId) {
