@@ -268,22 +268,29 @@ router.patch('/:id/star', function (req, res) {
 						comment.stars.push(req.user._id);
 						comment.save(function (error) {
 							if (!error) {
-								res.json(200, { message: 'You starred comment ' + id + '.' });
+								User.populate(comment, {
+									path: 'stars',
+									select: 'username gravatar'
+								}, function (error) {
+									if (!error) {
+										res.json(200, { message: 'You starred comment ' + id + '.' });
 
-								// Send notification to the starred commenter
-								var notification = new Notification();
-								notification.cause = 'star';
-								notification.to = comment.user;
-								notification.from = req.user;
-								notification.kifu = comment.kifu;
-								notification.path = comment.path;
-								notification.comment = comment._id;
+										// Send notification to the starred commenter
+										var notification = new Notification();
+										notification.cause = 'star';
+										notification.to = comment.user;
+										notification.from = req.user;
+										notification.kifu = comment.kifu;
+										notification.path = comment.path;
+										notification.comment = comment._id;
 
-								notification.save();
+										notification.save();
 
-								io.emit('send:' + comment.kifu, {
-									change: 'star',
-									comment: comment
+										io.emit('send:' + comment.kifu, {
+											change: 'star',
+											comment: comment
+										});
+									}
 								});
 							} else {
 								res.json(500, { message: 'Could not star comment. ' + error });

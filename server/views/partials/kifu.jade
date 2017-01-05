@@ -7,7 +7,7 @@
 				.rank {{ info.white.rank | rank }}
 				.captures(
 					tooltip-placement='right'
-					tooltip='White’s captured prisoners'
+					tooltip='Captures'
 				) {{ captures.white }}
 
 			.black
@@ -16,7 +16,7 @@
 				.rank {{ info.black.rank | rank }}
 				.captures(
 					tooltip-placement='left'
-					tooltip='Black’s captured prisoners'
+					tooltip='Captures'
 				) {{ captures.black }}
 
 	.row
@@ -316,25 +316,29 @@
 								.star.pull-left(
 								)
 									// Other users' comments
-									a(
+									a.star-display(
 										ng-if='comment.user.username !== currentUser.username'
 										ng-click='toggleStar(comment)'
 										ng-class='{ true: "starred", false: "unstarred" }[comment.starredByMe]'
+										tooltip-placement='left'
+										tooltip='{{ comment.starredByList }}'
 									)
 										.wrapper.pull-right
-											span.fui-star-2
+											span.star-icon.fui-star-2
 											= ' '
 											span(
 												ng-show='comment.stars.length > 0'
 											) {{ comment.stars.length }}
 
 									// Your own comments
-									span(
+									span.star-display(
 										ng-if='comment.user.username === currentUser.username'
 										ng-show='comment.stars.length > 0'
+										tooltip-placement='left'
+										tooltip='{{ comment.starredByList }}'
 									)
 										.wrapper.pull-right
-											span.fui-star-2
+											span.star-icon.fui-star-2
 											= ' '
 											span {{ comment.stars.length }}
 

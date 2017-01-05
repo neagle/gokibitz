@@ -19,9 +19,26 @@ angular.module('gokibitz.controllers')
 			socket
 		) {
 
+			let makeStarredByList = function (comment) {
+				if (!_.isEmpty(comment.stars)) {
+					comment.starredByList = comment.stars.map(user => user.username).join(', ');
+				} else {
+					comment.starredByList = '';
+				}
+			};
+
 			/* Check if a comment has been starred by the user */
 			let checkStarredByMe = function (comment) {
-				comment.starredByMe = comment.stars.indexOf($scope.currentUser._id) !== -1? true : false;
+				let starredByMe = false;
+				let i = 0;
+
+				while (i < comment.stars.length && !starredByMe) {
+					if (comment.stars[i]._id === $scope.currentUser._id) {
+						starredByMe = true;
+					}
+					i += 1;
+				}
+				return starredByMe;
 			};
 
 			// Handle live updates to comments
@@ -45,11 +62,13 @@ angular.module('gokibitz.controllers')
 							break;
 						case 'star':
 							$scope.comments[index()].stars = data.comment.stars;
-							checkStarredByMe($scope.comments[index()]);
+							makeStarredByList($scope.comments[index()]);
+							$scope.comments[index()].starredByMe = checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'unstar':
 							$scope.comments[index()].stars = data.comment.stars;
-							checkStarredByMe($scope.comments[index()]);
+							makeStarredByList($scope.comments[index()]);
+							$scope.comments[index()].starredByMe = checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'delete':
 							$scope.comments = _.filter($scope.comments, function (n) {
@@ -117,8 +136,10 @@ angular.module('gokibitz.controllers')
 
 							// Set a flag on comments starred by the current user
 							if ($scope.currentUser) {
-								checkStarredByMe(comment);
+								comment.starredByMe = checkStarredByMe(comment);
 							}
+
+							makeStarredByList(comment);
 
 							if (comment._id === highlightedComment) {
 								highlightedCommentPresent = true;
@@ -228,9 +249,7 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.toggleStar = function (comment) {
-				const userId = $scope.currentUser._id;
-				const index = comment.stars.indexOf(userId);
-				const url = `/api/comment/${comment._id}/${index === -1 ? 'star' : 'unstar'}`;
+				const url = `/api/comment/${comment._id}/${checkStarredByMe(comment) ? 'unstar' : 'star'}`;
 
 				$http.patch(url);
 			};

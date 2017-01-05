@@ -325,6 +325,7 @@ router.get('/:id/comments/:path?', function (req, res) {
 					date: (findOptions.path) ? 'asc' : 'desc'
 				})
 				.populate('user', 'username email gravatar rank')
+				.populate('stars', 'username email rank')
 				.exec(function (error, comments) {
 					if (error) {
 						res.json(500, { message: 'Error loading comments. ' + error });
