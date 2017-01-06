@@ -1,5 +1,5 @@
 angular.module('gokibitz.controllers')
-.controller('PasswordController', function ($rootScope, $scope, $modalInstance, Auth, $location, locker) {
+.controller('PasswordController', function ($rootScope, $scope, $uibModalInstance, Auth, $location, locker) {
 	console.log('password controller');
 	$scope.changePassword = function (form) {
 		Auth.changePassword(
@@ -10,7 +10,7 @@ angular.module('gokibitz.controllers')
 				$scope.errors = {};
 
 				if (!err) {
-					$modalInstance.close();
+					$uibModalInstance.close();
 				} else {
 					angular.forEach(err.errors, function (error, field) {
 						form[field].$setValidity('mongoose', false);
@@ -22,6 +22,6 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	};
 });

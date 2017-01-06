@@ -7,7 +7,7 @@
 				.rank {{ info.white.rank | rank }}
 				.captures(
 					tooltip-placement='right'
-					tooltip='Captures'
+					uib-tooltip='White’s captured prisoners'
 				) {{ captures.white }}
 
 			.black
@@ -16,7 +16,7 @@
 				.rank {{ info.black.rank | rank }}
 				.captures(
 					tooltip-placement='left'
-					tooltip='Captures'
+					uib-tooltip='Black’s captured prisoners'
 				) {{ captures.black }}
 
 	.row
@@ -321,7 +321,7 @@
 										ng-click='toggleStar(comment)'
 										ng-class='{ true: "starred", false: "unstarred" }[comment.starredByMe]'
 										tooltip-placement='left'
-										tooltip='{{ comment.starredByList }}'
+										uib-tooltip='{{ comment.starredByList }}'
 									)
 										.wrapper.pull-right
 											span.star-icon.fui-star-2
@@ -335,7 +335,7 @@
 										ng-if='comment.user.username === currentUser.username'
 										ng-show='comment.stars.length > 0'
 										tooltip-placement='left'
-										tooltip='{{ comment.starredByList }}'
+										uib-tooltip='{{ comment.starredByList }}'
 									)
 										.wrapper.pull-right
 											span.star-icon.fui-star-2

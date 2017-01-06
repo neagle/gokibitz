@@ -14,7 +14,7 @@ angular.module('gokibitz.controllers')
 	kifu,
 	$interpolate,
 	$document,
-	$modal,
+	$uibModal,
 	hotkeys,
 	$sce
 ) {
@@ -360,7 +360,7 @@ angular.module('gokibitz.controllers')
 
 	// Open a modal with embed code
 	$scope.embed = function (id) {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/partials/embed',
 			controller: 'EmbedController',
 			resolve: {

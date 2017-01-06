@@ -325,28 +325,32 @@ router.patch('/:id/unstar', function (req, res) {
 						comment.stars.splice(index, 1);
 						comment.save(function (error) {
 							if (!error) {
-								res.json(200, { message: 'You unstarred comment ' + id + '.' });
+								User.populate(comment, {
+									path: 'stars',
+									select: 'username gravatar'
+								}, function (error) {
+									res.json(200, { message: 'You unstarred comment ' + id + '.' });
 
-								// Remove the notification for this star
-								Notification.find()
-									.where('comment', comment)
-									.where('cause').equals('star')
-									.where('from').equals(req.user)
-									.exec(function (error, notifications) {
-										if (!error) {
-											for (var i = notifications.length - 1; i >= 0; i -= 1) {
-												notifications[i].remove();
+									// Remove the notification for this star
+									Notification.find()
+										.where('comment', comment)
+										.where('cause').equals('star')
+										.where('from').equals(req.user)
+										.exec(function (error, notifications) {
+											if (!error) {
+												for (var i = notifications.length - 1; i >= 0; i -= 1) {
+													notifications[i].remove();
+												}
+											} else {
+												console.log('Could not delete notifications for this comment', error);
 											}
-										} else {
-											console.log('Could not delete notifications for this comment', error);
-										}
+										});
+
+									io.emit('send:' + comment.kifu, {
+										change: 'unstar',
+										comment: comment
 									});
-
-								io.emit('send:' + comment.kifu, {
-									change: 'unstar',
-									comment: comment
 								});
-
 							} else {
 								res.json(500, { message: 'Could not unstar comment. ' + error });
 							}

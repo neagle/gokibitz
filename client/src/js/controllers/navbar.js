@@ -1,5 +1,5 @@
 angular.module('gokibitz.controllers')
-.controller('NavbarController', function ($rootScope, $scope, Auth, $location, $modal, Settings) {
+.controller('NavbarController', function ($rootScope, $scope, Auth, $location, $uibModal, Settings) {
 	var nav = this;
 
 	$scope.isCollapsed = true;
@@ -27,21 +27,21 @@ angular.module('gokibitz.controllers')
 	}
 
 	$scope.loginModal = function () {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/partials/login',
 			controller: 'LoginController'
 		});
 	};
 
 	$scope.signupModal = function () {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/partials/signup',
 			controller: 'SignupController'
 		});
 	};
 
 	$scope.passwordModal = function () {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/partials/password',
 			controller: 'PasswordController'
 		});

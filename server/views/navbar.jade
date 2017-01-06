@@ -40,12 +40,12 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					a(href='/{{ item.link }}') {{ item.title }}
 
 				li.notifications.dropdown(
-					dropdown
+					uib-dropdown
 					on-toggle='notificationToggle(open)'
 					ng-if='currentUser'
 				)
 					a.dropdown-toggle(
-						dropdown-toggle
+						uib-dropdown-toggle
 					)
 						span.fui-chat
 						= ' '
@@ -80,11 +80,11 @@ nav#gk-navbar.navbar.navbar-inverse.navbar-fixed-top(
 					a(ng-click='signupModal()') Sign Up
 
 			ul.nav.navbar-nav.navbar-right.ng-cloak(
-				dropdown
+				uib-dropdown
 				ng-if='currentUser'
 			)
 				li.dropdown
-					a.dropdown-toggle(dropdown-toggle) Welcome, {{ currentUser.username }}
+					a.dropdown-toggle(uib-dropdown-toggle) Welcome, {{ currentUser.username }}
 						= ' '
 						b.caret
 
