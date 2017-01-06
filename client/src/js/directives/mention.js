@@ -12,7 +12,7 @@ angular.module('gokibitz.directives')
 		link: function ($scope, element, attributes, ngModel) {
 			var searchUsers, moveSelection;
 			var elementText = '';
-			var lastRegexp = /[^ ,.;'"\[\]\{\}]+$/;
+			var lastRegexp = /[^ \n,.;'"\[\]\{\}]+$/;
 
 			var userList = angular.element('<div class="mention-user-list" />');
 			userList.append(
