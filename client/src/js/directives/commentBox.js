@@ -83,6 +83,11 @@ angular.module('gokibitz.directives')
 				if (key === 13 && !event.shiftKey) {
 					event.preventDefault();
 
+					// Prevent submission of an empty string
+					if (element.val() === '') {
+						return;
+					}
+
 					// Cancel any outstanding preview calls
 					if (canceler) {
 						canceler.resolve();
