@@ -287,10 +287,10 @@
 								i.fui-arrow-right
 
 					.panel-body.clearfix(
-						ng-if='numComments'
 						ng-class='{ loading: loading }'
 					)
 						.throbber(ng-show='loading')
+						p(ng-if='!loading && !numComments') No comments so far.
 						//-.throbber
 						//-div(ng-if='!comments.length') &hellip;
 
@@ -408,7 +408,7 @@
 					)
 						.row
 							.col-md-12
-								p You need an account to make comments.
+								//p You need an account to make comments.
 								p
 									button.btn.btn-primary(
 										ng-click='LoginSignup.loginModal()'

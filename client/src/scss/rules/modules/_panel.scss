@@ -1,0 +1,9 @@
+.panel-footer {
+	&:last-child {
+		[class*="col-"] {
+			p:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
