@@ -4,6 +4,7 @@ var marked = require('marked');
 var moment = require('moment');
 var async = require('async');
 var parseLabels = require('../utils/parseLabels.js');
+var linkMoves = require('../utils/linkMoves.js');
 var linkUsers = require('../utils/linkUsers.js');
 
 marked.setOptions({
@@ -53,6 +54,7 @@ var commentSchema = new Schema({
 
 function htmlFromMarkdown(markdown, callback) {
 	var html = parseLabels(markdown);
+	html = linkMoves(markdown);
 
 	linkUsers(html, function (html) {
 		html = marked(html) || '';

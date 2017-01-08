@@ -1,4 +1,5 @@
 var parseLabels = require('../../../../server/utils/parseLabels.js');
+var linkMoves = require('../../../../server/utils/linkMoves.js');
 
 module.exports = {
 	format: function (comment) {
@@ -20,6 +21,7 @@ module.exports = {
 			);
 
 			// Format move and sequence labels
+			html = linkMoves(html);
 			html = parseLabels(html);
 
 			return html;
