@@ -54,7 +54,7 @@ var commentSchema = new Schema({
 
 function htmlFromMarkdown(markdown, callback) {
 	var html = parseLabels(markdown);
-	html = linkMoves(markdown);
+	html = linkMoves(html);
 
 	linkUsers(html, function (html) {
 		html = marked(html) || '';
