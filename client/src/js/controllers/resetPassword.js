@@ -3,7 +3,7 @@ angular.module('gokibitz.controllers')
 		$rootScope,
 		$scope,
 		$route,
-		$modalInstance,
+		$uibModalInstance,
 		Auth,
 		$location,
 		LoginSignup
@@ -14,7 +14,7 @@ angular.module('gokibitz.controllers')
 		const token = $route.current.params.token;
 
 		$scope.login = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 			LoginSignup.loginModal();
 		};
 
@@ -32,7 +32,7 @@ angular.module('gokibitz.controllers')
 		};
 
 		$scope.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 			$location.path('/');
 		};
 	});

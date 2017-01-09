@@ -15,7 +15,7 @@ angular.module('gokibitz.controllers')
 
 			if (!err) {
 				locker.put('email', $scope.user.email);
-				$modalInstance.close($scope.user);
+				$uibModalInstance.close($scope.user);
 			} else {
 				angular.forEach(err.errors, function (error, field) {
 					form[field].$setValidity('mongoose', false);
@@ -26,6 +26,6 @@ angular.module('gokibitz.controllers')
 	};
 
 	$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	};
 });
