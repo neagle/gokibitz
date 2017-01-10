@@ -92,7 +92,20 @@ router.get('/', function (req, res) {
 				});
 			});
 	} else {
-		res.render('index');
+		res.render('index', {
+			og: {
+				image: '',
+				url: req.originalUrl
+			},
+			twitter: {
+				card: 'summary_large_image',
+				site: '@gokibitz',
+				title: '',
+				description: '',
+				image: '',
+				alt: ''
+			}
+		});
 	}
 
 });
