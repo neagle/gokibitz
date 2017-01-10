@@ -3,6 +3,8 @@ var router = express.Router();
 //var path = require('path');
 var auth = require('../config/auth');
 //var markdown = require('markdown').markdown;
+const Kifu = require('../models/kifu').Kifu;
+const _ = require('lodash');
 
 // User routes
 var users = require('../controllers/users');
@@ -61,19 +63,38 @@ router.get('/', function (req, res) {
 
 	// Set Open Graph images
 	let image = '';
+	let shortId, path;
 	if (req.originalUrl.substring(0, 6) === '/kifu/') {
 		let pathString = req.originalUrl.substring(6).split('?path=');
-		const shortId = pathString[0];
-		const path = pathString[1] || '';
+		shortId = pathString[0];
+		path = pathString[1] || '';
 		image = `/api/kifu/image/${shortId}/${path}`;
 	}
 
-	res.render('index', {
-		og: {
-			image: image,
-			url: req.originalUrl
-		}
-	});
+	if (shortId) {
+		console.log('searching for shortId', shortId);
+		Kifu
+			.findOne({ shortid: shortId })
+			.exec(function (error, kifu) {
+				res.render('index', {
+					og: {
+						image: image,
+						url: req.originalUrl
+					},
+					twitter: {
+						card: 'summary_large_image',
+						site: '@gokibitz',
+						title: `GoKibitz: ${_.get(kifu, 'game.info.white.name', 'Anonymous')} vs. ${_.get(kifu, 'game.info.black.name',  'Anonymous')}`,
+						description: `${_.get(kifu, 'game.info.place')} on ${_.get(kifu, 'game.info.date')}`,
+						image: image,
+						alt: 'An in-progress game of go'
+					}
+				});
+			});
+	} else {
+		res.render('index');
+	}
+
 });
 
 

@@ -6,6 +6,12 @@ html(lang='en', ng-app='gokibitz' iframe-resizer ng-class='{ "is-iframed": $root
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		meta(property='og:image', content='https://gokibitz.com#{og.image}')
 		meta(property='og:url', content='https://gokibitz.com#{og.url}')
+		meta(name='twitter:card', content='#{twitter.card}')
+		meta(name='twitter:site', content='#{twitter.site}')
+		meta(name='twitter:title', content='#{twitter.title}')
+		meta(name='twitter:description', content='#{twitter.description}')
+		meta(name='twitter:image', content='#{twitter.image}')
+		meta(name='twitter:image:alt', content='#{twitter.alt}')
 		title(ng-bind='$root.pageTitle') GoKibitz: Move-by-move conversations about go games.
 		link(rel='stylesheet', href='/css/app.css')
 		style .ng-cloak { display:none; }
