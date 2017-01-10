@@ -84,7 +84,8 @@ router.get('/', function (req, res) {
 					twitter: {
 						card: 'summary_large_image',
 						site: '@gokibitz',
-						title: `GoKibitz: ${_.get(kifu, 'game.info.white.name', 'Anonymous')} vs. ${_.get(kifu, 'game.info.black.name',  'Anonymous')}`,
+						title: `GoKibitz: ${_.get(kifu, 'game.info.white.name', 'Anonymous')}
+						 vs. ${_.get(kifu, 'game.info.black.name',  'Anonymous')}`,
 						description: `${_.get(kifu, 'game.info.place')} on ${_.get(kifu, 'game.info.date')}`,
 						image: image,
 						alt: 'An in-progress game of go'
