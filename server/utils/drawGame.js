@@ -41,7 +41,8 @@ function getBoard(path) {
 
 	let n = this.gamer.node();
 
-	for (let i = 0; i < path.m && n; i += 1) {
+	let error;
+	for (let i = 0; i < path.m && n && !error; i += 1) {
 		let variation = path[i + 1] || 0;
 
 		n = this.gamer.next(variation);
@@ -52,7 +53,11 @@ function getBoard(path) {
 		const player = node.W ? 'white' : 'black';
 		const coords = alphaToNum(move);
 
-		game = Weiqi.play(game, player, coords);
+		try {
+			game = Weiqi.play(game, player, coords);
+		} catch (e) {
+			error = e;
+		}
 	}
 
 	this.board = serializeBoardState(game);
