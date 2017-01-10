@@ -60,17 +60,18 @@ router.get('/', function (req, res) {
 	}
 
 	// Set Open Graph images
-	let ogImage = '';
+	let image = '';
 	if (req.originalUrl.substring(0, 6) === '/kifu/') {
 		let pathString = req.originalUrl.substring(6).split('?path=');
 		const shortId = pathString[0];
 		const path = pathString[1] || '';
-		ogImage = `/api/kifu/image/${shortId}/${path}`;
+		image = `/api/kifu/image/${shortId}/${path}`;
 	}
 
 	res.render('index', {
 		og: {
-			image: ogImage
+			image: image,
+			url: req.originalUrl
 		}
 	});
 });
