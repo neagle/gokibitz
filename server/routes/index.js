@@ -64,7 +64,7 @@ router.get('/', function (req, res) {
 	if (req.originalUrl.substring(0, 6) === '/kifu/') {
 		let pathString = req.originalUrl.substring(6).split('?path=');
 		const shortId = pathString[0];
-		const path = pathString[1];
+		const path = pathString[1] || '';
 		ogImage = `/api/kifu/image/${shortId}/${path}`;
 	}
 
