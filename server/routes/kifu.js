@@ -102,7 +102,7 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 		});
 });
 
-router.get('/image/:shortid', function (req, res) {
+router.get('/image/:shortid/:path?', function (req, res) {
 	Kifu
 		.findOne({
 			shortid: req.params.shortid
@@ -110,8 +110,9 @@ router.get('/image/:shortid', function (req, res) {
 		.exec(function (error, kifu) {
 			if (!error && kifu) {
 				res.setHeader('Content-Type', 'image/png');
-				drawGame(kifu).pngStream().pipe(res);
-				//res.json(200, kifu);
+				res.setHeader('Cache-Control', 'public, max-age=2592000');
+				res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
+				drawGame(kifu, req.params.path).pngStream().pipe(res);
 			} else if (error) {
 				res.json(500, { message: 'Error loading kifu. ' + error });
 			} else {

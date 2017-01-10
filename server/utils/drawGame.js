@@ -1,6 +1,6 @@
-var smartgame = require('smartgame');
-var smartgamer = require('smartgamer');
-var Weiqi = require('weiqi').default;
+const smartgame = require('smartgame');
+const smartgamer = require('smartgamer');
+const Weiqi = require('weiqi').default;
 
 const stone = {
 	black: 'x',
@@ -19,8 +19,7 @@ function alphaToNum(alpha) {
 	x = alphabet.indexOf(x.toLowerCase());
 	y = alphabet.indexOf(y.toLowerCase());
 
-	console.log('alpha', alpha, 'x, y', x, y);
-	return [(size - 1) - x, (size - 1) - y];
+	return [x, y];
 }
 
 function serializeBoardState(gameState) {
@@ -29,71 +28,44 @@ function serializeBoardState(gameState) {
 	const boardState = gameState.get('board').get('stones');
 	boardState.forEach((stoneColor, position) => {
 		const character = stoneColor === 'black' ? stone.black : stone.white;
-		boardArray[position.get('i')][position.get('j')] = character;
+		boardArray[position.get('j')][position.get('i')] = character;
 	});
-	//console.log('boardArray', boardArray);
 	return boardArray;
 }
 
-function getBoard() {
-	//console.log('Weiqi', Weiqi);
-	//console.log('typeof Weiqi.createGame', typeof Weiqi.createGame);
-	var game = Weiqi.createGame(this.size);
-	//console.log('game', game);
-	//console.log('this.gamer.totalMoves()', this.gamer.totalMoves());
-	let i = 1;
-	let end = 5;
-	//let end = this.gamer.totalMoves() / 2;
+function getBoard(path) {
+	let game = Weiqi.createGame(this.size);
 
-	this.gamer.goTo(1);
+	path = path || Math.floor(this.gamer.totalMoves() / 2);
+	path = this.gamer.pathTransform(String(path), 'object');
 
-	while (i < end) {
-		//console.log('this.gamer.node', this.gamer.node());
+	let n = this.gamer.node();
+
+	for (let i = 0; i < path.m && n; i += 1) {
+		let variation = path[i + 1] || 0;
+
+		n = this.gamer.next(variation);
+
 		const node = this.gamer.node();
 		let move = node.W || node.B;
+
 		const player = node.W ? 'white' : 'black';
 		const coords = alphaToNum(move);
 
-		//console.log('tryna play', player, coords);
 		game = Weiqi.play(game, player, coords);
-		//console.log('game', game);
-		//console.log('typeof game', typeof game);
-		//console.log('Object.keys(game)', Object.keys(game));
-		//console.log('game.toObject()', game.toObject().board.stones);
-		//console.log('game.get("board")', game.get('board').get('stones'));
-		//this.board = game.get('board').get('stones').toObject();
-		this.board = serializeBoardState(game);
-		//console.log('this.board', this.board);
-
-		this.gamer.next();
-		i += 1;
 	}
 
-	//console.log('Weiqi', Weiqi);
-
-	let boardStr = '';
-	this.board.forEach(row => {
-		row.forEach((intersection, i) => {
-			boardStr += ' ' + intersection + ' ';
-			if (i === row.length - 1) {
-				boardStr += '\n';
-			}
-		});
-	});
-	console.log('boardStr', boardStr);
+	this.board = serializeBoardState(game);
 }
 
 function drawGrid() {
-	var size = this.size;
-	//console.log(`drawing grid of ${size} by ${size}`);
-	var canvas = this.canvas;
-	var ctx = this.ctx;
-	var margin = this.margin = (canvas.width / size) / 2;
-	var step = this.step = (canvas.width - (margin * 2)) / size;
-	var inset = this.inset = step / 2;
-	var gridColor = 'hsl(50, 50%, 30%)';
-
-	//console.log('margin, step, inset', margin, step, inset);
+	const size = this.size;
+	const canvas = this.canvas;
+	const ctx = this.ctx;
+	const margin = this.margin = (canvas.width / size) / 2;
+	const step = this.step = (canvas.width - (margin * 2)) / size;
+	const inset = this.inset = step / 2;
+	const gridColor = 'hsl(50, 50%, 30%)';
 
 	ctx.lineWidth = 1;
 	ctx.lineCap = 'square';
@@ -133,7 +105,7 @@ function drawGrid() {
 		]
 	};
 
-	const starRadius = 5;
+	const starRadius = step / 10;
 
 	starPoints[this.size].forEach(coordinates => {
 		let x = coordinates[0],
@@ -149,9 +121,6 @@ function drawGrid() {
 	});
 }
 
-function drawStarpoints() {
-}
-
 function drawStone(x, y, color) {
 	x = x * this.step + this.inset + this.margin;
 	y = y * this.step + this.inset + this.margin;
@@ -161,7 +130,6 @@ function drawStone(x, y, color) {
 
 	ctx.beginPath();
 	ctx.fillStyle = (color === 'black') ? 'hsl(0, 0%, 10%)' : 'hsl(0, 0%, 90%)';
-	//console.log('ctx.fillStyle', ctx.fillStyle);
 	ctx.moveTo(x, y);
 	ctx.arc(x, y, stoneSize, 0, 2 * Math.PI, false);
 	ctx.fill();
@@ -174,19 +142,15 @@ function markLastStone() {
 	const player = node.W ? 'white' : 'black';
 	const coords = alphaToNum(move);
 
-	x = coords[0] * this.step + this.inset + this.margin;
-	y = coords[1] * this.step + this.inset + this.margin;
+	const x = coords[0] * this.step + this.inset + this.margin;
+	const y = coords[1] * this.step + this.inset + this.margin;
 
-	//console.log('move', move);
-	//console.log('mark the last stone at', x, y);
-
-	const markSize = this.step / 3;
+	const markSize = this.step / 3.5;
 	const ctx = this.ctx;
 
 	ctx.beginPath();
 	ctx.strokeStyle = (player === 'white') ? 'hsl(0, 0%, 10%)' : 'hsl(0, 0%, 90%)';
-	//console.log('ctx.fillStyle', ctx.fillStyle);
-	ctx.moveTo(x, y);
+	ctx.lineWidth = 5;
 	ctx.arc(x, y, markSize, 0, 2 * Math.PI, false);
 	ctx.stroke();
 	ctx.closePath();
@@ -194,10 +158,7 @@ function markLastStone() {
 
 function drawStones() {
 	this.board.forEach((row, y) => {
-		//console.log('row', row);
 		row.forEach((intersection, x) => {
-			//console.log('intersection', intersection);
-			//console.log('x, y', x, y);
 			let color;
 
 			if (intersection === stone.black) {
@@ -209,24 +170,17 @@ function drawStones() {
 			}
 
 			if (color) {
-				//console.log('draw a', color, 'stone');
 				drawStone(x, y, color);
 			}
 		});
 	});
 }
 
-function draw(kifu) {
-	//console.log('kifu', kifu);
+function draw(kifu, path) {
+	const game = smartgame.parse(kifu.game.sgf);
+	const gamer = smartgamer(game);
 
-	var game = smartgame.parse(kifu.game.sgf);
-	var gamer = smartgamer(game);
-
-	//console.log('gamer', gamer);
-	//console.log('gamer.getGameInfo()', gamer.getGameInfo());
-
-	var Canvas = require('canvas'),
-		Image = Canvas.Image,
+	let Canvas = require('canvas'),
 		canvas = new Canvas(1200, 1200),
 		ctx = canvas.getContext('2d');
 
@@ -235,7 +189,7 @@ function draw(kifu) {
 	this.gamer = gamer;
 	this.size = parseInt(this.gamer.getGameInfo().SZ, 10);
 
-	getBoard();
+	getBoard(path);
 
 	ctx.fillStyle = '#E4BB5C';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
