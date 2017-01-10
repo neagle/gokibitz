@@ -15,6 +15,7 @@ var https = require('https');
 var url = require('url');
 var async = require('async');
 var contentDisposition = require('content-disposition');
+var drawGame = require('../utils/drawGame');
 
 router.get('/', function (req, res) {
 	const offset = parseInt(req.query.offset, 10) || 0;
@@ -159,6 +160,25 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 				res.json(404, { message: 'Could not find kifu.' });
 			} else {
 				res.json(403, { messgae: 'Could not delete comment. ' + error });
+			}
+		});
+});
+
+router.get('/image/:shortid/:path?', function (req, res) {
+	Kifu
+		.findOne({
+			shortid: req.params.shortid
+		})
+		.exec(function (error, kifu) {
+			if (!error && kifu) {
+				res.setHeader('Content-Type', 'image/png');
+				res.setHeader('Cache-Control', 'public, max-age=2592000');
+				res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
+				drawGame(kifu, req.params.path).pngStream().pipe(res);
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that shortid.' });
 			}
 		});
 });
