@@ -138,6 +138,21 @@ commentSchema.methods.getRecipients = function (callback) {
 	});
 };
 
+// Return a list of users mentioned via @username in a comment
+commentSchema.methods.getMentionedUsers = function () {
+	let usernames = this.content.markdown.match(/@[a-zA-Z0-9_-]*/g);
+
+	if (usernames) {
+		usernames = usernames.map((username) => username.replace('@', ''));
+
+		usernames = usernames.filter(username => {
+			return username.length !== 0 && this.user.username !== username;
+		});
+	}
+
+	return usernames;
+};
+
 var comment = mongoose.model('Comment', commentSchema);
 
 module.exports = {

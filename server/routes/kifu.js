@@ -203,15 +203,15 @@ router.get('/:shortid', function (req, res) {
 
 // Update a kifu
 router.put('/:shortid', function (req, res) {
-	console.log('Updating kifu');
+	//console.log('Updating kifu');
 	//console.log('req.body', req.body);
 
 
 	if (!req.body) {
-		console.log('no kifu provided');
+		//console.log('no kifu provided');
 		res.json(500, { message: 'No kifu provided.' });
 	} else {
-		console.log('finding that kifu');
+		//console.log('finding that kifu');
 		Kifu
 			.findOne({
 				shortid: req.params.shortid
@@ -220,11 +220,11 @@ router.put('/:shortid', function (req, res) {
 			.exec(function (error, kifu) {
 				if (!error && kifu) {
 					if (!kifu.owner.equals(req.user) && !req.user.admin) {
-						console.log('you can\'t edit this!');
+						//console.log('you can\'t edit this!');
 						res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
 					} else {
 						kifu = _.assign(kifu, req.body);
-						console.log('updated', kifu);
+						//console.log('updated', kifu);
 
 						// Old kifu did not have an original created at upload time
 						if (!kifu.game.original) {
@@ -232,7 +232,7 @@ router.put('/:shortid', function (req, res) {
 						}
 
 						kifu.save(function (error) {
-							console.log('kifu saved', arguments);
+							//console.log('kifu saved', arguments);
 							if (!error) {
 								res.json(200, {
 									message: 'Kifu updated.',

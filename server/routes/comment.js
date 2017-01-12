@@ -40,13 +40,19 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
 
 							// Send notifications
+							let mentionedUsers = comment.getMentionedUsers();
+							notificationHelper.notifyMentionedUsers(mentionedUsers, comment);
+
+							// Get the list of other users who have commented on this move
 							comment.getRecipients(function (recipients) {
 								recipients.forEach(function (recipient) {
-									notificationHelper.newNotification(comment, 'new comment', recipient);
+									// If a user is *not* mentioned (in which case, they will already
+									// be getting a notification), send them a notification
+									if (!_.includes(mentionedUsers, recipient.username)) {
+										notificationHelper.newNotification(comment, 'new comment', recipient);
+									}
 								});
 							});
-
-							notificationHelper.notifyMentionedUsers(comment);
 
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
@@ -475,16 +481,42 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					comment.save(function (error) {
 						if (!error) {
 
-							notificationHelper.notifyMentionedUsers(comment);
-							res.json(200, {
-								message: 'Comment updated.',
-								comment: comment
-							});
+							let mentionedUsers = comment.getMentionedUsers();
 
-							io.emit('send:' + comment.kifu, {
-								change: 'update',
-								comment: comment
-							});
+							// Find users who were already notified about this comment
+							Notification.find()
+								.where('comment', comment)
+								.exec(function (error, notifications) {
+									if (!error) {
+										User.populate(notifications, {
+											path: 'to',
+											select: 'username'
+										}, function () {
+											// Remove any users who have already been notified about being mentioned
+											notifications.forEach(notification => {
+												let index = mentionedUsers.indexOf(notification.to.username);
+												if (index !== -1) {
+													mentionedUsers.splice(index, 1);
+												}
+											});
+
+											// Notify any new mentioned users
+											notificationHelper.notifyMentionedUsers(mentionedUsers, comment);
+
+											res.json(200, {
+												message: 'Comment updated.',
+												comment: comment
+											});
+
+											io.emit('send:' + comment.kifu, {
+												change: 'update',
+												comment: comment
+											});
+										});
+									} else {
+										console.log('Could not delete notifications for this comment', error);
+									}
+								});
 						} else {
 							res.json(500, { message: 'Could not update comment. ' + error });
 						}
