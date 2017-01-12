@@ -1,5 +1,6 @@
 var Notification = require('../models/notification').Notification;
 var User = require('../models/user').User;
+var _ = require('lodash');
 
 module.exports = {
 	newNotification: function (comment, cause, to) {
