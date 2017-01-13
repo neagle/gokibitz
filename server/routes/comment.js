@@ -493,12 +493,33 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 											select: 'username'
 										}, function () {
 											// Remove any users who have already been notified about being mentioned
+											const noLongerMentioned = [];
+
 											notifications.forEach(notification => {
 												let index = mentionedUsers.indexOf(notification.to.username);
 												if (index !== -1) {
+													// They've already been mentioned!
 													mentionedUsers.splice(index, 1);
+												} else {
+													if (notification.cause === 'mention') {
+														// They've gotten a notification about this before, but they're
+														// no longer part of the mentioned list.
+														noLongerMentioned.push(notification.to.id);
+													}
 												}
 											});
+
+											// Remove notifications for anyone who is no longer mentioned
+											Notification.find()
+												.where('comment', comment)
+												.where('to').in(noLongerMentioned)
+												.exec(function (error, notifications) {
+													if (!error) {
+														notifications.forEach(notification => {
+															notification.remove();
+														});
+													}
+												});
 
 											// Notify any new mentioned users
 											notificationHelper.notifyMentionedUsers(mentionedUsers, comment);

@@ -150,7 +150,7 @@ commentSchema.methods.getMentionedUsers = function () {
 		});
 	}
 
-	return usernames;
+	return usernames || [];
 };
 
 var comment = mongoose.model('Comment', commentSchema);
