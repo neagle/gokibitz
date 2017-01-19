@@ -221,22 +221,17 @@
 					.panel-heading
 						span.fui-chat
 						= ' '
-						| Kibitz: {{ numComments }}
+						| {{ allComments.length }}
 						= ' '
 						ng-pluralize(
-							count='numComments'
+							count='allComments.length'
 							when='{ "one": "Comment", "other": "Comments" }'
 						)
 
 					.panel-body
-						p(ng-if='!loading && !comments.length') No comments so far.
-						ul.media-list(
-							infinite-scroll='addMoreComments()'
-							infinite-scroll-distance='2'
-							infinite-scroll-immediate-check='true'
-						)
+						ul.media-list
 							li.comment.media(
-								ng-repeat='comment in displayComments track by comment._id'
+								ng-repeat='comment in allComments track by comment._id'
 							)
 								a.pull-left(
 									href='/user/{{:: comment.user.username }}'
@@ -255,6 +250,7 @@
 										span.rank(ng-if='comment.user.rank') [{{:: comment.user.rank }}]
 										= ' '
 										| commented on move {{:: comment.pathObject.m }} <br>
+
 									time.relative.small(
 										datetime='{{:: comment.date }}'
 									) {{:: comment.relativeDate | verboseNumbers }}
@@ -263,9 +259,7 @@
 			//----------------------------------//
 			//- List comments on a single move -//
 			//----------------------------------//
-			.comments(
-				ng-if='kifu.path.m !== 0'
-			)
+			.comments
 				.panel.panel-default
 					.panel-heading
 						span.fui-chat
@@ -286,13 +280,11 @@
 							)
 								i.fui-arrow-right
 
-					.panel-body.clearfix(
-						ng-if='numComments'
-						ng-class='{ loading: loading }'
-					)
+					.panel-body.clearfix
+
 						.throbber(ng-show='loading')
-						//-.throbber
-						//-div(ng-if='!comments.length') &hellip;
+
+						p(ng-if='!loading && !comments.length') No comments so far.
 
 						ul.media-list.clearfix(
 							ng-show='numComments'
@@ -404,7 +396,7 @@
 								//-= ' to leave comments.'
 
 					.panel-footer.comment-compose(
-						ng-if='kifu.path.m !== 0 && !currentUser.username'
+						ng-if='!currentUser.username'
 					)
 						.row
 							.col-md-12
@@ -419,7 +411,7 @@
 									) Sign up
 
 					.panel-footer.comment-compose(
-						ng-if='kifu.path.m !== 0 && currentUser.username'
+						ng-if='currentUser.username'
 					)
 						.row
 							.col-md-12

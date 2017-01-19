@@ -18,6 +18,8 @@ angular.module('gokibitz.controllers')
 			$compile,
 			socket
 		) {
+			// At init, we know we need to check for new comments
+			$scope.newComments = true;
 
 			let makeStarredByList = function (comment) {
 				if (!_.isEmpty(comment.stars)) {
@@ -56,6 +58,8 @@ angular.module('gokibitz.controllers')
 						case 'new':
 							$scope.comments.push(data.comment);
 							$scope.updateUniqComments();
+							// Flag that there have been new comments
+							$scope.newComments = true;
 							break;
 						case 'update':
 							$scope.comments[index()] = data.comment;
@@ -89,10 +93,10 @@ angular.module('gokibitz.controllers')
 			$scope.listComments = function (alreadyRendered) {
 				var path;
 
-				// Turn off animation
-				$scope.loading = true;
-
 				if (!alreadyRendered) {
+					// Turn on animation
+					$scope.loading = true;
+
 					// Clear existing comments
 					$scope.displayComments = [];
 					$scope.comments = [];
@@ -104,75 +108,106 @@ angular.module('gokibitz.controllers')
 					canceler.resolve();
 				}
 
-				if ($scope.kifu.path.m === 0) {
-					path = '';
-				} else {
-					path = pathFilter($scope.kifu.path, 'string');
-				}
+				//if ($scope.kifu.path.m === 0) {
+				//	path = '';
+				//} else {
+				//	path = pathFilter($scope.kifu.path, 'string');
+				//}
+				path = pathFilter($scope.kifu.path, 'string');
 
 				canceler = $q.defer();
-				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
-					timeout: canceler.promise
-				})
-					.then(function (response) {
-						var data = response.data;
 
-						if (!alreadyRendered) {
-							//Clear existing comments
-							$scope.comments = [];
-							$scope.numComments = null;
-						}
+				function fetchAllComments() {
+					$http.get('/api/kifu/' + $scope.kifu._id + '/comments/', {
+						timeout: canceler.promise
+					})
+						.then(function (response) {
+							var data = response.data;
 
-						var highlightedComment = $location.search().comment;
-						var highlightedCommentPresent = false;
+							data.forEach(function (comment) {
+								// Create a path object {{ m: 0 }} out of the path strings on the comment
+								comment.pathObject = pathFilter(comment.path, 'object');
+							});
 
-						data.forEach(function (comment) {
-
-							// Create a path object {{ m: 0 }} out of the path strings on the comment
-							comment.pathObject = pathFilter(comment.path, 'object');
-
-							// Tell Angular that we trust this HTML so that it doesn't sanitize it
-							comment.content.html = $sce.trustAsHtml(comment.content.html);
-
-							// Set a flag on comments starred by the current user
-							if ($scope.currentUser) {
-								comment.starredByMe = checkStarredByMe(comment);
-							}
-
-							makeStarredByList(comment);
-
-							if (comment._id === highlightedComment) {
-								highlightedCommentPresent = true;
-							}
+							$scope.allComments = data;
+							$scope.newComments = false;
 						});
+				}
 
-						// If the highlighted comment isn't present on this move, remove it from the
-						// query string
-						if (!highlightedCommentPresent && $scope.highlightedComment) {
-							$scope.highlightedComment = null;
-							$location.search('comment', null);
-						}
+				function fetchComments() {
+					$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
+						timeout: canceler.promise
+					})
+						.then(function (response) {
+							var data = response.data;
 
-						// Use this value instead of $scope.comments.length in the template
-						$scope.numComments = data.length;
+							/*
+							if (!alreadyRendered) {
+								//Clear existing comments
+								$scope.comments = [];
+								$scope.numComments = null;
+							}
+							*/
 
-						if (!alreadyRendered) {
-							$scope.comments = data;
-							$scope.displayComments = [];
-							$scope.addMoreComments();
+							var highlightedComment = $location.search().comment;
+							var highlightedCommentPresent = false;
 
-							$scope.loading = false;
-						} else {
-							$scope.loading = false;
-							$scope.comments = data;
-							$scope.displayComments = $scope.comments;
-						}
+							data.forEach(function (comment) {
 
-					}, function (data) {
-						$scope.comments = [];
-						console.log('Error: ' + data);
-					});
+								// Create a path object {{ m: 0 }} out of the path strings on the comment
+								comment.pathObject = pathFilter(comment.path, 'object');
+
+								// Tell Angular that we trust this HTML so that it doesn't sanitize it
+								comment.content.html = $sce.trustAsHtml(comment.content.html);
+
+								// Set a flag on comments starred by the current user
+								if ($scope.currentUser) {
+									comment.starredByMe = checkStarredByMe(comment);
+								}
+
+								makeStarredByList(comment);
+
+								if (comment._id === highlightedComment) {
+									highlightedCommentPresent = true;
+								}
+							});
+
+							// If the highlighted comment isn't present on this move, remove it from the
+							// query string
+							if (!highlightedCommentPresent && $scope.highlightedComment) {
+								$scope.highlightedComment = null;
+								$location.search('comment', null);
+							}
+
+							// Use this value instead of $scope.comments.length in the template
+							$scope.numComments = data.length;
+
+							if (!alreadyRendered) {
+								$scope.comments = data;
+								$scope.displayComments = [];
+								$scope.addMoreComments();
+
+								$scope.loading = false;
+							} else {
+								$scope.loading = false;
+								$scope.comments = data;
+								$scope.displayComments = $scope.comments;
+							}
+
+						}, function (data) {
+							$scope.comments = [];
+							console.log('Error: ' + data);
+						});
+				}
+
+				fetchComments();
+
+				if ($scope.kifu.path.m === 0 || $scope.newComments) {
+					fetchAllComments();
+				}
 			};
+
+			$scope.debouncedListComments = _.debounce($scope.listComments, 500);
 
 			$scope.addMoreComments = function (num) {
 				if (!$scope.comments) {
@@ -273,7 +308,16 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
-				$scope.listComments();
+				// Clear existing comments
+				$scope.displayComments = [];
+				$scope.comments = [];
+				$scope.numComments = null;
+
+				$scope.loading = true;
+
+				// Smooth out the rapid-fire list comment requests from
+				// quickly navigating through a game
+				$scope.debouncedListComments();
 			}, true);
 
 			$scope.$on('$routeUpdate', function () {
