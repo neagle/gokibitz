@@ -32,13 +32,14 @@ angular.module('gokibitz.directives')
 			});
 
 			element.bind('mouseover', function (event) {
-				if (!attributes.sequence) {
+				if (attributes.sequence.length === 2) {
 					$scope.player.mark(event.target.innerHTML);
+					$scope.mark = true;
 				}
 			});
 
 			element.bind('mouseout', function (event) {
-				if (!attributes.sequence) {
+				if ($scope.mark) {
 					$scope.player.unmark();
 				}
 			});
