@@ -68,11 +68,11 @@ angular.module('gokibitz.directives')
 
 			// Watch the value of the comment and fetch a preview when it changes
 			if (displayPreview) {
-				ngModel.$viewChangeListeners.push(function () {
-					var value = ngModel.$modelValue;
-
-					if (value !== $scope[preview]) {
-						getPreview();
+				$scope.$watch(attributes.ngModel, function (newValue, oldValue) {
+					if (newValue !== oldValue) {
+						if (newValue !== $scope[preview]) {
+							getPreview();
+						}
 					}
 				});
 			}
