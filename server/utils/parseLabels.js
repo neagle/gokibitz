@@ -8,7 +8,10 @@ module.exports = function (markdown) {
 		'([wW]hite[\\s]?|[bB]lack[\\s]?|[wWbB][\\s]?)?',
 
 		// Capture a sequence of moves
-		'([a-hj-tA-HJ-T][0-1]?[0-9]\\b[; ]{0,2}){1,}'
+		'([a-hj-tA-HJ-T][0-1]?[0-9]\\b[; ]{0,2}){2,}',
+
+		// Capture individual moves
+		'|(\\b[a-hj-tA-HJ-T][0-1]?[0-9]\\b)'
 	].join(''), 'g');
 
 	output = markdown.replace(
