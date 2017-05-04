@@ -2,6 +2,7 @@
 angular.module('gokibitz.directives')
 	.directive('move', function () {
 		return {
+			scope: {},
 			restrict: 'E',
 			controllerAs: 'ctrl',
 			bindToController: {
