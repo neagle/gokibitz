@@ -273,7 +273,7 @@ angular.module('gokibitz.controllers')
 	$scope.updateUniqComments = function () {
 		var paths = [];
 
-		$http.get('api/kifu/' + $scope.kifu.shortid)
+		return $http.get('api/kifu/' + $scope.kifu.shortid)
 			.then(function (response) {
 				var comments = response.data.comments;
 
