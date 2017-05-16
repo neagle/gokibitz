@@ -15,6 +15,11 @@ angular.module('gokibitz.controllers')
 
 				if (!err) {
 					locker.put('email', $scope.user.email);
+					let redirect = $rootScope.redirectOnAuth;
+					if (redirect) {
+						$location.path(redirect);
+						delete $rootScope.redirectOnAuth;
+					}
 					$uibModalInstance.close($scope.user);
 				} else {
 					angular.forEach(err.errors, function (error, field) {

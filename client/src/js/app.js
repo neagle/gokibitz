@@ -9,7 +9,7 @@ require('./lib/wgo/player.js');
 require('./lib/wgo/basicplayer.js');
 require('./lib/wgo/basicplayer.component.js');
 require('./lib/wgo/basicplayer.infobox.js');
-//require('./lib/wgo/basicplayer.commentbox.js');
+// require('./lib/wgo/basicplayer.commentbox.js');
 require('./lib/wgo/basicplayer.control.js');
 require('./lib/wgo/player.editable.js');
 require('./lib/wgo/scoremode.js');
@@ -91,13 +91,13 @@ gokibitz.config(
 				controller: 'IndexController',
 				resolve: {
 					//  Just for old-times sake: we're no longer using a kifu on the homepage
-					//kifu: function ($http) {
+					// kifu: function ($http) {
 					//	return $http.get('/api/kifu', {
 					//		params: {
 					//			limit: 1
 					//		}
 					//	});
-					//}
+					// }
 				}
 			})
 			.when('/login', {
@@ -125,6 +125,10 @@ gokibitz.config(
 			.when('/upload', {
 				templateUrl: '/partials/upload',
 				controller: 'UploadController'
+			})
+			.when('/fetch', {
+				templateUrl: '/partials/fetch',
+				controller: 'FetchController'
 			})
 			.when('/kifu', {
 				templateUrl: '/partials/list-kifu',
@@ -168,36 +172,35 @@ gokibitz.config(
 				redirectTo: '/'
 			});
 
-		$locationProvider.html5Mode(true);
+			$locationProvider.html5Mode(true);
 
-		lockerProvider
-			.setDefaultDriver('local')
-			.setDefaultNamespace('gokibitz')
-			.setSeparator('.')
-			.setEventsEnabled('true');
+			lockerProvider
+				.setDefaultDriver('local')
+				.setDefaultNamespace('gokibitz')
+				.setSeparator('.')
+				.setEventsEnabled('true');
 
-		// @see https://github.com/angular-ui/ui-router/issues/2889
-		$qProvider.errorOnUnhandledRejections(false);
-	}
-);
+			// @see https://github.com/angular-ui/ui-router/issues/2889
+			$qProvider.errorOnUnhandledRejections(false);
+		}
+	);
 
-/*
-gokibitz.config([
+	/*
+	gokibitz.config([
 	'$httpProvider',
 	function ($httpProvider) {
-		$httpProvider.interceptors.push([
-			'$injector',
-			function ($injector) {
-				return $injector.get('AuthInterceptor');
-			}
-		]);
-	}
+	$httpProvider.interceptors.push([
+	'$injector',
+	function ($injector) {
+	return $injector.get('AuthInterceptor');
+}
+]);
+}
 ]);
 */
 
 gokibitz.run(
 	function ($rootScope, $location, Auth, $route, $window) {
-
 		// Check to see if we're in an iframe
 		$rootScope.iframed = ($window.self !== $window.top);
 
@@ -207,12 +210,12 @@ gokibitz.run(
 			$rootScope.pageTitle = '';
 		});
 
-		//watching the value of the currentUser variable.
+		// watching the value of the currentUser variable.
 		$rootScope.$watch('currentUser', function (currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
 			var path = $location.path().split('/');
-			path = '/' +  path[1];
+			path = '/' + path[1];
 
 			if (
 				!currentUser &&
@@ -220,12 +223,12 @@ gokibitz.run(
 			) {
 				Auth.currentUser();
 			}
-
 		});
 
 		// On catching 401 errors, redirect to the login page.
-		$rootScope.$on('event:auth-loginRequired', function () {
-			$location.path('/');
+		$rootScope.$on('event:auth-loginRequired', function ($event, rejection, $rootScope) {
+			$rootScope.redirectOnAuth = $location.path();
+			$location.path('/login');
 			return false;
 		});
 	}

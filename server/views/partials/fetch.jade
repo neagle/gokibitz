@@ -1,0 +1,59 @@
+.container-fluid
+	.row
+		.col-md-12
+			h3 Upload
+
+		.col-md-12
+			.row
+				.col-xs-12
+					.panel.panel-default
+						.panel-heading Fetch SGF from a URL
+						.panel-body
+							.row
+								.col-xs-12
+									.alert.alert-success(
+										role='alert'
+										ng-if='success'
+									)
+										strong Success!
+										p
+											a(href='/kifu/{{ success.shortid }}') View your new Kifu
+									.alert.alert-danger(
+										role='alert'
+										ng-if='error'
+									)
+										strong Something went wrong! Please double-check your URL.
+										= ' '
+										p {{ error.message }}
+
+									input.form-control(
+										ng-model='sgfUrl'
+										placeholder='http://'
+										ng-disabled='uploading'
+									)
+									flatui-checkbox.inline-block(
+										model='public'
+										label='"Public"'
+									)
+									p.pull-right.top-buffer
+										button.btn.btn-default(
+											ng-disabled='!sgfUrl || uploading'
+											ng-click='fetchSgf()'
+										) Fetch
+							.row
+								.col-xs-12
+									.alert(ng-if='public')
+										p
+											strong Public.
+											= ' '
+											| This record will appear in the
+											= ' '
+											a(href='/kifu') list of recently uploaded kifu
+											| , and comments made on it will appear in the Recent Comments list.
+										p You can change this setting later.
+									.alert(ng-if='!public')
+										p
+											strong Private.
+											= ' '
+											| Anyone can still view your kifu and make comments if you give them the URL, but neither it nor any comments made on it will show up elsewhere on the site.
+										p You can change this setting later.
