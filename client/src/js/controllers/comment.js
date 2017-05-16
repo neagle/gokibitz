@@ -93,6 +93,15 @@ angular.module('gokibitz.controllers')
 			$scope.listComments = function (alreadyRendered) {
 				var path;
 
+				// Check if there are comments to load
+				let uniqComments = $scope.$parent.uniqComments;
+				let pathHasComments = uniqComments &&
+					uniqComments.find(path => path.m === $scope.kifu.path.m);
+				if (!pathHasComments && $scope.kifu.path.m !== 0) {
+					// No need to load comments
+					return;
+				}
+
 				if (!alreadyRendered) {
 					// Turn on animation
 					$scope.loading = true;
@@ -207,7 +216,7 @@ angular.module('gokibitz.controllers')
 				}
 			};
 
-			$scope.debouncedListComments = _.debounce($scope.listComments, 500);
+			$scope.debouncedListComments = _.debounce($scope.listComments, 100);
 
 			$scope.addMoreComments = function (num) {
 				if (!$scope.comments) {
@@ -312,8 +321,6 @@ angular.module('gokibitz.controllers')
 				$scope.displayComments = [];
 				$scope.comments = [];
 				$scope.numComments = null;
-
-				$scope.loading = true;
 
 				// Smooth out the rapid-fire list comment requests from
 				// quickly navigating through a game
