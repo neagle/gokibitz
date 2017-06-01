@@ -206,7 +206,7 @@ angular.module('gokibitz.controllers')
 				let pathHasComments = uniqComments &&
 					uniqComments.find(path => path.m === $scope.kifu.path.m);
 
-				if (pathHasComments) {
+				if (pathHasComments || !uniqComments) {
 					fetchComments();
 				} else {
 					$timeout(() => {
