@@ -19,7 +19,6 @@ angular.module('gokibitz.directives')
 			$scope.kifu = [];
 
 			$scope.listKifu = function (replace) {
-				console.log('listKifu')
 				if (typeof replace === 'undefined') {
 					replace = false;
 				}
@@ -28,8 +27,6 @@ angular.module('gokibitz.directives')
 					offset: $scope.index,
 					public: typeof $scope.public === 'undefined' ? true : $scope.public
 				};
-
-				console.log('params', params)
 
 				let url;
 				if ($scope.username) {
@@ -40,7 +37,6 @@ angular.module('gokibitz.directives')
 
 				$http.get(url, { params: params })
 					.then(function (response) {
-						console.log('response', response)
 						const data = response.data;
 						if (!replace) {
 							$scope.kifu = $scope.kifu.concat(data.kifu);
@@ -49,7 +45,7 @@ angular.module('gokibitz.directives')
 						}
 						$scope.total = data.total;
 					});
-			}
+			};
 
 			$scope.moreKifu = function () {
 				$scope.index += $scope.kifu.length;
