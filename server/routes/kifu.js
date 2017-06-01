@@ -16,6 +16,7 @@ var url = require('url');
 var async = require('async');
 var contentDisposition = require('content-disposition');
 var drawGame = require('../utils/drawGame');
+var mongoose = require('mongoose');
 
 router.get('/', function (req, res) {
 	const offset = parseInt(req.query.offset, 10) || 0;
@@ -38,6 +39,10 @@ router.get('/', function (req, res) {
 		public: true,
 		deleted: false
 	};
+
+	if (req.query.owner) {
+		match.owner = mongoose.Types.ObjectId(req.query.owner);
+	}
 
 	// Add an optional text search of the SGF
 	if (search) {
@@ -294,12 +299,19 @@ router.get('/:shortid/sgf', function (req, res) {
 				User.findOne({
 					_id: kifu.owner
 				}, function (error, owner) {
-					//console.log(kifu, owner);
-					var filename = owner.username + '--' +
-						kifu.game.info.black.name +
-						'-vs-' +
-						kifu.game.info.white.name +
-						'.sgf';
+					// Use the GN property for filename, if present
+					// http://www.red-bean.com/sgf/properties.html#GN
+					let filename = kifu.game.info.name + '.sgf';
+					if (!filename) {
+						filename = [
+							owner.username,
+							'--',
+							kifu.game.info.black.name,
+							'-vs-',
+							kifu.game.info.white.name,
+							'.sgf'
+						].join('');
+					}
 					res.set({
 						'Content-Disposition': contentDisposition(filename),
 						'Content-Type': 'application/x-go-sgf'

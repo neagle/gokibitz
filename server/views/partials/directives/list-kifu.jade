@@ -1,0 +1,83 @@
+div
+	div.panel.panel-default
+		div.panel-heading
+			span.fui-chat
+			= ' '
+			| Uploaded Kifu
+		div.panel-body
+			p(ng-if='!kifu.length') &hellip;
+			ul.media-list
+				li.media.fade-in-fade-out(
+					ng-repeat='item in kifu track by item.id'
+					ng-class='{ public: item.public, private: !item.public }'
+				)
+					.media
+						.media-left
+							sgf.media-object.thumb(
+								src='item.game.sgf'
+								layout='{}'
+								start='100'
+							)
+						.media-body
+							.pull-right(
+								ng-hide='!currentUser || (item.owner !== currentUser._id)'
+							)
+								button.btn.btn-danger(
+									gk-really-message='Are you sure you want to delete this kifu?'
+									gk-really-click='deleteKifu(item)'
+									gk-really-class='btn-danger'
+									gk-really-verb='Delete'
+								)
+									.fui-trash
+							h5.media-heading
+								a(
+									href='/kifu/{{ item.shortid }}'
+								)
+									span.name {{ item.game.info.white.name || 'Anonymous' }}
+									span.rank(ng-if='item.game.info.white.rank') &nbsp;{{ item.game.info.white.rank }}
+									= ' '
+									| vs.
+									= ' '
+									span.name {{ item.game.info.black.name || 'Anonymous' }}
+									span.rank(ng-if='item.game.info.black.rank') &nbsp;{{ item.game.info.black.rank }}
+									= ' '
+									span(ng-if='item.game.info.result') ({{ item.game.info.result }})
+									= ' '
+									.label.label-info(ng-if='item.comments.length > 0') {{ item.comments.length }}
+										= ' '
+										ng-pluralize(
+											count='item.comments.length'
+											when='{ "one": "Comment", "other": "Comments" }'
+										)
+							p(ng-if='item.game.info.comment') &ldquo;{{ item.game.info.comment }}&rdquo;
+							p(ng-if='item.game.info.date && item.game.info.date !== "Invalid date"') Played on
+								= ' '
+								time(
+									datetime='{{ item.game.info.date }}'
+								) {{ item.game.info.date | date: 'longDate' }}
+
+							p.gk-checkbox(ng-if='item.owner === currentUser._id')
+								label
+									input(
+										type='checkbox'
+										ng-model='item.public'
+										ng-change='togglePublic(item)'
+									)
+									= ' '
+									strong Public
+
+
+							p(ng-if='item.owner.username') Uploaded {{ item.uploadedRelative }} by
+								= ' '
+								a(
+									href='/user/{{ item.owner.username }}'
+								)
+									| {{ item.owner.username }}
+	p
+		button.btn.btn-default.btn-lg(
+			ng-show='(kifu.length + index) < total'
+			ng-click='moreKifu()'
+		)
+			span.fui-plus-inverted
+			= ' '
+			| More
