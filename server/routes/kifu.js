@@ -301,17 +301,19 @@ router.get('/:shortid/sgf', function (req, res) {
 				}, function (error, owner) {
 					// Use the GN property for filename, if present
 					// http://www.red-bean.com/sgf/properties.html#GN
-					let filename = kifu.game.info.name + '.sgf';
+					let filename = kifu.game.info.name;
 					if (!filename) {
 						filename = [
 							owner.username,
 							'--',
 							kifu.game.info.black.name,
 							'-vs-',
-							kifu.game.info.white.name,
-							'.sgf'
+							kifu.game.info.white.name
 						].join('');
 					}
+
+					filename += '.sgf';
+					
 					res.set({
 						'Content-Disposition': contentDisposition(filename),
 						'Content-Type': 'application/x-go-sgf'
