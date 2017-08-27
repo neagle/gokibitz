@@ -64,25 +64,31 @@ $ sudo mkdir -p /data/db/
 $ sudo chown `id -u` /data/db
 ```
 
-#### 5. Run gulp to build your files:
+#### 5. Create your .env file (In your project directory)
+
+```
+MONGO_URI=mongodb://localhost
+```
+
+#### 6. Run gulp to build your files:
 
 ```sh
 (project directory)
 $ gulp default
 ```
 
-#### 6. Start up a local node server and gulp watcher:
+#### 7. Start up a local node server and gulp watcher:
 
 ```sh
 (project directory)
 $ gulp watch
 ```
 
-#### 7. Open your local GoKibitz at http://localhost:3434
+#### 8. Open your local GoKibitz at http://localhost:3434
 
 (Port named after the traditional alternating komoku opening.)
 
-#### 8. Create a new branch, and start working
+#### 9. Create a new branch, and start working
 
 ```sh
 $ git checkout -B my-bug
