@@ -40,13 +40,19 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 							res.json(201, { message: 'Comment created with id: ' + comment._id });
 
 							// Send notifications
+							let mentionedUsers = comment.getMentionedUsers();
+							notificationHelper.notifyMentionedUsers(mentionedUsers, comment);
+
+							// Get the list of other users who have commented on this move
 							comment.getRecipients(function (recipients) {
 								recipients.forEach(function (recipient) {
-									notificationHelper.newNotification(comment, 'new comment', recipient);
+									// If a user is *not* mentioned (in which case, they will already
+									// be getting a notification), send them a notification
+									if (!_.includes(mentionedUsers, recipient.username)) {
+										notificationHelper.newNotification(comment, 'new comment', recipient);
+									}
 								});
 							});
-
-							notificationHelper.notifyMentionedUsers(comment);
 
 							comment.populate('user', function () {
 								io.emit('send:' + kifu._id, {
@@ -76,7 +82,7 @@ router.post('/', auth.ensureAuthenticated, function (req, res) {
 
 // Get a list of comments in reverse cron
 router.get('/', function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = parseInt(req.query.offset, 10) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var user;
 	var username = req.query.username || '';
@@ -144,6 +150,62 @@ router.get('/', function (req, res) {
 			comments = comments.where('user').equals(user._id);
 		}
 
+		// Turn a flat array of comments into one where comments by the same user
+		// on the same kifu are combined
+		var chunkify = function (comments) {
+			var comment;
+
+			function pathPresent(path) {
+				return path.path === comment.path;
+			}
+
+			function pathSorter(a, b) {
+				return a.path - b.path;
+			}
+
+			// For each comment...
+			for (
+				var i = 0, length = comments.length;
+				i < length && chunkedComments.length < limit;
+				i += 1
+			) {
+				comment = comments[i];
+
+				// If this comment has the same user and kifu as the last one...
+				if (
+					lastComment &&
+					lastUser === String(comment.user._id) &&
+					lastKifu === String(comment.kifu._id)
+				) {
+
+					// Don't add multiple notifications for multiple comments on the same move
+					if (lastComment.path !== comment.path) {
+						// If the last comment's path isn't already an array, turn it into one
+						if (!Array.isArray(lastComment.path)) {
+							lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
+						}
+
+						var alreadyPresent = lastComment.path.some(pathPresent);
+
+						if (!alreadyPresent) {
+							// Push the current comment's path to the last object
+							lastComment.path.push({ _id: comment._id, path: comment.path });
+
+							lastComment.path.sort(pathSorter);
+						}
+					}
+
+				} else {
+					// This comment becomes the last comment
+					lastComment = comment;
+					lastUser = String(comment.user._id);
+					lastKifu = String(comment.kifu._id);
+
+					chunkedComments.push(comment);
+				}
+			}
+		};
+
 		comments
 			.populate('user', 'username email gravatar rank')
 			.populate('kifu', 'shortid game public')
@@ -182,61 +244,6 @@ router.get('/', function (req, res) {
 				}
 			});
 	}
-
-	// Turn a flat array of comments into one where comments by the same user
-	// on the same kifu are combined
-	function chunkify(comments) {
-		function pathPresent(path) {
-			return path.path === comment.path;
-		}
-
-		function pathSorter(a, b) {
-			return a.path - b.path;
-		}
-
-		// For each comment...
-		for (
-			var i = 0, length = comments.length;
-			i < length && chunkedComments.length < limit;
-			i += 1
-		) {
-			var comment = comments[i];
-
-			// If this comment has the same user and kifu as the last one...
-			if (
-				lastComment &&
-				lastUser === String(comment.user._id) &&
-				lastKifu === String(comment.kifu._id)
-			) {
-
-				// Don't add multiple notifications for multiple comments on the same move
-				if (lastComment.path !== comment.path) {
-					// If the last comment's path isn't already an array, turn it into one
-					if (!Array.isArray(lastComment.path)) {
-						lastComment.path = [{ _id: lastComment._id, path: lastComment.path }];
-					}
-
-					var alreadyPresent = lastComment.path.some(pathPresent);
-
-					if (!alreadyPresent) {
-						// Push the current comment's path to the last object
-						lastComment.path.push({ _id: comment._id, path: comment.path });
-
-						lastComment.path.sort(pathSorter);
-					}
-				}
-
-			} else {
-				// This comment becomes the last comment
-				lastComment = comment;
-				lastUser = String(comment.user._id);
-				lastKifu = String(comment.kifu._id);
-
-				chunkedComments.push(comment);
-			}
-		}
-	}
-
 	// get the total (so we have a hard stop), then get the user if necessary,
 	// then get comments
 	var funcs = [];
@@ -267,22 +274,29 @@ router.patch('/:id/star', function (req, res) {
 						comment.stars.push(req.user._id);
 						comment.save(function (error) {
 							if (!error) {
-								res.json(200, { message: 'You starred comment ' + id + '.' });
+								User.populate(comment, {
+									path: 'stars',
+									select: 'username gravatar'
+								}, function (error) {
+									if (!error) {
+										res.json(200, { message: 'You starred comment ' + id + '.' });
 
-								// Send notification to the starred commenter
-								var notification = new Notification();
-								notification.cause = 'star';
-								notification.to = comment.user;
-								notification.from = req.user;
-								notification.kifu = comment.kifu;
-								notification.path = comment.path;
-								notification.comment = comment._id;
+										// Send notification to the starred commenter
+										var notification = new Notification();
+										notification.cause = 'star';
+										notification.to = comment.user;
+										notification.from = req.user;
+										notification.kifu = comment.kifu;
+										notification.path = comment.path;
+										notification.comment = comment._id;
 
-								notification.save();
+										notification.save();
 
-								io.emit('send:' + comment.kifu, {
-									change: 'star',
-									comment: comment
+										io.emit('send:' + comment.kifu, {
+											change: 'star',
+											comment: comment
+										});
+									}
 								});
 							} else {
 								res.json(500, { message: 'Could not star comment. ' + error });
@@ -317,28 +331,32 @@ router.patch('/:id/unstar', function (req, res) {
 						comment.stars.splice(index, 1);
 						comment.save(function (error) {
 							if (!error) {
-								res.json(200, { message: 'You unstarred comment ' + id + '.' });
+								User.populate(comment, {
+									path: 'stars',
+									select: 'username gravatar'
+								}, function (error) {
+									res.json(200, { message: 'You unstarred comment ' + id + '.' });
 
-								// Remove the notification for this star
-								Notification.find()
-									.where('comment', comment)
-									.where('cause').equals('star')
-									.where('from').equals(req.user)
-									.exec(function (error, notifications) {
-										if (!error) {
-											for (var i = notifications.length - 1; i >= 0; i -= 1) {
-												notifications[i].remove();
+									// Remove the notification for this star
+									Notification.find()
+										.where('comment', comment)
+										.where('cause').equals('star')
+										.where('from').equals(req.user)
+										.exec(function (error, notifications) {
+											if (!error) {
+												for (var i = notifications.length - 1; i >= 0; i -= 1) {
+													notifications[i].remove();
+												}
+											} else {
+												console.log('Could not delete notifications for this comment', error);
 											}
-										} else {
-											console.log('Could not delete notifications for this comment', error);
-										}
+										});
+
+									io.emit('send:' + comment.kifu, {
+										change: 'unstar',
+										comment: comment
 									});
-
-								io.emit('send:' + comment.kifu, {
-									change: 'unstar',
-									comment: comment
 								});
-
 							} else {
 								res.json(500, { message: 'Could not unstar comment. ' + error });
 							}
@@ -463,16 +481,63 @@ router.put('/:id', auth.ensureAuthenticated, function (req, res) {
 					comment.save(function (error) {
 						if (!error) {
 
-							notificationHelper.notifyMentionedUsers(comment);
-							res.json(200, {
-								message: 'Comment updated.',
-								comment: comment
-							});
+							let mentionedUsers = comment.getMentionedUsers();
 
-							io.emit('send:' + comment.kifu, {
-								change: 'update',
-								comment: comment
-							});
+							// Find users who were already notified about this comment
+							Notification.find()
+								.where('comment', comment)
+								.exec(function (error, notifications) {
+									if (!error) {
+										User.populate(notifications, {
+											path: 'to',
+											select: 'username'
+										}, function () {
+											// Remove any users who have already been notified about being mentioned
+											const noLongerMentioned = [];
+
+											notifications.forEach(notification => {
+												let index = mentionedUsers.indexOf(notification.to.username);
+												if (index !== -1) {
+													// They've already been mentioned!
+													mentionedUsers.splice(index, 1);
+												} else {
+													if (notification.cause === 'mention') {
+														// They've gotten a notification about this before, but they're
+														// no longer part of the mentioned list.
+														noLongerMentioned.push(notification.to.id);
+													}
+												}
+											});
+
+											// Remove notifications for anyone who is no longer mentioned
+											Notification.find()
+												.where('comment', comment)
+												.where('to').in(noLongerMentioned)
+												.exec(function (error, notifications) {
+													if (!error) {
+														notifications.forEach(notification => {
+															notification.remove();
+														});
+													}
+												});
+
+											// Notify any new mentioned users
+											notificationHelper.notifyMentionedUsers(mentionedUsers, comment);
+
+											res.json(200, {
+												message: 'Comment updated.',
+												comment: comment
+											});
+
+											io.emit('send:' + comment.kifu, {
+												change: 'update',
+												comment: comment
+											});
+										});
+									} else {
+										console.log('Could not delete notifications for this comment', error);
+									}
+								});
 						} else {
 							res.json(500, { message: 'Could not update comment. ' + error });
 						}

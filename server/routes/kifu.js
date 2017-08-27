@@ -13,51 +13,119 @@ var _ = require('lodash');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var async = require('async');
+var contentDisposition = require('content-disposition');
+var drawGame = require('../utils/drawGame');
+var mongoose = require('mongoose');
 
 router.get('/', function (req, res) {
-	var offset = req.query.offset || 0;
-	var limit = Math.min(req.query.limit, 100) || 20;
-	var search = req.query.search || '';
+	const offset = parseInt(req.query.offset, 10) || 0;
+	const limit = Math.min(req.query.limit, 100) || 20;
+	const search = req.query.search || '';
 
-	var criteria = {
+	let curated = req.query.curated;
+	if (typeof req.query.curated === 'undefined') {
+		if (!search) {
+			curated = true;
+		} else {
+			curated = false;
+		}
+	}
+
+	let aggregationPipeline = [];
+
+	// Basic criteria for a public search
+	let match = {
 		public: true,
 		deleted: false
 	};
 
-	if (search) {
-		search = new RegExp(search, 'gi');
-		criteria['game.sgf'] = search;
+	if (req.query.owner) {
+		match.owner = mongoose.Types.ObjectId(req.query.owner);
 	}
 
-	// Get the total count of kifu
-	Kifu.count(criteria, function (error, count) {
-		var kifuList = Kifu
-      .where('public').equals(true)
-      .where('deleted').equals(false);
+	// Add an optional text search of the SGF
+	if (search) {
+		match['game.sgf'] = new RegExp(search, 'gi');
+	}
 
-		if (search) {
-			kifuList = kifuList
-				.where('game.sgf').equals(search);
+	aggregationPipeline.push({ $match: match });
+
+	// If a user has uploaded more than one public game on a given day,
+	// only show the most recent one
+	if (curated) {
+		aggregationPipeline.push({
+			$group: {
+				_id: {
+					uploadedDay: {
+						$dayOfYear: '$uploaded'
+					},
+					uploadedYear: {
+						$year: '$uploaded'
+					},
+					owner: '$owner'
+				},
+				uploaded: { $last: '$uploaded' },
+				game: { $last: '$_id' }
+			}
+		});
+	} else {
+		// The only purpose of grouping other queries is so that they
+		// can be unspooled the same way our grouped query does
+		aggregationPipeline.push({
+			$group: {
+				_id: '$_id',
+				uploaded: { $last: '$uploaded' },
+				game: { $last: '$_id' }
+			}
+		});
+	}
+
+	aggregationPipeline.push({
+		// Sort by reverse cron
+		$sort: {
+			'uploaded': -1
 		}
+	});
 
-		kifuList
-			.sort({ uploaded: -1 })
-			.skip(offset)
-			.limit(limit)
-			.populate('owner', 'username')
-			.exec(function (error, kifu) {
-				if (!error && kifu.length) {
-					res.json(200, {
-						kifu: kifu,
-						total: count
-					});
-				} else if (error) {
-					res.json(500, { message: 'Error loading kifu. ' + error });
+	// Keep a reference to the pipeline with no limits for pagination
+	let countAggregationPipeline = aggregationPipeline.slice();
+
+	aggregationPipeline.push({
+		$skip: offset
+	});
+
+	aggregationPipeline.push({
+		$limit: limit
+	});
+
+	Kifu.aggregate(
+		...aggregationPipeline,
+		function (error, results) {
+			async.waterfall([
+				function (callback) {
+					Kifu.populate(results, { path: 'game' }, callback);
+				},
+				function (results, callback) {
+					results = results.map(result => result.game);
+
+					User.populate(results, { path: 'owner', select: 'username' }, callback);
+				}
+			], function (error, results) {
+				if (error) {
+					res.status(500).json({ message: 'Error loading kifu. ' + error });
+				} else if (!results.length) {
+					res.status(404).json({ message: 'No kifu found.' });
 				} else {
-					res.json(404, { message: 'No kifu found.' });
+					Kifu.aggregate(...countAggregationPipeline, function (error, count) {
+						res.status(200).json({
+							kifu: results,
+							total: count.length
+						});
+					});
 				}
 			});
-	});
+		});
 });
 
 router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
@@ -101,6 +169,25 @@ router.delete('/:id', auth.ensureAuthenticated, function (req, res) {
 		});
 });
 
+router.get('/image/:shortid/:path?', function (req, res) {
+	Kifu
+		.findOne({
+			shortid: req.params.shortid
+		})
+		.exec(function (error, kifu) {
+			if (!error && kifu) {
+				res.setHeader('Content-Type', 'image/png');
+				res.setHeader('Cache-Control', 'public, max-age=2592000');
+				res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
+				drawGame(kifu, req.params.path).pngStream().pipe(res);
+			} else if (error) {
+				res.json(500, { message: 'Error loading kifu. ' + error });
+			} else {
+				res.json(404, { message: 'No kifu found for that shortid.' });
+			}
+		});
+});
+
 router.get('/:shortid', function (req, res) {
 	Kifu
 		.findOne({
@@ -121,15 +208,15 @@ router.get('/:shortid', function (req, res) {
 
 // Update a kifu
 router.put('/:shortid', function (req, res) {
-	console.log('Updating kifu');
+	//console.log('Updating kifu');
 	//console.log('req.body', req.body);
 
 
 	if (!req.body) {
-		console.log('no kifu provided');
+		//console.log('no kifu provided');
 		res.json(500, { message: 'No kifu provided.' });
 	} else {
-		console.log('finding that kifu');
+		//console.log('finding that kifu');
 		Kifu
 			.findOne({
 				shortid: req.params.shortid
@@ -138,11 +225,11 @@ router.put('/:shortid', function (req, res) {
 			.exec(function (error, kifu) {
 				if (!error && kifu) {
 					if (!kifu.owner.equals(req.user) && !req.user.admin) {
-						console.log('you can\'t edit this!');
+						//console.log('you can\'t edit this!');
 						res.json(550, { message: 'You can\'t edit another user\'s kifu.' });
 					} else {
 						kifu = _.assign(kifu, req.body);
-						console.log('updated', kifu);
+						//console.log('updated', kifu);
 
 						// Old kifu did not have an original created at upload time
 						if (!kifu.game.original) {
@@ -150,7 +237,7 @@ router.put('/:shortid', function (req, res) {
 						}
 
 						kifu.save(function (error) {
-							console.log('kifu saved', arguments);
+							//console.log('kifu saved', arguments);
 							if (!error) {
 								res.json(200, {
 									message: 'Kifu updated.',
@@ -212,14 +299,23 @@ router.get('/:shortid/sgf', function (req, res) {
 				User.findOne({
 					_id: kifu.owner
 				}, function (error, owner) {
-					//console.log(kifu, owner);
-					var filename = owner.username + '--' +
-						kifu.game.info.black.name +
-						'-vs-' +
-						kifu.game.info.white.name +
-						'.sgf';
+					// Use the GN property for filename, if present
+					// http://www.red-bean.com/sgf/properties.html#GN
+					let filename = kifu.game.info.name;
+					if (!filename) {
+						filename = [
+							owner.username,
+							'--',
+							kifu.game.info.black.name,
+							'-vs-',
+							kifu.game.info.white.name
+						].join('');
+					}
+
+					filename += '.sgf';
+					
 					res.set({
-						'Content-Disposition': 'attachment; filename=' + filename,
+						'Content-Disposition': contentDisposition(filename),
 						'Content-Type': 'application/x-go-sgf'
 					});
 					res.send(200, sgf);
@@ -263,6 +359,7 @@ router.get('/:id/comments/:path?', function (req, res) {
 					date: (findOptions.path) ? 'asc' : 'desc'
 				})
 				.populate('user', 'username email gravatar rank')
+				.populate('stars', 'username email rank')
 				.exec(function (error, comments) {
 					if (error) {
 						res.json(500, { message: 'Error loading comments. ' + error });

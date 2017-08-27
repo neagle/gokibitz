@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 angular.module('gokibitz.controllers')
 	.controller('UserController',
 		function ($rootScope, $scope, $routeParams, user, $http) {
@@ -86,14 +84,14 @@ angular.module('gokibitz.controllers')
 			};
 
 			$scope.save = function () {
-				$http.put('/api/user/' + $scope.user.username, _.pick($scope.profile, _.identity))
-					.success(function (data, status, headers, config) {
-						$scope.user = data.user;
+				let profile = $scope.profile;
+
+				$http.put('/api/user/' + $scope.user.username, profile)
+					.then(function (response) {
+						$scope.user = response.data.user;
 						$scope.edit = false;
-					})
-					.error(function (data, status, headers, config) {
-						$scope.editError = data;
-						console.log('hey');
+					}, function (response) {
+						$scope.editError = response.data;
 					});
 			};
 

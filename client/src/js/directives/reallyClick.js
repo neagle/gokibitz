@@ -1,13 +1,13 @@
 angular.module('gokibitz.directives')
 .directive('gkReallyClick',
-	function ($modal) {
-		var ModalInstanceCtrl = function ($scope, $modalInstance) {
+	function ($uibModal) {
+		var ModalInstanceCtrl = function ($scope, $uibModalInstance) {
 			$scope.ok = function () {
-				$modalInstance.close();
+				$uibModalInstance.close();
 			};
 
 			$scope.cancel = function () {
-				$modalInstance.dismiss('cancel');
+				$uibModalInstance.dismiss('cancel');
 			};
 		};
 
@@ -29,7 +29,7 @@ angular.module('gokibitz.directives')
 						'<button class="btn btn-warning" ng-click="cancel()">Cancel</button>' +
 						'</div>';
 
-					var modalInstance = $modal.open({
+					var modalInstance = $uibModal.open({
 						template: modalHtml,
 						controller: ModalInstanceCtrl
 					});

@@ -1,6 +1,3 @@
-// TODO: Look at replacing this with requiredir. On the surface, requiredir
-// seems more straightforward.
-var bulk = require('bulk-require');
 var angular = require('angular');
 
 // WGo
@@ -12,14 +9,11 @@ require('./lib/wgo/player.js');
 require('./lib/wgo/basicplayer.js');
 require('./lib/wgo/basicplayer.component.js');
 require('./lib/wgo/basicplayer.infobox.js');
-//require('./lib/wgo/basicplayer.commentbox.js');
+// require('./lib/wgo/basicplayer.commentbox.js');
 require('./lib/wgo/basicplayer.control.js');
 require('./lib/wgo/player.editable.js');
 require('./lib/wgo/scoremode.js');
 require('./lib/wgo/player.permalink.js');
-
-//mentio provides the mention directive
-require('ment.io');
 
 // GoKibitz WGo files
 require('./wgo/gokibitz.wgo.js');
@@ -48,8 +42,7 @@ var gokibitz = angular.module('gokibitz', [
 	'btford.socket-io',
 	'cfp.hotkeys',
 	'infinite-scroll',
-	'monospaced.elastic',
-	'mentio'
+	'monospaced.elastic'
 ]);
 
 require('angular-ui-router');
@@ -85,28 +78,40 @@ angular.module('gokibitz.controllers', []);
 angular.module('gokibitz.directives', []);
 angular.module('gokibitz.services', []);
 angular.module('gokibitz.filters', []);
-bulk(__dirname, [
-	'./controllers/**/*.js',
-	'./directives/**/*.js',
-	'./services/**/*.js',
-	'./filters/**/*.js'
-]);
+require('./controllers/*.js', { mode: 'expand' });
+require('./directives/*.js', { mode: 'expand' });
+require('./services/*.js', { mode: 'expand' });
+require('./filters/*.js', { mode: 'expand' });
 
 gokibitz.config(
-	function ($routeProvider, $locationProvider, lockerProvider) {
+	function ($qProvider, $routeProvider, $locationProvider, lockerProvider) {
 		$routeProvider
 			.when('/', {
 				templateUrl: '/partials/index',
 				controller: 'IndexController',
 				resolve: {
 					//  Just for old-times sake: we're no longer using a kifu on the homepage
-					//kifu: function ($http) {
+					// kifu: function ($http) {
 					//	return $http.get('/api/kifu', {
 					//		params: {
 					//			limit: 1
 					//		}
 					//	});
-					//}
+					// }
+				}
+			})
+			.when('/login', {
+				templateUrl: '/partials/index',
+				controller: 'IndexWithModalController',
+				resolve: {
+					modal: () => 'login'
+				}
+			})
+			.when('/reset-password/:username/:token', {
+				templateUrl: '/partials/index',
+				controller: 'IndexWithModalController',
+				resolve: {
+					modal: () => 'resetPassword'
 				}
 			})
 			.when('/notifications', {
@@ -120,6 +125,10 @@ gokibitz.config(
 			.when('/upload', {
 				templateUrl: '/partials/upload',
 				controller: 'UploadController'
+			})
+			.when('/fetch', {
+				templateUrl: '/partials/fetch',
+				controller: 'FetchController'
 			})
 			.when('/kifu', {
 				templateUrl: '/partials/list-kifu',
@@ -163,33 +172,35 @@ gokibitz.config(
 				redirectTo: '/'
 			});
 
-		$locationProvider.html5Mode(true);
+			$locationProvider.html5Mode(true);
 
-		lockerProvider
-			.setDefaultDriver('local')
-			.setDefaultNamespace('gokibitz')
-			.setSeparator('.')
-			.setEventsEnabled('true');
-	}
-);
+			lockerProvider
+				.setDefaultDriver('local')
+				.setDefaultNamespace('gokibitz')
+				.setSeparator('.')
+				.setEventsEnabled('true');
 
-/*
-gokibitz.config([
+			// @see https://github.com/angular-ui/ui-router/issues/2889
+			$qProvider.errorOnUnhandledRejections(false);
+		}
+	);
+
+	/*
+	gokibitz.config([
 	'$httpProvider',
 	function ($httpProvider) {
-		$httpProvider.interceptors.push([
-			'$injector',
-			function ($injector) {
-				return $injector.get('AuthInterceptor');
-			}
-		]);
-	}
+	$httpProvider.interceptors.push([
+	'$injector',
+	function ($injector) {
+	return $injector.get('AuthInterceptor');
+}
+]);
+}
 ]);
 */
 
 gokibitz.run(
 	function ($rootScope, $location, Auth, $route, $window) {
-
 		// Check to see if we're in an iframe
 		$rootScope.iframed = ($window.self !== $window.top);
 
@@ -199,25 +210,25 @@ gokibitz.run(
 			$rootScope.pageTitle = '';
 		});
 
-		//watching the value of the currentUser variable.
+		// watching the value of the currentUser variable.
 		$rootScope.$watch('currentUser', function (currentUser) {
 			// if no currentUser and on a page that requires authorization then try to update it
 			// will trigger 401s if user does not have a valid session
 			var path = $location.path().split('/');
-			path = '/' +  path[1];
+			path = '/' + path[1];
 
 			if (
 				!currentUser &&
-				!~['/', '/login', '/logout', '/signup', '/kifu', '/user'].indexOf(path)
+				!~['/', '/login', '/logout', '/reset-password', '/signup', '/kifu', '/user'].indexOf(path)
 			) {
 				Auth.currentUser();
 			}
-
 		});
 
 		// On catching 401 errors, redirect to the login page.
-		$rootScope.$on('event:auth-loginRequired', function () {
-			$location.path('/');
+		$rootScope.$on('event:auth-loginRequired', function ($event, rejection, $rootScope) {
+			$rootScope.redirectOnAuth = $location.path();
+			$location.path('/login');
 			return false;
 		});
 	}

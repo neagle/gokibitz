@@ -4,6 +4,7 @@ var marked = require('marked');
 var moment = require('moment');
 var async = require('async');
 var parseLabels = require('../utils/parseLabels.js');
+var linkMoves = require('../utils/linkMoves.js');
 var linkUsers = require('../utils/linkUsers.js');
 
 marked.setOptions({
@@ -53,6 +54,7 @@ var commentSchema = new Schema({
 
 function htmlFromMarkdown(markdown, callback) {
 	var html = parseLabels(markdown);
+	html = linkMoves(html);
 
 	linkUsers(html, function (html) {
 		html = marked(html) || '';
@@ -134,6 +136,21 @@ commentSchema.methods.getRecipients = function (callback) {
 			callback(recipients);
 		}
 	});
+};
+
+// Return a list of users mentioned via @username in a comment
+commentSchema.methods.getMentionedUsers = function () {
+	let usernames = this.content.markdown.match(/@[a-zA-Z0-9_-]*/g);
+
+	if (usernames) {
+		usernames = usernames.map((username) => username.replace('@', ''));
+
+		usernames = usernames.filter(username => {
+			return username.length !== 0 && this.user.username !== username;
+		});
+	}
+
+	return usernames || [];
 };
 
 var comment = mongoose.model('Comment', commentSchema);

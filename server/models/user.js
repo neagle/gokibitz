@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var md5 = require('MD5');
+var base64url = require('base64url');
 
 var UserSchema = new Schema({
 	email: {
@@ -16,9 +17,16 @@ var UserSchema = new Schema({
 		required: true
 	},
 	hashedPassword: String,
+	reset: {
+		token: String,
+		expires: Date
+	},
 	salt: String,
 	name: String,
-	admin: Boolean,
+	admin: {
+		type: Boolean,
+		default: false
+	},
 	guest: Boolean,
 	provider: String,
 	realName: String,
@@ -60,6 +68,7 @@ var UserSchema = new Schema({
 UserSchema
 	.virtual('password')
 	.set(function (password) {
+		// console.log('setting password');
 		this._password = password;
 		this.salt = this.makeSalt();
 		this.hashedPassword = this.encryptPassword(password);
@@ -71,7 +80,12 @@ UserSchema
 UserSchema
 	.virtual('userInfo')
 	.get(function () {
-		return { '_id': this._id, 'username': this.username, 'email': this.email, 'admin': this.admin };
+		return {
+			'_id': this._id,
+			'username': this.username,
+			'email': this.email,
+			'admin': this.admin
+		};
 	});
 
 UserSchema
@@ -109,6 +123,12 @@ UserSchema.path('email').validate(function (email) {
 }, 'The specified email is invalid.');
 
 UserSchema.path('email').validate(function (value, respond) {
+	// console.log('validating email...');
+	// console.log('this.isNew', this.isNew);
+	if (!this.isNew) {
+		return respond(true);
+	}
+
 	mongoose.models.User.findOne({ email: value }, function (err, user) {
 		if (err) {
 			throw err;
@@ -128,6 +148,10 @@ UserSchema.path('username').validate(function (username) {
 }, 'Usernames can only be made up of upper and lowercase letters, numbers, hyphens, and underscores.');
 
 UserSchema.path('username').validate(function (value, respond) {
+	if (!this.isNew) {
+		return respond(true);
+	}
+
 	mongoose.models.User.findOne({ username: value }, function (err, user) {
 		if (err) {
 			throw err;
@@ -146,6 +170,7 @@ UserSchema.path('username').validate(function (value, respond) {
  */
 
 UserSchema.pre('save', function (next) {
+	// console.log('PRE SAVE');
 	if (!this.isNew) {
 		return next();
 	}
@@ -189,6 +214,14 @@ UserSchema.methods = {
 		}
 		var salt = new Buffer(this.salt, 'base64');
 		return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+	},
+
+	resetPassword: function () {
+		// request password reset
+
+		this.reset.token = base64url(crypto.randomBytes(20));
+		const tomorrow = +new Date() + (60 * 60 * 24 * 1000);
+		this.reset.expires = tomorrow;
 	},
 
 	/**

@@ -32,18 +32,6 @@ angular.module('gokibitz.directives')
 				);
 			}
 
-			// Turn scroll behavior off for narrower widths
-			function resize() {
-				if ($window.innerWidth >= 992) {
-					$win.on('scroll', scroll);
-				} else {
-					$win.off('scroll');
-					elem[0].style.position = null;
-					elem[0].style.top = 0;
-					elem[0].style.bottom = null;
-				}
-			}
-
 			function scroll() {
 				var top = ($window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
 				var totalHeight = top - topSpace;
@@ -65,6 +53,18 @@ angular.module('gokibitz.directives')
 					elem[0].style.position = 'relative';
 					elem[0].style.top = 0;
 					elem[0].style.left = null;
+					elem[0].style.bottom = null;
+				}
+			}
+
+			// Turn scroll behavior off for narrower widths
+			function resize() {
+				if ($window.innerWidth >= 992) {
+					$win.on('scroll', scroll);
+				} else {
+					$win.off('scroll');
+					elem[0].style.position = null;
+					elem[0].style.top = 0;
 					elem[0].style.bottom = null;
 				}
 			}

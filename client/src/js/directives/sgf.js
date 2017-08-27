@@ -32,6 +32,33 @@ angular.module('gokibitz.directives')
 		},
 		template: '<div></div><ng-transclude></ng-transclude>',
 		link: function ($scope, element, attributes) {
+			// Turn a3 into { x: 2, y: 16 }
+			// TODO: This function obviously belongs some place universal.
+			var normalizeCoordinates = function (move) {
+				var x, y;
+				var numRegExp = /[0-1]?[0-9]/;
+
+				// Note the missing i
+				var letters = 'abcdefghjklmnopqrst';
+
+				y = numRegExp.exec(move)[0];
+				y = $scope.player.kifuReader.game.size - y;
+
+				x = move.replace(numRegExp, '').toLowerCase();
+				//
+				// If there's an extra letter in the move (indicating color, probably)
+				// just chop it off
+				if (x.length > 1) {
+					x = x.substring(x.length - 1);
+				}
+
+				// Turn the letter into a number using our letters key
+				x = letters.indexOf(x);
+
+				return { x: x, y: y };
+			};
+
+
 			if (!$scope.src) {
 				return;
 			}
@@ -99,7 +126,9 @@ angular.module('gokibitz.directives')
 				rememberPath: false,
 				enableKeys: false,
 				update: function (event) {
-					$scope.update({ event: event });
+					if (typeof $scope.update === 'function') {
+						$scope.update({ event: event });
+					}
 				}
 			});
 
@@ -168,32 +197,6 @@ angular.module('gokibitz.directives')
 
 				$timeout.cancel(animateTimer);
 				display($scope.player.temporarySequence);
-			};
-
-			// Turn a3 into { x: 2, y: 16 }
-			// TODO: This function obviously belongs some place universal.
-			var normalizeCoordinates = function (move) {
-				var x, y;
-				var numRegExp = /[0-1]?[0-9]/;
-
-				// Note the missing i
-				var letters = 'abcdefghjklmnopqrst';
-
-				y = numRegExp.exec(move)[0];
-				y = $scope.player.kifuReader.game.size - y;
-
-				x = move.replace(numRegExp, '').toLowerCase();
-				//
-				// If there's an extra letter in the move (indicating color, probably)
-				// just chop it off
-				if (x.length > 1) {
-					x = x.substring(x.length - 1);
-				}
-
-				// Turn the letter into a number using our letters key
-				x = letters.indexOf(x);
-
-				return { x: x, y: y };
 			};
 
 			// Add a marker to the goban

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('gokibitz.services')
-.factory('Auth', function Auth($location, $rootScope, Session, User, $cookieStore) {
+.factory('Auth', function Auth($http, $location, $rootScope, Session, User, $cookieStore) {
 	$rootScope.currentUser = $cookieStore.get('user') || null;
 	$cookieStore.remove('user');
 
@@ -63,6 +63,26 @@ angular.module('gokibitz.services')
 			}, function (err) {
 				return cb(err.data);
 			});
+		},
+
+		requestPasswordReset: function (email, callback) {
+			var cb = callback || angular.noop;
+			$http.get(`/auth/reset-password/${email}`)
+				.then(result => {
+					cb(result);
+				}, err => {
+					cb(err);
+				});
+		},
+
+		resetPassword: function (username, token, newPassword, callback) {
+			var cb = callback || angular.noop;
+			$http.post(`/auth/reset-password/${username}`, { token, newPassword })
+				.then(result => {
+					cb(result);
+				}, err => {
+					cb(err);
+				});
 		},
 
 		removeUser: function (email, password, callback) {

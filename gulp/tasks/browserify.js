@@ -15,6 +15,7 @@ var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
 var config = require('../config').browserify;
 var _ = require('lodash');
+var gutil = require('gulp-util');
 
 var browserifyTask = function(callback, devMode) {
 	var bundleQueue = config.bundleConfigs.length;
@@ -29,24 +30,23 @@ var browserifyTask = function(callback, devMode) {
 			bundleConfig = _.omit(bundleConfig, ['external', 'require']);
 		}
 
-		var b = browserify(bundleConfig);
+		var b = browserify(bundleConfig)
+			.transform('babelify', { presets: 'es2015'});
 
 		var bundle = function() {
 			// Log when bundling starts
 			bundleLogger.start(bundleConfig.outputName);
 
-			return b
-			.bundle()
-			// Report compile errors
-			.on('error', handleErrors)
-			// Use vinyl-source-stream to make the
-			// stream gulp compatible. Specify the
-			// desired output filename here.
-			.pipe(source(bundleConfig.outputName))
-			// Specify the output destination
-			.pipe(gulp.dest(bundleConfig.dest))
-			.on('end', reportFinished);
-			//.pipe(browserSync.reload({stream:true}));
+			return b.bundle()
+				.on('error', handleErrors)
+				// Use vinyl-source-stream to make the
+				// stream gulp compatible. Specify the
+				// desired output filename here.
+				.pipe(source(bundleConfig.outputName))
+				// Specify the output destination
+				.pipe(gulp.dest(bundleConfig.dest))
+				.on('end', reportFinished);
+				//.pipe(browserSync.reload({stream:true}));
 		};
 
 		if (devMode) {
@@ -68,21 +68,21 @@ var browserifyTask = function(callback, devMode) {
 			}
 		}
 
-	var reportFinished = function() {
-		// Log when bundling completes
-		bundleLogger.end(bundleConfig.outputName)
+		var reportFinished = function() {
+			// Log when bundling completes
+			bundleLogger.end(bundleConfig.outputName)
 
-		if (bundleQueue) {
-			bundleQueue -= 1;
-			if (bundleQueue === 0) {
-				// If queue is empty, tell gulp the task is complete.
-				// https://github.com/gulpjs/gulp/blob/master/docs/API.md#accept-a-callback
-				callback();
+			if (bundleQueue) {
+				bundleQueue -= 1;
+				if (bundleQueue === 0) {
+					// If queue is empty, tell gulp the task is complete.
+					// https://github.com/gulpjs/gulp/blob/master/docs/API.md#accept-a-callback
+					callback();
+				}
 			}
-		}
-	};
+		};
 
-	return bundle();
+		return bundle();
 	};
 
 	// Start bundling with Browserify for each bundleConfig specified

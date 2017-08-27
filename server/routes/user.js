@@ -35,6 +35,7 @@ router.get('/list', auth.ensureAuthenticated, function (req, res) {
 		});
 });
 
+
 // Get a user
 router.get('/:username', function (req, res) {
 	User.findOne({ username: req.params.username })
@@ -87,29 +88,17 @@ router.put('/:username', auth.ensureAuthenticated, function (req, res) {
 
 // Get a user's kifu
 router.get('/:user/kifu', function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = parseInt(req.query.offset, 10) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var search = req.query.search || '';
-
-	function findUser(username) {
-		User.findOne({
-			username: username
-		}, function (error, user) {
-			if (!error && user) {
-				listKifu(user);
-			} else if (error) {
-				res.json(500, { message: 'Error finding user. ' + error });
-			} else {
-				res.json(404, { message: 'No user with that username found.' });
-			}
-		});
-	}
+	const onlyPublic = req.query.public === 'true';
 
 	function listKifu(user) {
 		// Get the total count of kifu
 		var criteria = {
 			owner: user,
-			deleted: false
+			deleted: false,
+			public: onlyPublic
 		};
 
 		if (search) {
@@ -121,6 +110,11 @@ router.get('/:user/kifu', function (req, res) {
 			var userKifu = Kifu
 				.where('owner', user)
 				.where('deleted').equals(false);
+
+			if (onlyPublic) {
+				userKifu = userKifu
+					.where('public').equals(onlyPublic);
+			}
 
 			if (search) {
 				userKifu = userKifu
@@ -143,6 +137,20 @@ router.get('/:user/kifu', function (req, res) {
 						res.json(404, { message: 'No kifu found.' });
 					}
 				});
+		});
+	}
+
+	function findUser(username) {
+		User.findOne({
+			username: username
+		}, function (error, user) {
+			if (!error && user) {
+				listKifu(user);
+			} else if (error) {
+				res.json(500, { message: 'Error finding user. ' + error });
+			} else {
+				res.json(404, { message: 'No user with that username found.' });
+			}
 		});
 	}
 

@@ -47,8 +47,8 @@
 					= ' '
 					button.btn.btn-default(ng-click='cancel()') Cancel
 
-		.col-sm-6.dark-background
-			.profile-container
+		.col-sm-6
+			.profile-container.dark-background
 				// PROFILE DISPLAY
 				.display.animate-fade(ng-hide='edit')
 					.row
@@ -119,7 +119,9 @@
 										th
 											a(href='https://online-go.com') OGS
 										td
-											| {{ user.externalGoUsernames.ogs }}
+											a(
+												href='https://online-go.com/user/{{ user.externalGoUsernames.ogs}}'
+											) {{ user.externalGoUsernames.ogs }}
 									tr(ng-show='user.externalGoUsernames.igs || edit')
 										th
 											a(href='http://pandanet-igs.com/') IGS
@@ -139,7 +141,7 @@
 											a(href='http://www.wbaduk.com/') WBaduk
 										td
 											| {{ user.externalGoUsernames.wbaduk }}
-
+					
 				// PROFILE EDIT
 				.edit.animate-fade(ng-hide='!edit')
 					form(
@@ -333,7 +335,12 @@
 													ng-model='profile.externalGoUsernames.wbaduk'
 													placeholder='username'
 												)
-
+											
+			.row(ng-if='!edit')
+				.col-md-12
+					list-kifu(
+						username='{{ user.username }}'
+					)
 
 		.col-sm-4
 			recent-comments(

@@ -7,9 +7,9 @@ angular.module('gokibitz.directives')
 			},
 			template: '<time></time>',
 			link: function ($scope, element, attributes) {
-				console.log('I am date hear me roar', element);
-				var time = element.children()[0];
-				console.log('date', time);
+				// console.log('I am date hear me roar', element);
+				// var time = element.children()[0];
+				// console.log('date', time);
 				//element.text('hello world');
 				//time.innerHTML('hey');
 

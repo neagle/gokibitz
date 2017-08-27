@@ -9,11 +9,6 @@ License
 =======
 GoKibitz is currently free to all users, and its code is [open source](https://github.com/neagle/gokibitz/blob/master/LICENSE).
 
-Future Monetization
-===================
-
-My plan is always to have GoKibitz be free to use, but it's possible (though by no means certain) that in the future there may be additional functionality or features that cost money to use (like a pro or plus membership). If you are a developer who would like to contribute, but are uncertain about the possibility that your code could some day be part of something that costs money, please ask me. All code contributed to this repo is and will remain open source.
-
 Feature Requests
 ================
 [Feature requests](https://github.com/neagle/gokibitz/issues) are welcome! Timely delivery is, of course, not guaranteed. But knowing what people would like to see is very helpful.

@@ -74,6 +74,18 @@ function getProp(prop, str) {
 /**
  * Game Information
  */
+kifuSchema.virtual('uploadedRelative')
+	.get(function () {
+		return moment(this.uploaded).fromNow();
+	});
+kifuSchema.virtual('game.info.name')
+	.get(function () {
+		return getProp('GN', this.game.sgf);
+	});
+kifuSchema.virtual('game.info.comment')
+	.get(function () {
+		return getProp('GC', this.game.sgf);
+	});
 kifuSchema.virtual('game.info.black.name')
 	.get(function () {
 		return getProp('PB', this.game.sgf);
@@ -178,7 +190,7 @@ kifuSchema.virtual('game.info.date')
 				date[i] = year + '-' + month + '-' + date[i];
 			}
 
-			date[i] = moment(date[i]).format('MMMM Do, YYYY');
+			date[i] = moment(date[i], 'YYYY-MM-DD').format('MMMM Do, YYYY');
 		}
 
 		if (date.length <=  2) {

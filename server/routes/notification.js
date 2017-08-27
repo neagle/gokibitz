@@ -21,7 +21,7 @@ function findUser(username, callback) {
 }
 
 router.get('/', auth.ensureAuthenticated, function (req, res) {
-	var offset = req.query.offset || 0;
+	var offset = parseInt(req.query.offset, 10) || 0;
 	var limit = Math.min(req.query.limit, 100) || 20;
 	var username = req.query.username;
 	var since = req.query.since || null;

@@ -14,7 +14,7 @@ angular.module('gokibitz.controllers')
 	kifu,
 	$interpolate,
 	$document,
-	$modal,
+	$uibModal,
 	hotkeys,
 	$sce
 ) {
@@ -22,6 +22,43 @@ angular.module('gokibitz.controllers')
 	var smartgamer = require('smartgamer');
 	var _ = require('lodash');
 	var moment = require('moment');
+
+	function formatTime(time) {
+		var duration = moment.duration(Number(time), 'seconds');
+		// @see https://github.com/moment/moment/issues/1048
+		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
+	}
+
+	function updateClock(node) {
+		if (!node.move) {
+			return;
+		}
+
+		var key = (node.move.c === 1) ? 'BL' : 'WL';
+		var otherKey = (node.move.c === 1) ? 'WL' : 'BL';
+
+		if (!node[key]) {
+			return;
+		}
+
+		var timeLeft = Number(node[key]);
+		var previousMoveTime;
+		if (node.parent && node.parent.parent) {
+			previousMoveTime = Number(node.parent.parent[key]);
+		}
+
+		$scope.clock = $scope.clock || {};
+
+		var timeSpent = Math.floor(previousMoveTime) - Math.floor(timeLeft);
+		$scope.clock.timeSpent = formatTime(timeSpent);
+
+		$scope.clock[key] = formatTime(timeLeft);
+		if (node.parent) {
+			$scope.clock[otherKey] = formatTime(node.parent[otherKey]);
+		}
+
+	}
+
 
 	// Make the login/signup modal avaialble
 	$scope.LoginSignup = LoginSignup;
@@ -236,9 +273,9 @@ angular.module('gokibitz.controllers')
 	$scope.updateUniqComments = function () {
 		var paths = [];
 
-		$http.get('api/kifu/' + $scope.kifu.shortid)
-			.success(function (data) {
-				var comments = data.comments;
+		return $http.get('api/kifu/' + $scope.kifu.shortid)
+			.then(function (response) {
+				var comments = response.data.comments;
 
 				if (comments) {
 					comments.forEach(function (comment) {
@@ -257,8 +294,8 @@ angular.module('gokibitz.controllers')
 				paths.sort($scope.comparePaths);
 				$scope.uniqComments = paths;
 				updateCommentButtonStatus();
-			}).error(function (data, status, headers, config) {
-				console.log('Error retrieving kifu for new comments:', data.message);
+			}, function (response) {
+				console.log('Error retrieving kifu for new comments:', response.data.message);
 			});
 	};
 
@@ -323,7 +360,7 @@ angular.module('gokibitz.controllers')
 
 	// Open a modal with embed code
 	$scope.embed = function (id) {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/partials/embed',
 			controller: 'EmbedController',
 			resolve: {
@@ -361,7 +398,7 @@ angular.module('gokibitz.controllers')
 		$http.put('/api/kifu/' + $scope.kifu._id + '/sgf', {
 			sgf: sgf
 		})
-			.success(function (response) {
+			.then(function (response) {
 				$scope.savingGameComment = false;
 				$scope.editGameComment = false;
 
@@ -373,47 +410,9 @@ angular.module('gokibitz.controllers')
 
 				// Update WGO
 				$scope.player.kifuReader.node.comment = $scope.kifu.nodeComment;
-			})
-			.error(function () {
+			}, function () {
 				$scope.sgfComment = arguments;
 				$scope.savingGameComment = false;
 			});
 	};
-
-	function formatTime(time) {
-		var duration = moment.duration(Number(time), 'seconds');
-		// @see https://github.com/moment/moment/issues/1048
-		return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss');
-	}
-
-	function updateClock(node) {
-		if (!node.move) {
-			return;
-		}
-
-		var key = (node.move.c === 1) ? 'BL' : 'WL';
-		var otherKey = (node.move.c === 1) ? 'WL' : 'BL';
-
-		if (!node[key]) {
-			return;
-		}
-
-		var timeLeft = Number(node[key]);
-		var previousMoveTime;
-		if (node.parent && node.parent.parent) {
-			previousMoveTime = Number(node.parent.parent[key]);
-		}
-
-		$scope.clock = $scope.clock || {};
-
-		var timeSpent = Math.floor(previousMoveTime) - Math.floor(timeLeft);
-		$scope.clock.timeSpent = formatTime(timeSpent);
-
-		$scope.clock[key] = formatTime(timeLeft);
-		if (node.parent) {
-			$scope.clock[otherKey] = formatTime(node.parent[otherKey]);
-		}
-
-	}
-
 });

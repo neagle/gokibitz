@@ -47,8 +47,8 @@ angular.module('gokibitz.directives')
 					}, {
 						timeout: canceler.promise
 					})
-						.success(function (data) {
-							$scope[preview] = data.markup;
+						.then(function (response) {
+							$scope[preview] = response.data.markup;
 						});
 				}
 			}
@@ -68,42 +68,25 @@ angular.module('gokibitz.directives')
 
 			// Watch the value of the comment and fetch a preview when it changes
 			if (displayPreview) {
-				ngModel.$viewChangeListeners.push(function () {
-					var value = ngModel.$modelValue;
-
-					if (value !== $scope[preview]) {
-						getPreview();
+				$scope.$watch(attributes.ngModel, function (newValue, oldValue) {
+					if (newValue !== oldValue) {
+						if (newValue !== $scope[preview]) {
+							getPreview();
+						}
 					}
 				});
 			}
-
-			$scope.getUsername = function (user) {
-				return '@' + user.username;
-			};
-
-			$scope.searchUsers = function (term) {
-				// Don't search until we have at least two characters to go on
-				if (term.length < 2) {
-					$scope.users = null;
-					return false;
-				}
-
-				$http.get('api/user/list?search=' + term)
-					.success(function (data) {
-						$scope.users = data.map(function (user) {
-							user.label = user.username;
-							return user;
-						});
-					}).error(function (data, status, headers, config) {
-						console.log('Error searching for users:', data.message);
-					});
-			};
 
 			// Check for enter on keypress, so we can prevent its default action
 			element.bind('keypress', function (event) {
 				var key = event.keyCode || event.which;
 				if (key === 13 && !event.shiftKey) {
 					event.preventDefault();
+
+					// Prevent submission of an empty string
+					if (element.val() === '') {
+						return;
+					}
 
 					// Cancel any outstanding preview calls
 					if (canceler) {

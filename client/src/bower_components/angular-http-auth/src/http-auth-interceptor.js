@@ -49,7 +49,7 @@
           if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
             var deferred = $q.defer();
             httpBuffer.append(rejection.config, deferred);
-            $rootScope.$broadcast('event:auth-loginRequired', rejection);
+            $rootScope.$broadcast('event:auth-loginRequired', rejection, $rootScope);
             return deferred.promise;
           }
           // otherwise, default behaviour

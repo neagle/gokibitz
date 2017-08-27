@@ -6,7 +6,21 @@ env:
 language: node_js
 
 node_js:
-  - "0.12"
+  - "node"
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libcairo2-dev
+      - libjpeg8-dev
+      - libpango1.0-dev
+      - libgif-dev
+      - g++-4.8
 
 before_install:
   - npm install -g gulp

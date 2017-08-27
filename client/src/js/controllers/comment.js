@@ -18,6 +18,30 @@ angular.module('gokibitz.controllers')
 			$compile,
 			socket
 		) {
+			// At init, we know we need to check for new comments
+			$scope.newComments = true;
+
+			let makeStarredByList = function (comment) {
+				if (!_.isEmpty(comment.stars)) {
+					comment.starredByList = comment.stars.map(user => user.username).join(', ');
+				} else {
+					comment.starredByList = '';
+				}
+			};
+
+			/* Check if a comment has been starred by the user */
+			let checkStarredByMe = function (comment) {
+				let starredByMe = false;
+				let i = 0;
+
+				while (i < comment.stars.length && !starredByMe) {
+					if (comment.stars[i]._id === $scope.currentUser._id) {
+						starredByMe = true;
+					}
+					i += 1;
+				}
+				return starredByMe;
+			};
 
 			// Handle live updates to comments
 			socket.on('send:' + $scope.kifu._id, function (data) {
@@ -34,15 +58,21 @@ angular.module('gokibitz.controllers')
 						case 'new':
 							$scope.comments.push(data.comment);
 							$scope.updateUniqComments();
+							// Flag that there have been new comments
+							$scope.newComments = true;
 							break;
 						case 'update':
 							$scope.comments[index()] = data.comment;
 							break;
 						case 'star':
 							$scope.comments[index()].stars = data.comment.stars;
+							makeStarredByList($scope.comments[index()]);
+							$scope.comments[index()].starredByMe = checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'unstar':
 							$scope.comments[index()].stars = data.comment.stars;
+							makeStarredByList($scope.comments[index()]);
+							$scope.comments[index()].starredByMe = checkStarredByMe($scope.comments[index()]);
 							break;
 						case 'delete':
 							$scope.comments = _.filter($scope.comments, function (n) {
@@ -63,10 +93,10 @@ angular.module('gokibitz.controllers')
 			$scope.listComments = function (alreadyRendered) {
 				var path;
 
-				// Turn off animation
-				$scope.loading = true;
-
 				if (!alreadyRendered) {
+					// Turn on animation
+					$scope.loading = true;
+
 					// Clear existing comments
 					$scope.displayComments = [];
 					$scope.comments = [];
@@ -78,73 +108,118 @@ angular.module('gokibitz.controllers')
 					canceler.resolve();
 				}
 
-				if ($scope.kifu.path.m === 0) {
-					path = '';
-				} else {
-					path = pathFilter($scope.kifu.path, 'string');
-				}
+				//if ($scope.kifu.path.m === 0) {
+				//	path = '';
+				//} else {
+				//	path = pathFilter($scope.kifu.path, 'string');
+				//}
+				path = pathFilter($scope.kifu.path, 'string');
 
 				canceler = $q.defer();
-				$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
-					timeout: canceler.promise
-				})
-					.success(function (data) {
 
-						if (!alreadyRendered) {
-							//Clear existing comments
-							$scope.comments = [];
-							$scope.numComments = null;
-						}
-
-						var highlightedComment = $location.search().comment;
-						var highlightedCommentPresent = false;
-
-						data.forEach(function (comment) {
-
-							// Create a path object {{ m: 0 }} out of the path strings on the comment
-							comment.pathObject = pathFilter(comment.path, 'object');
-
-							// Tell Angular that we trust this HTML so that it doesn't sanitize it
-							comment.content.html = $sce.trustAsHtml(comment.content.html);
-
-							// Set a flag on comments starred by the current user
-							if ($scope.currentUser) {
-								comment.starredByMe = (comment.stars.indexOf($scope.currentUser._id) !== -1);
-							}
-
-							if (comment._id === highlightedComment) {
-								highlightedCommentPresent = true;
-							}
-						});
-
-						// If the highlighted comment isn't present on this move, remove it from the
-						// query string
-						if (!highlightedCommentPresent && $scope.highlightedComment) {
-							$scope.highlightedComment = null;
-							$location.search('comment', null);
-						}
-
-						// Use this value instead of $scope.comments.length in the template
-						$scope.numComments = data.length;
-
-						if (!alreadyRendered) {
-							$scope.comments = data;
-							$scope.displayComments = [];
-							$scope.addMoreComments();
-
-							$scope.loading = false;
-						} else {
-							$scope.loading = false;
-							$scope.comments = data;
-							$scope.displayComments = $scope.comments;
-						}
-
+				function fetchAllComments() {
+					$http.get('/api/kifu/' + $scope.kifu._id + '/comments/', {
+						timeout: canceler.promise
 					})
-					.error(function (data) {
-						$scope.comments = [];
-						console.log('Error: ' + data);
+						.then(function (response) {
+							var data = response.data;
+
+							data.forEach(function (comment) {
+								// Create a path object {{ m: 0 }} out of the path strings on the comment
+								comment.pathObject = pathFilter(comment.path, 'object');
+							});
+
+							$scope.allComments = data;
+							$scope.newComments = false;
+						});
+				}
+
+				function fetchComments() {
+					$http.get('/api/kifu/' + $scope.kifu._id + '/comments/' + path, {
+						timeout: canceler.promise
+					})
+						.then(function (response) {
+							var data = response.data;
+
+							/*
+							if (!alreadyRendered) {
+								//Clear existing comments
+								$scope.comments = [];
+								$scope.numComments = null;
+							}
+							*/
+
+							var highlightedComment = $location.search().comment;
+							var highlightedCommentPresent = false;
+
+							data.forEach(function (comment) {
+
+								// Create a path object {{ m: 0 }} out of the path strings on the comment
+								comment.pathObject = pathFilter(comment.path, 'object');
+
+								// Tell Angular that we trust this HTML so that it doesn't sanitize it
+								comment.content.html = $sce.trustAsHtml(comment.content.html);
+
+								// Set a flag on comments starred by the current user
+								if ($scope.currentUser) {
+									comment.starredByMe = checkStarredByMe(comment);
+								}
+
+								makeStarredByList(comment);
+
+								if (comment._id === highlightedComment) {
+									highlightedCommentPresent = true;
+								}
+							});
+
+							// If the highlighted comment isn't present on this move, remove it from the
+							// query string
+							if (!highlightedCommentPresent && $scope.highlightedComment) {
+								$scope.highlightedComment = null;
+								$location.search('comment', null);
+							}
+
+							// Use this value instead of $scope.comments.length in the template
+							$scope.numComments = data.length;
+
+							if (!alreadyRendered) {
+								$scope.comments = data;
+								$scope.displayComments = [];
+								$scope.addMoreComments();
+
+								$scope.loading = false;
+							} else {
+								$scope.loading = false;
+								$scope.comments = data;
+								$scope.displayComments = $scope.comments;
+							}
+
+						}, function (data) {
+							$scope.comments = [];
+							console.log('Error: ' + data);
+						});
+				}
+
+
+				// Check if there are comments to load
+				let uniqComments = $scope.$parent.uniqComments;
+				let pathHasComments = uniqComments &&
+					uniqComments.find(path => path.m === $scope.kifu.path.m);
+
+				if (pathHasComments || !uniqComments) {
+					fetchComments();
+				} else {
+					$timeout(() => {
+						$scope.loading = false;
 					});
+				}
+
+				if ($scope.kifu.path.m === 0 || $scope.newComments) {
+					fetchAllComments();
+				}
 			};
+
+			$scope.debouncedListComments = _.debounce($scope.listComments, 100);
 
 			$scope.addMoreComments = function (num) {
 				if (!$scope.comments) {
@@ -174,7 +249,10 @@ angular.module('gokibitz.controllers')
 				newComment.$save(function (response) {
 					$scope.disableAddComment = false;
 					$scope.formData = {};
-					$scope.listComments(true);
+					// $scope.newComments = true;
+					$scope.updateUniqComments().then(() => {
+						$scope.listComments(true);
+					});
 				});
 			};
 
@@ -187,14 +265,13 @@ angular.module('gokibitz.controllers')
 					$scope.deleteComment(comment);
 				} else {
 					$http.put('/api/comment/' + comment._id, comment)
-						.success(function (data) {
+						.then(function (response) {
 							$scope.disableUpdateComment = false;
-							angular.extend(comment, data.comment);
+							angular.extend(comment, response.data.comment);
 							delete self.edit;
-						})
-						.error(function (data) {
+						}, function (response) {
 							$scope.disableUpdateComment = false;
-							console.log('Error: ' + data);
+							console.log('Error: ' + response);
 						});
 				}
 			};
@@ -202,11 +279,10 @@ angular.module('gokibitz.controllers')
 			$scope.cancelEdit = function (comment) {
 				var self = this;
 				$http.get('/api/comment/' + comment._id)
-					.success(function (data) {
-						angular.extend(comment, data);
+					.then(function (response) {
+						angular.extend(comment, response.data);
 						delete self.edit;
-					})
-					.error(function (data) {
+					}, function (data) {
 						console.log('Error: ' + data);
 					});
 			};
@@ -214,38 +290,18 @@ angular.module('gokibitz.controllers')
 
 			$scope.deleteComment = function (comment) {
 				$http.delete('/api/comment/' + comment._id)
-					.success(function () {
+					.then(function () {
 						$scope.listComments(true);
-					})
-					.error(function (data) {
+					}, function (data) {
 						console.log('Error: ' + data);
 					});
 
 			};
 
 			$scope.toggleStar = function (comment) {
-				var userId = $scope.currentUser._id;
-				var index = comment.stars.indexOf(userId);
+				const url = `/api/comment/${comment._id}/${checkStarredByMe(comment) ? 'unstar' : 'star'}`;
 
-				if (index === -1) {
-					$http.patch('/api/comment/' + comment._id + '/star')
-						.success(function () {
-							comment.stars.push($scope.currentUser._id);
-							comment.starredByMe = true;
-						})
-						.error(function (data) {
-							console.log('Error: ' + data);
-						});
-				} else {
-					$http.patch('/api/comment/' + comment._id + '/unstar')
-						.success(function () {
-							comment.stars.splice(index, 1);
-							comment.starredByMe = false;
-						})
-						.error(function (data) {
-							console.log('Error: ' + data);
-						});
-				}
+				$http.patch(url);
 			};
 
 			$scope.goToComment = function (commentId) {
@@ -267,8 +323,16 @@ angular.module('gokibitz.controllers')
 			});
 
 			$scope.$watch('kifu.path', function () {
-				//console.log(+new Date(), 'WATCH');
-				$scope.listComments();
+				// Clear existing comments
+				$scope.displayComments = [];
+				$scope.comments = [];
+				$scope.numComments = null;
+
+				$scope.loading = true;
+
+				// Smooth out the rapid-fire list comment requests from
+				// quickly navigating through a game
+				$scope.debouncedListComments();
 			}, true);
 
 			$scope.$on('$routeUpdate', function () {
@@ -278,6 +342,33 @@ angular.module('gokibitz.controllers')
 					$scope.goToComment(comment);
 				}
 			});
+
+			// TODO: This function obviously belongs some place universal.
+			function humanCoordinates(move) {
+				// Note the missing i
+				var letters = 'abcdefghjklmnopqrst';
+
+				var x = letters.substring(move.x, move.x + 1).toUpperCase();
+				var y = $scope.player.kifuReader.game.size - move.y;
+				return x + y;
+			}
+
+			function translateMovesToCoordinates(event) {
+				var move;
+				if (event.change.add && event.change.add.length) {
+					move = event.change.add[0];
+
+					if (!$scope.player.gkVariationArr.length) {
+						var str = (move.c === 1) ? 'b' : 'w';
+						str += humanCoordinates(move);
+						$scope.player.gkVariationArr.push(str);
+					} else {
+						$scope.player.gkVariationArr.push(humanCoordinates(move));
+					}
+				} else if (event.change.remove && event.change.remove.length) {
+					$scope.player.gkVariationArr.pop();
+				}
+			}
 
 			// Wait for the player object to become available, since it's not
 			// initialized till domready
@@ -303,32 +394,6 @@ angular.module('gokibitz.controllers')
 					}
 				});
 			});
-
-			function translateMovesToCoordinates(event) {
-				var move;
-				if (event.change.add && event.change.add.length) {
-					move = event.change.add[0];
-
-					if (!$scope.player.gkVariationArr.length) {
-						var str = (move.c === 1) ? 'b' : 'w';
-						str += humanCoordinates(move);
-						$scope.player.gkVariationArr.push(str);
-					} else {
-						$scope.player.gkVariationArr.push(humanCoordinates(move));
-					}
-				} else if (event.change.remove && event.change.remove.length) {
-					$scope.player.gkVariationArr.pop();
-				}
-			}
-			// TODO: This function obviously belongs some place universal.
-			function humanCoordinates(move) {
-				// Note the missing i
-				var letters = 'abcdefghjklmnopqrst';
-
-				var x = letters.substring(move.x, move.x + 1).toUpperCase();
-				var y = $scope.player.kifuReader.game.size - move.y;
-				return x + y;
-			}
 
 			$scope.variationKeyListener = function (event) {
 				switch (event.keyCode) {
