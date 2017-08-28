@@ -12,7 +12,7 @@
 		p.help-block(ng-show="form.email.$error.mongoose") {{ errors.email }}
 		p.help-block(ng-show="form.password.$error.mongoose") {{ errors.password }}
 
-		.form-group(ng-class="{'has-error': form.email.$error.mongoose}")
+		.form-group(ng-class="{'has-error': form.email.$error.mongoose || (form.email.$error.email && form.email.$touched)}")
 			label.col-sm-4.control-label(for='login-email') Email address:
 			.col-sm-8
 				input#login-email.form-control(
