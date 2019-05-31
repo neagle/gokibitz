@@ -34,7 +34,7 @@ Native Development Setup
 
 If you like GoKibitz enough to feel motivated to fix a bug or implement a new feature, I'd like to give you a virtual hug right now.
 
-First, fork this repo on Github. Once you've got it cloned, there's two ways to get set up. If you have Docker available on your machine, skip ahead to (#docker-development-setup) as it's a much simpler path to getting up and running. If you don't have Docker, or if you just prefer to work natively, continue to the instructions below.
+First, fork this repo on Github. Once you've got it cloned, there's two ways to get set up. If you have Docker available on your machine, skip ahead to [Docker Development Setup](#docker-development-setup) as it's a much simpler path to getting up and running. If you don't have Docker, or if you just prefer to work natively, continue to the instructions below.
 
 Warning: I've only tested this on OS X and Ubuntu.
 
