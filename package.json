@@ -1,218 +1,217 @@
 {
-  "name": "gokibitz",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node ./server/bin/www",
-    "dev": "gulp watch"
-  },
-  "dependencies": {
-    "MD5": "^1.2.1",
-    "async": "^0.9.0",
-    "async-replace": "^1.0.0",
-    "base64url": "^2.0.0",
-    "body-parser": "~1.0.0",
-    "canvas": "^1.6.2",
-    "compression": "^1.3.0",
-    "connect-mongo": "^1.3.2",
-    "content-disposition": "^0.5.2",
-    "cookie-parser": "~1.0.1",
-    "debug": "~0.7.4",
-    "dotenv": "^1.2.0",
-    "express": "~4.2.0",
-    "express-session": "^1.11.3",
-    "jade": "~1.3.0",
-    "lodash": "^4.17.2",
-    "marked": "^0.3.2",
-    "moment": "^2.10.2",
-    "mongoose": "^4.7.6",
-    "morgan": "~1.0.0",
-    "multiparty": "^3.2.6",
-    "nodemailer": "^2.7.0",
-    "nodemailer-ses-transport": "^1.5.0",
-    "passport": "^0.2.0",
-    "passport-local": "^1.0.0",
-    "serve-favicon": "^2.2.0",
-    "shortid": "^2.0.0",
-    "smartgame": "^0.1.4",
-    "smartgamer": "^0.1.5",
-    "socket.io": "^1.3.2",
-    "weiqi": "^1.0.0"
-  },
-  "devDependencies": {
-    "angular": "^1.3.8",
-    "angular-animate": "^1.3.5",
-    "angular-cookies": "^1.3.11",
-    "angular-elastic": "^2.3.5",
-    "angular-hotkeys": "^1.4.5",
-    "angular-locker": "^1.2.1",
-    "angular-resource": "^1.3.5",
-    "angular-route": "^1.3.5",
-    "angular-sanitize": "^1.3.5",
-    "angular-scroll": "^0.6.4",
-    "angular-socket-io": "^0.7.0",
-    "angular-touch": "^1.3.8",
-    "angular-ui-bootstrap": "^2.4.0",
-    "angular-ui-router": "^0.3.2",
-    "babel-preset-es2015": "^6.18.0",
-    "babelify": "^7.3.0",
-    "browserify": "^13.1.1",
-    "browserify-ngannotate": "^2.0.0",
-    "browserify-shim": "^3.8.12",
-    "chai": "^2.1.2",
-    "chai-as-promised": "^4.3.0",
-    "chalk": "^0.5.1",
-    "folderify": "^0.6.0",
-    "glob": "^4.0.0",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
-    "gulp-concat": "^2.2.0",
-    "gulp-debug": "^2.1.2",
-    "gulp-develop-server": "^0.5.2",
-    "gulp-imagemin": "^2.1.0",
-    "gulp-jscs": "^4.0.0",
-    "gulp-jshint": "^1.6.1",
-    "gulp-livereload": "^1.5.0",
-    "gulp-newer": "^0.3.0",
-    "gulp-notify": "^1.2.5",
-    "gulp-sass": "^4.0.2",
-    "gulp-size": "^2.1.0",
-    "gulp-uglify": "^1.0.2",
-    "gulp-util": "^2.2.14",
-    "http-proxy": "^1.8.1",
-    "jshint": "^2.9.3",
-    "jshint-stylish": "^0.2.0",
-    "ment.io": "^0.9.23",
-    "mocha": "^2.2.1",
-    "node-bourbon": "^4.2.8",
-    "pretty-hrtime": "^1.0.0",
-    "protractor": "^2.0.0",
-    "require-dir": "^0.3.1",
-    "require-globify": "^1.4.1",
-    "scsslint": "0.0.3",
-    "textarea-caret": "^3.0.2",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^0.1.1",
-    "vinyl-transform": "^1.0.0",
-    "watchify": "^3.8.0"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim",
-      "browserify-ngannotate",
-      "require-globify"
-    ]
-  },
-  "browser": {
-    "angular": "./node_modules/angular/angular.js",
-    "angular-cookies": "./node_modules/angular-cookies/angular-cookies.min.js",
-    "angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
-    "angular-sanitize": "./node_modules/angular-sanitize/angular-sanitize.min.js",
-    "angular-animate": "./node_modules/angular-animate/angular-animate.min.js",
-    "angular-resource": "./node_modules/angular-resource/angular-resource.min.js",
-    "angular-route": "./node_modules/angular-route/angular-route.min.js",
-    "angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
-    "angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
-    "angular-socket-io": "./node_modules/angular-socket-io/socket.js",
-    "angular-hotkeys": "./node_modules/angular-hotkeys/build/hotkeys.js",
-    "angular-elastic": "./node_modules/angular-elastic/elastic.js",
-    "io": "./node_modules/socket.io-client/dist/socket.io.js",
-    "angular-locker": "./node_modules/angular-locker/dist/angular-locker.js",
-    "http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
-    "ui-bootstrap": "./node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js",
-    "ui-bootstrap-tpls": "./node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js",
-    "ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
-    "angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
-    "WGo": "./client/src/js/lib/wgo/wgo.js",
-    "gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
-  },
-  "browserify-shim": {
-    "angular": "angular",
-    "io": "io",
-    "angular-cookies": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-file-upload": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-sanitize": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-resource": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-animate": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-ui-router": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-route": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "http-auth-interceptor": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "ui-utils": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "ui-bootstrap": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "ui-bootstrap-tpls": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-touch": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-scroll": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-hotkeys": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "angular-socket-io": {
-      "depends": [
-        "io"
-      ]
-    },
-    "angular-elastic": {
-      "depends": [
-        "angular"
-      ]
-    },
-    "gokibitz-wgo": {
-      "depends": [
-        "WGo"
-      ]
-    }
-  }
+	"name": "gokibitz",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node ./server/bin/www",
+		"dev": "gulp watch"
+	},
+	"dependencies": {
+		"MD5": "^1.2.1",
+		"async": "^0.9.0",
+		"async-replace": "^1.0.0",
+		"base64url": "^2.0.0",
+		"body-parser": "~1.0.0",
+		"canvas": "^2.5.0",
+		"compression": "^1.3.0",
+		"connect-mongo": "^1.3.2",
+		"content-disposition": "^0.5.2",
+		"cookie-parser": "~1.0.1",
+		"debug": "~0.7.4",
+		"dotenv": "^1.2.0",
+		"express": "~4.2.0",
+		"express-session": "^1.11.3",
+		"jade": "~1.3.0",
+		"lodash": "^4.17.2",
+		"marked": "^0.3.2",
+		"moment": "^2.10.2",
+		"mongoose": "^4.7.6",
+		"morgan": "~1.0.0",
+		"multiparty": "^3.2.6",
+		"nodemailer": "^2.7.0",
+		"nodemailer-ses-transport": "^1.5.0",
+		"passport": "^0.2.0",
+		"passport-local": "^1.0.0",
+		"serve-favicon": "^2.2.0",
+		"shortid": "^2.0.0",
+		"smartgame": "^0.1.4",
+		"smartgamer": "^0.1.5",
+		"socket.io": "^1.3.2",
+		"weiqi": "^1.0.0"
+	},
+	"devDependencies": {
+		"angular": "^1.3.8",
+		"angular-animate": "^1.3.5",
+		"angular-cookies": "^1.3.11",
+		"angular-elastic": "^2.3.5",
+		"angular-hotkeys": "^1.4.5",
+		"angular-locker": "^1.2.1",
+		"angular-resource": "^1.3.5",
+		"angular-route": "^1.3.5",
+		"angular-sanitize": "^1.3.5",
+		"angular-scroll": "^0.6.4",
+		"angular-socket-io": "^0.7.0",
+		"angular-touch": "^1.3.8",
+		"angular-ui-bootstrap": "^2.4.0",
+		"angular-ui-router": "^0.3.2",
+		"babel-preset-es2015": "^6.18.0",
+		"babelify": "^7.3.0",
+		"browserify": "^13.1.1",
+		"browserify-ngannotate": "^2.0.0",
+		"browserify-shim": "^3.8.12",
+		"chai": "^2.1.2",
+		"chai-as-promised": "^4.3.0",
+		"chalk": "^0.5.1",
+		"folderify": "^0.6.0",
+		"glob": "^4.0.0",
+		"gulp": "^3.9.1",
+		"gulp-autoprefixer": "^3.1.1",
+		"gulp-concat": "^2.2.0",
+		"gulp-debug": "^2.1.2",
+		"gulp-develop-server": "^0.5.2",
+		"gulp-imagemin": "^2.1.0",
+		"gulp-jscs": "^4.0.0",
+		"gulp-jshint": "^1.6.1",
+		"gulp-livereload": "^1.5.0",
+		"gulp-newer": "^0.3.0",
+		"gulp-notify": "^1.2.5",
+		"gulp-sass": "^4.0.2",
+		"gulp-size": "^2.1.0",
+		"gulp-uglify": "^1.0.2",
+		"gulp-util": "^2.2.14",
+		"http-proxy": "^1.8.1",
+		"jshint": "^2.9.3",
+		"jshint-stylish": "^0.2.0",
+		"ment.io": "^0.9.23",
+		"mocha": "^2.2.1",
+		"node-bourbon": "^4.2.8",
+		"pretty-hrtime": "^1.0.0",
+		"require-dir": "^0.3.1",
+		"require-globify": "^1.4.1",
+		"scsslint": "0.0.3",
+		"textarea-caret": "^3.0.2",
+		"vinyl-buffer": "^1.0.0",
+		"vinyl-source-stream": "^0.1.1",
+		"vinyl-transform": "^1.0.0",
+		"watchify": "^3.8.0"
+	},
+	"browserify": {
+		"transform": [
+			"browserify-shim",
+			"browserify-ngannotate",
+			"require-globify"
+		]
+	},
+	"browser": {
+		"angular": "./node_modules/angular/angular.js",
+		"angular-cookies": "./node_modules/angular-cookies/angular-cookies.min.js",
+		"angular-file-upload": "./client/src/bower_components/angular-file-upload/angular-file-upload.js",
+		"angular-sanitize": "./node_modules/angular-sanitize/angular-sanitize.min.js",
+		"angular-animate": "./node_modules/angular-animate/angular-animate.min.js",
+		"angular-resource": "./node_modules/angular-resource/angular-resource.min.js",
+		"angular-route": "./node_modules/angular-route/angular-route.min.js",
+		"angular-touch": "./node_modules/angular-touch/angular-touch.min.js",
+		"angular-ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
+		"angular-socket-io": "./node_modules/angular-socket-io/socket.js",
+		"angular-hotkeys": "./node_modules/angular-hotkeys/build/hotkeys.js",
+		"angular-elastic": "./node_modules/angular-elastic/elastic.js",
+		"io": "./node_modules/socket.io-client/dist/socket.io.js",
+		"angular-locker": "./node_modules/angular-locker/dist/angular-locker.js",
+		"http-auth-interceptor": "./client/src/bower_components/angular-http-auth/src/http-auth-interceptor.js",
+		"ui-bootstrap": "./node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js",
+		"ui-bootstrap-tpls": "./node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js",
+		"ui-utils": "./client/src/bower_components/angular-ui-utils/ui-utils.js",
+		"angular-scroll": "./node_modules/angular-scroll/angular-scroll.js",
+		"WGo": "./client/src/js/lib/wgo/wgo.js",
+		"gokibitz-wgo": "./client/src/js/wgo/gokibitz.wgo.js"
+	},
+	"browserify-shim": {
+		"angular": "angular",
+		"io": "io",
+		"angular-cookies": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-file-upload": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-sanitize": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-resource": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-animate": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-ui-router": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-route": {
+			"depends": [
+				"angular"
+			]
+		},
+		"http-auth-interceptor": {
+			"depends": [
+				"angular"
+			]
+		},
+		"ui-utils": {
+			"depends": [
+				"angular"
+			]
+		},
+		"ui-bootstrap": {
+			"depends": [
+				"angular"
+			]
+		},
+		"ui-bootstrap-tpls": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-touch": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-scroll": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-hotkeys": {
+			"depends": [
+				"angular"
+			]
+		},
+		"angular-socket-io": {
+			"depends": [
+				"io"
+			]
+		},
+		"angular-elastic": {
+			"depends": [
+				"angular"
+			]
+		},
+		"gokibitz-wgo": {
+			"depends": [
+				"WGo"
+			]
+		}
+	}
 }
