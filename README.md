@@ -28,12 +28,13 @@ There are two ways you can support development of GoKibitz:
 1. [Feedback](mailto:nate@nateeagle.com)! I wrote this to help go players. If you use GoKibitz and tell me so, it's great encouragement to keep plugging away at features and bugs.
 2. [Pull Requests](https://github.com/neagle/gokibitz/pulls): it's asking a lot to ask other developers to dive into your code and contribute, but if anyone feels especially generous, I'd welcome collaboration.
 
-Development Setup
+
+Native Development Setup
 =================
 
 If you like GoKibitz enough to feel motivated to fix a bug or implement a new feature, I'd like to give you a virtual hug right now.
 
-First, fork this repo on Github. Once you've got it cloned, Here's how to get set up:
+First, fork this repo on Github. Once you've got it cloned, there's two ways to get set up. If you have Docker available on your machine, skip ahead to [Docker Development Setup](#docker-development-setup) as it's a much simpler path to getting up and running. If you don't have Docker, or if you just prefer to work natively, continue to the instructions below.
 
 Warning: I've only tested this on OS X and Ubuntu.
 
@@ -95,6 +96,21 @@ $ git checkout -B my-bug
 ```
 
 When you're done, just submit a pull request.
+
+Docker Development Setup
+=================
+
+The easiest way to get up and running with a local copy of GoKibitz is to use the provided [Docker Compose](https://docs.docker.com/compose/) configuration. You will need at least Docker 18.06.0 or higher.
+
+To bring up the site, just navigate to the source directory, and run:
+
+```sh
+$ docker-compose build
+$ docker-compose run gokibitz npm install
+$ docker-compose up
+```
+
+That's it! Just navigate to http://localhost:3434 to test it out. The source directory is mounted as a Docker volume so any source changes should be picked up automatically. On any subsequent runs, you only need to run the `docker-compose up` command.
 
 - - -
 

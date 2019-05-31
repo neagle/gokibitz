@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  mongod:
+    image: mongo
+    volumes:
+      - type: volume
+        source: data
+        target: /data/db
+    ports:
+      - 27017:27017
+
+  gokibitz:
+    build:
+      context: .
+    environment:
+      - MONGO_URI=mongodb://mongod
+    ports:
+      - 3434:3434
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    links:
+      - mongod
+
+volumes:
+  data:
